@@ -73,7 +73,7 @@
 		<td>{{segment.name}}</td>
 		<td>{{segment.sensor.status}}</td>
 		<td>
-			<form id="change_switch" action="{% url 'getSystemStatus'%}" method="post">
+			<form id="change_switch" action="getSystemStatus" method="post">
 				{% csrf_token %}
 				{% if segment.switch.status == "on" %}
 				<input type="hidden" name="pinNumber" value = "{{ segment.switch.pinNumber }}"/>
