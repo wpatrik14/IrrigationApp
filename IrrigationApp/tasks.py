@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 from celery import Celery
-from urllib.request import urlopen
 import codecs
 from datetime import datetime
 from IrrigationApp.models import WeatherHistory, Sensor, Switch, Segment
