@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="shortcut icon" href="../../assets/ico/favicon.ico">-->
+
+    <title>IrrigationApp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/static/css/login.css" rel="stylesheet">
+    <link href="/static/css/checkbox.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/static/css/theme.css" rel="stylesheet">
+    <script src="/static/js/jquery-1.11.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/login.js"></script>
+
+  </head>
+
+  <body role="document">
+  	<fieldset>
+
+	<!-- Form Name -->
+	<legend>Menu</legend>
+	
+	<a href="{% url 'getSystemStatus'%}">System status</a> - 
+	<a href="scheduler.html">Scheduler</a> - 
+	<a href="automation.html">Automation</a> - 
+	<a href="history.html">History</a> - 
+	<a href="settings.html">Settings</a> - 
+	<a href="logout.html">Logout</a>
+	</fieldset>

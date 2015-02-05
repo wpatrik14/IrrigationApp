@@ -1,0 +1,102 @@
+{% include "IrrigationApp/pages/frame/htmlHeader_refresh.html" %}
+
+<fieldset>
+
+	<!-- Form Name -->
+	<legend>Actual Weather</legend>
+
+<table class="table table-striped table-condensed">
+	{% for currentWeather in weathers %}
+	<tr>
+		<td>Icon:</td>
+		<td><img src="{{ currentWeather.icon }}"></td>
+	</tr>
+	<tr>
+		<td>Location:</td>
+		<td>{{currentWeather.place}}</td>
+	</tr>
+	<tr>
+		<td>Observation:</td>
+		<td>{{currentWeather.observation_time}}</td>
+	</tr>
+	<tr>
+		<td>Temp (C):</td>
+		<td>{{currentWeather.temp_C}}</td>
+	</tr>
+	<tr>
+		<td>Precipitation (mm):</td>
+		<td>{{currentWeather.precipMM}}</td>
+	</tr>
+	<tr>
+		<td>Pressure:</td>
+		<td>{{currentWeather.pressure}}</td>
+	</tr>
+	<tr>
+		<td>Cloudcover:</td>
+		<td>{{currentWeather.cloudcover}}</td>
+	</tr>
+	<tr>
+		<td>Humidity:</td>
+		<td>{{currentWeather.humidity}}</td>
+	</tr>
+	<tr>
+		<td>Wind speed (Kmph):</td>
+		<td>{{currentWeather.windspeedKmph}}</td>
+	</tr>
+	<tr>
+		<td>Wind direction:</td>
+		<td>{{currentWeather.winddirDegree}}</td>
+	</tr>
+	{% endfor %}
+</table>
+</fieldset>
+
+<fieldset>
+
+	<!-- Form Name -->
+	<legend>Status of the Segments</legend>
+
+<table class="table table-striped table-condensed">
+	<thead>
+		<td>Segment name</td>
+		<td>Sensor status</td>
+		<td>Switch status</td>
+		<td>UP-time</td>
+		<td>Type</td>
+		<td>Moisure min. limit</td>
+		<td>Moisure max. limit</td>
+		<td>Duration max. limit</td>
+		<td>Forecast enabled</td>
+	</thead>
+	{% for segment in segments %}
+	<tr>
+		<td>{{segment.name}}</td>
+		<td>{{segment.sensor.status}}</td>
+		<td>
+			<form id="change_switch" action="{% url 'getSystemStatus'%}" method="post">
+				{% csrf_token %}
+				{% if segment.switch.status == "on" %}
+				<input type="hidden" name="pinNumber" value = "{{ segment.switch.pinNumber }}"/>
+				<input type="hidden" name="status" value = "off"/>
+				<button id="switch" name="switch" class="btn btn-default">ON </button>
+				{% else %}
+				<input type="hidden" name="pinNumber" value = "{{ segment.switch.pinNumber }}"/>
+				<input type="hidden" name="status" value = "on"/>
+				<button id="switch" name="switch" class="btn btn-default">OFF</button>
+				{% endif %}
+			</form>
+		</td>
+		<td>{{segment.up_time}}</td>
+		<td>{{segment.type}}</td>
+		<td>{{segment.moisture_minLimit}}</td>
+		<td>{{segment.moisture_maxLimit}}</td>
+		<td>{{segment.duration_maxLimit}}</td>
+		<td>{{segment.forecast_enabled}}</td>		
+	</tr>
+	{% endfor %}
+</table>
+
+</fieldset>
+
+</body>
+</html>
