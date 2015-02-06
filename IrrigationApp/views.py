@@ -5,11 +5,7 @@ from django.utils import timezone
 from django.shortcuts import redirect
 from datetime import date, datetime, timedelta, time
 
-from IrrigationApp.models import UserProfile
-from IrrigationApp.models import WeatherHistory
-from IrrigationApp.models import Segment
-from IrrigationApp.models import Switch
-from IrrigationApp.models import Sensor
+from IrrigationApp.models import UserProfile, SimpleSchedule, WeatherHistory, Segment, Switch, Sensor
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -119,6 +115,7 @@ def getSystemStatus(request):
     
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     segments = Segment.objects.all()
+    simpleSchedules = SimpleSchedule.objects.all()
     
     if 'pinNumber' in request.POST :
         pinNumber = request.POST['pinNumber']
@@ -128,7 +125,7 @@ def getSystemStatus(request):
         mSwitch.save(update_fields=['status'])
         r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)      
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments, 'simpleSchedules':simpleSchedules})
 
 
 @login_required
