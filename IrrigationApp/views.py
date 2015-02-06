@@ -16,10 +16,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 import requests
 
-
-def test(request):
-    return render(request, 'IrrigationApp/pages/test.html')
-
 def showMenu(request):
     return render(request, 'IrrigationApp/pages/menu.html')
 
@@ -31,14 +27,14 @@ def doLogin(request):
         #User authentication successful
         login(request, user)
         try:
-            return render(request, 'IrrigationApp/pages/main.html', { 'username':username })
+            getSystemStatus(request)
         except:
             return HttpResponse('Error during login: ' + username)
     else:
         #User authentication failed
-        return HttpResponse('Authentication failed ' + username + ' ' + password)
+        return HttpResponse('No user registered with: username: ' + username + ' and password: ' + password)
 
-#@login_required
+@login_required
 def doLogout(request):
     logout(request)
     return render(request, 'IrrigationApp/pages/login.html', { 'userStatus':"USER LOGGED OUT" })
@@ -80,11 +76,11 @@ def doRegistration(request):
                 userProfile.save()
                 return HttpResponse('User ' + username + ' registered successfully.' );
 
-#@login_required
+@login_required
 def showAddNewSegment(request):
     return render(request, 'IrrigationApp/pages/addNewSegment.html', {})
     
-#@login_required
+@login_required
 def doAddNewSegment(request):
     
     name = request.POST['name']
@@ -115,8 +111,11 @@ def doAddNewSegment(request):
     mSegment.save()
     return HttpResponse('Segment has been added succesfully!  Sensor: ' + sensor_list[0].pinNumber + 'Switch: ' + switch_list[0].pinNumber);
 
-#@login_required
+@login_required
 def getSystemStatus(request):
+    
+    currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
+    segments = Segment.objects.all()
     
     if 'pinNumber' in request.POST :
         pinNumber = request.POST['pinNumber']
@@ -125,8 +124,5 @@ def getSystemStatus(request):
         mSwitch.status = status
         mSwitch.save(update_fields=['status'])
         r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)      
-        
-    currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
-    segments = Segment.objects.all()
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments})
