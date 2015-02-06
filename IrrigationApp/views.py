@@ -78,7 +78,7 @@ def doRegistration(request):
 
 @login_required
 def showAddNewSegment(request):
-    sensors = Sensors.objects.all()
+    sensors = Sensor.objects.all()
     switches = Switch.objects.all()
     
     return render(request, 'IrrigationApp/pages/addNewSegment.html', {'sensors':sensors, 'switches':switches})
