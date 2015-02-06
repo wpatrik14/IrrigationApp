@@ -110,7 +110,7 @@ CELERYBEAT_SCHEDULE = {
     },
 }
 
-c = djcelery.Celery()
+c = celery.Celery()
 c.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
 
 CELERY_TIMEZONE = 'Europe/London'
