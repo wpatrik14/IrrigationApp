@@ -27,7 +27,7 @@ def doLogin(request):
         #User authentication successful
         login(request, user)
         try:
-            return redirect('/getSystemStatus.html')
+            return redirect('/getSystemStatus')
         except:
             return HttpResponse('Error during login: ' + username)
     else:
