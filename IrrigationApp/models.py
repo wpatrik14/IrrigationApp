@@ -61,10 +61,10 @@ class Switch(models.Model):
     
 class SimpleSchedule(models.Model):
     name = models.CharField(max_length=20)
-    enabled = models.IntegerField(max_length=2)
-    date = models.IntegerField(max_length=3)
+    enabled = models.BooleanField(default=False)
+    date = models.DateField()
     time = models.TimeField()
-    duration = models.IntegerField(max_length=8)
+    duration = models.IntegerField(max_length=3)
     segment = models.ForeignKey('Segment')
     def __unicode__(self):
         return self.enabled + ' ' + self.segment 
