@@ -124,11 +124,9 @@ def getSystemStatus(request):
         mSwitch = Switch.objects.get(pinNumber=pinNumber)
         mSwitch.status = status
         mSwitch.save(update_fields=['status'])
-        
         r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)      
-    
+        
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
-    
     segments = Segment.objects.all()
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments})
