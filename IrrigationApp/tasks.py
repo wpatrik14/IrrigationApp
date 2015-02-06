@@ -7,13 +7,8 @@ from django.http import HttpResponse
 import json
 import requests
 import time
-import os
-from django.conf import settings
-# set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'IrrigationApp.settings')
 
 app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
-app.config_from_object('celeryconfig')
 
 @app.task
 def get_weather_datas():

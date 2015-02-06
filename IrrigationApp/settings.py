@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import djcelery
-import celery
+#import celery
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -111,12 +111,12 @@ CELERYBEAT_SCHEDULE = {
     },
 }
 
-c = celery.Celery()
-c.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
+#c = celery.Celery()
+#c.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
 
 CELERY_TIMEZONE = 'Europe/London'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+#CELERY_ACCEPT_CONTENT = ['json']
+#CELERY_TASK_SERIALIZER = 'json'
+#CELERY_RESULT_SERIALIZER = 'json'
 
 djcelery.setup_loader()
