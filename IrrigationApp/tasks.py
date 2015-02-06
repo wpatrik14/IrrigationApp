@@ -155,7 +155,7 @@ def scheduler():
     
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%H:%M")
-    dayNumber = datetime.now().strftime("%H:%M")
+    dayNumber = datetime.now().strftime("%w")
     days = ['sunday','monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
