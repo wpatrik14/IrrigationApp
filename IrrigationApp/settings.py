@@ -51,6 +51,21 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'IrrigationApp',
+        'USER': '',              # Not used with sqlite3.
+        'PASSWORD': '',          # Not used with sqlite3.
+        'HOST': '',              # Not used with sqlite3.
+        'PORT': '',              # Not used with sqlite3.
+        # for sqlite write lock timeout
+        'OPTIONS': {
+            'timeout': 10,
+        }
+    }
+}
+
 ROOT_URLCONF = 'IrrigationApp.urls'
 
 WSGI_APPLICATION = 'IrrigationApp.wsgi.application'
