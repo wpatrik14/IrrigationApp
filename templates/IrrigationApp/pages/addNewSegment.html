@@ -21,10 +21,9 @@
 				  <label class="control-label" for="sensor">Sensor</label>
 				  <div class="controls">
 				    <select id="sensor" name="sensor" class="input-xlarge">
-				      <option>a1</option>
-				      <option>a2</option>
-				      <option>a3</option>
-				      <option>a4</option>
+				      {% for sensor in sensors %}
+				      <option>{{ sensor.pinNumber }}</option>
+				      {% endfor %}
 				    </select>
 				  </div>
 				</div>
@@ -34,10 +33,9 @@
 				  <label class="control-label" for="switch">Switch</label>
 				  <div class="controls">
 				    <select id="switch" name="switch" class="input-xlarge">
-				      <option>d1</option>
-				      <option>d2</option>
-				      <option>d3</option>
-				      <option>d4</option>
+				      {% for switch in switches %}
+				      <option>{{ switch.pinNumber }}</option>
+				      {% endfor %}
 				    </select>
 				  </div>
 				</div>

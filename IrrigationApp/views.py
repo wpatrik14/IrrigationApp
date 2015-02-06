@@ -74,11 +74,14 @@ def doRegistration(request):
                     port = port_number
                             )
                 userProfile.save()
-                showLogin(request)
+                return redirect('/showLogin')
 
 @login_required
 def showAddNewSegment(request):
-    return render(request, 'IrrigationApp/pages/addNewSegment.html', {})
+    sensors = Sensors.objects.all()
+    switches = Switch.objects.all()
+    
+    return render(request, 'IrrigationApp/pages/addNewSegment.html', {'sensors':sensors, 'switches':switches})
     
 @login_required
 def doAddNewSegment(request):
