@@ -1,0 +1,84 @@
+{% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+	
+	
+	
+		<form class="form-horizontal" action="{% url 'doRegistration'%}" method="post">
+		{% csrf_token %}
+		<fieldset>
+		
+		<!-- Form Name -->
+		<legend>Simple schedule</legend>
+		
+		<!-- Text input-->
+		<div class="control-group">
+		  <label class="control-label" for="name">Name</label>
+		  <div class="controls">
+		    <input id="name" name="name" type="text" placeholder="Name" class="input-medium" required="">
+		    
+		  </div>
+		</div>
+		
+		<!-- Multiple Checkboxes -->
+				<div class="control-group">
+				  <label class="control-label" for="checkboxes">Enabled</label>
+				  <div class="controls">
+				    <label class="checkbox" for="enabled">
+				      <input type="checkbox" name="checkboxes" id="enabled" value="enabled">
+				    </label>
+				  </div>
+				</div>
+		
+		<!-- Date -->
+				<div class="control-group">
+				  <label class="control-label" for="date">Date</label>
+				  <div class="controls">
+				    <input type="date" name="date" id="date">
+				  </div>
+				</div>
+				
+				<!-- Time -->
+				<div class="control-group">
+				  <label class="control-label" for="time">Time</label>
+				  <div class="controls">
+				    <input type="time" name="time" id="time">
+				  </div>
+				</div>
+				
+				<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="duration">Duration</label>
+				  <div class="controls">
+				    <input id="duration" name="duration" type="text" placeholder="Duration" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+				<!-- Select Multiple -->
+				<div class="control-group">
+				  <label class="control-label" for="segments">Segments</label>
+				  <div class="controls">
+				    <select id="segments" name="segments" placeholder="Segments" class="input-xlarge" multiple="multiple">
+				      {% for segment in segments %}
+				      <option>{{ segment.name }}</option>
+				      {% endfor %}
+				    </select>
+				  </div>
+				</div>
+
+				<!-- Button -->
+				<div class="control-group">
+				  <label class="control-label" for="submit"></label>
+				  <div class="controls">
+				    <button id="submit" name="submit" class="btn btn-success">Save schedule</button>
+				  </div>
+				</div>
+				
+				</fieldset>
+				</form>
+	
+	
+	
+	
+	
+	</body>
+</html>

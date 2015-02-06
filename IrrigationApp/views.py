@@ -126,3 +126,14 @@ def getSystemStatus(request):
         r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)      
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments})
+
+
+@login_required
+def showSimpleSchedule(request):
+    segments = Segment.objects.all()
+    return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'segments':segments})
+    
+@login_required
+def doSimpleSchedule(request):
+    
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments})
