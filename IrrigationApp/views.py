@@ -122,10 +122,10 @@ def getSystemStatus(request):
         pinNumber = request.POST['pinNumber']
         status = request.POST['status']
         r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)    
-        mSwitch = Switch(
-            pinNumber=pinNumber,
-            status=status)
-        mSwitch.save()      
+        #mSwitch = Switch(
+         #   pinNumber=pinNumber,
+          #  status=status)
+        #mSwitch.save()      
     
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     

@@ -51,21 +51,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'IrrigationApp',
-        'USER': '',              # Not used with sqlite3.
-        'PASSWORD': '',          # Not used with sqlite3.
-        'HOST': '',              # Not used with sqlite3.
-        'PORT': '',              # Not used with sqlite3.
-        # for sqlite write lock timeout
-        'OPTIONS': {
-            'timeout': 10,
-        }
-    }
-}
-
 ROOT_URLCONF = 'IrrigationApp.urls'
 
 WSGI_APPLICATION = 'IrrigationApp.wsgi.application'
@@ -78,6 +63,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # for sqlite write lock timeout
+    'OPTIONS': {
+        'timeout': 10,
+        } 
     }
 }
 
@@ -113,8 +102,8 @@ from celery.schedules import crontab
 CELERYBEAT_SCHEDULE = {
     'get_weather_datas': {
         'task': 'IrrigationApp.tasks.get_weather_datas',
-        #'schedule': crontab(minute=0, hour='*/1'),
-        'schedule': crontab(minute='*/15'),
+        'schedule': crontab(minute=0, hour='*/1'),
+        #'schedule': crontab(minute='*/15'),
     },
     'automation_control': {
         'task': 'IrrigationApp.tasks.automation_control',
