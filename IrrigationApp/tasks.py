@@ -9,6 +9,7 @@ import requests
 import time
 
 app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
+app.config_from_object('celeryconfig')
 
 @app.task
 def get_weather_datas():
