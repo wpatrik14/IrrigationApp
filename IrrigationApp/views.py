@@ -147,7 +147,7 @@ def doSimpleSchedule(request):
     
     segments = Segment.objects.all()
     for segment in segments :    
-        if segment.id in request.POST:
+        if str(segment.id) in request.POST:    
             mSimpleSchedule = SimpleSchedule(
                                              name=name,
                                              enabled=enabled,
