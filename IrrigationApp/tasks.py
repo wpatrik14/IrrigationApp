@@ -153,8 +153,8 @@ def automation_control():
 @app.task
 def scheduler():
     
-    date = datetime.now.strftime("%Y-%m-%d")
-    time = datetime.now.strftime("%H:%M")
+    date = datetime.now().strftime("%Y-%m-%d")
+    time = datetime.now().strftime("%H:%M")
     dayNumber = datetime.now("%w")
     days = ['sunday','monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     simpleSchedules = SimpleSchedule.objects.all()
