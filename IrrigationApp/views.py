@@ -139,4 +139,25 @@ def showSimpleSchedule(request):
 @login_required
 def doSimpleSchedule(request):
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments})
+    name = request.POST['name']
+    date = request.POST['date']
+    time = request.POST['time']
+    duration = request.POST['duration']
+    if 'enabled_checkbox' not in request.POST:
+        enabled = False
+    else:
+        enabled = True
+    
+    segments = Segment.objects.all()
+    for segment in segments :    
+        if segment.id in request.POST:
+            mSimpleSchedule = SimpleSchedule(
+                                             name=name,
+                                             enabled=enabled,
+                                             date=date,
+                                             time=time,
+                                             duration=duration,
+                                             segment=segment)
+            mSimpleSchedule.save()
+    
+    return HttpResponse('Schedule added succesfully!')

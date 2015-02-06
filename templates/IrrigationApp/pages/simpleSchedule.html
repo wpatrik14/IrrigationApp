@@ -2,7 +2,7 @@
 	
 	
 	
-		<form class="form-horizontal" action="{% url 'doRegistration'%}" method="post">
+		<form class="form-horizontal" action="{% url 'doSimpleSchedule'%}" method="post">
 		{% csrf_token %}
 		<fieldset>
 		
@@ -23,7 +23,7 @@
 				  <label class="control-label" for="enabled_checkbox">Enabled</label>
 				  <div class="controls">
 				    <label class="checkbox" for="enabled_checkbox">
-				      <input type="checkbox" name="enabled_checkbox" id="enabled" value="enabled">
+				      <input type="checkbox" name="enabled_checkbox" id="enabled_checkbox" value="enabled">
 				    </label>
 				  </div>
 				</div>
