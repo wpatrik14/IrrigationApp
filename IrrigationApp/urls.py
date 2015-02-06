@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'showAddNewSegment[/]?$', views.showAddNewSegment, name='showAddNewSegment'),
     url(r'doAddNewSegment[/]?$', views.doAddNewSegment, name='doAddNewSegment'),
     
-    url(r'.*', views.doLogin, name='doLogin'),
+    url(r'.*', views.doLogin, name='showLogin'),
     
     
 )
