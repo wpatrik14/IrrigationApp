@@ -109,6 +109,10 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute='*/1'),
     },
 }
+
+c = celery.Celery()
+c.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
+
 CELERY_TIMEZONE = 'Europe/London'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
