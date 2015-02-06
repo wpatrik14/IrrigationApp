@@ -127,5 +127,34 @@
 
 </fieldset>
 
+<fieldset>
+
+	<!-- Form Name -->
+	<legend>Repeatable schedules</legend>
+
+<table class="table table-striped table-condensed">
+	<thead>
+		<td>Schedule name</td>
+		<td>Enabled</td>
+		<td>Day</td>
+		<td>Time</td>
+		<td>Duration</td>
+		<td>Segments</td>
+	</thead>
+	{% for repeatableSchedule in repeatableSchedules %}
+	<tr>
+		<td>{{repeatableSchedule.name}}</td>
+		<td>{{repeatableSchedule.enabled}}</td>
+		<td>{{repeatableSchedule.day}}</td>
+		<td>{{repeatableSchedule.time}}</td>
+		<td>{{repeatableSchedule.duration}}</td>
+		<td>{{repeatableSchedule.segment.name}}</td>
+		
+	</tr>
+	{% endfor %}
+</table>
+
+</fieldset>
+
 </body>
 </html>

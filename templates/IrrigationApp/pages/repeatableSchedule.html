@@ -1,0 +1,115 @@
+{% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+	
+	
+	
+		<form class="form-horizontal" action="{% url 'doRepeatableSchedule'%}" method="post">
+		{% csrf_token %}
+		<fieldset>
+		
+		<!-- Form Name -->
+		<legend>Repeatable schedule</legend>
+		
+		<!-- Text input-->
+		<div class="control-group">
+		  <label class="control-label" for="name">Name</label>
+		  <div class="controls">
+		    <input id="name" name="name" type="text" placeholder="Name" class="input-medium" required="">
+		    
+		  </div>
+		</div>
+		
+		<!-- Multiple Checkboxes -->
+				<div class="control-group">
+				  <label class="control-label" for="enabled_checkbox">Enabled</label>
+				  <div class="controls">
+				    <label class="checkbox" for="enabled_checkbox">
+				      <input type="checkbox" name="enabled_checkbox" id="enabled_checkbox" value="enabled">
+				    </label>
+				  </div>
+				</div>
+		
+		<!-- Multiple Checkboxes -->
+				<div class="control-group">
+				  <label class="control-label" for="segments">Days</label>
+				  <div class="controls">
+				    <label class="checkbox" for="monday">
+				      <input type="checkbox" name="monday" id="monday" value="monday">
+				      Monday
+				    </label>
+				    <label class="checkbox" for="tuesday">
+				      <input type="checkbox" name="tuesday" id="tuesday" value="tuesday">
+				      Tuesday
+				    </label>
+				    <label class="checkbox" for="wednesday">
+				      <input type="checkbox" name="wednesday" id="wednesday" value="wednesday">
+				      Wednesday
+				    </label>
+				    <label class="checkbox" for="thursday">
+				      <input type="checkbox" name="thursday" id="thursday" value="thursday">
+				      Thursday
+				    </label>
+				    <label class="checkbox" for="friday">
+				      <input type="checkbox" name="friday" id="friday" value="friday">
+				      Friday
+				    </label>
+				    <label class="checkbox" for="saturday">
+				      <input type="checkbox" name="saturday" id="saturday" value="saturday">
+				      Saturday
+				    </label>
+				    <label class="checkbox" for="sunday">
+				      <input type="checkbox" name="sunday" id="sunday" value="sunday">
+				      Sunday
+				    </label>
+
+				  </div>
+				</div>
+				
+				<!-- Time -->
+				<div class="control-group">
+				  <label class="control-label" for="time">Time</label>
+				  <div class="controls">
+				    <input type="time" name="time" id="time">
+				  </div>
+				</div>
+				
+				<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="duration">Duration</label>
+				  <div class="controls">
+				    <input id="duration" name="duration" type="text" placeholder="Duration" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+				<!-- Multiple Checkboxes -->
+				<div class="control-group">
+				  <label class="control-label" for="segments">Segments</label>
+				  <div class="controls">
+				    {% for segment in segments %}
+				      
+				    <label class="checkbox" for="{{ segment.id }}">
+				      <input type="checkbox" name="{{ segment.id }}" id="{{ segment.id }}" value="{{ segment.id }}">
+				      {{ segment.name }}
+				    </label>
+				    
+				    {% endfor %}
+				  </div>
+				</div>
+
+				<!-- Button -->
+				<div class="control-group">
+				  <label class="control-label" for="submit"></label>
+				  <div class="controls">
+				    <button id="submit" name="submit" class="btn btn-success">Save schedule</button>
+				  </div>
+				</div>
+				
+				</fieldset>
+				</form>
+	
+	
+	
+	
+	
+	</body>
+</html>

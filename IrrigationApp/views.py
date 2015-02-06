@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.shortcuts import redirect
 from datetime import date, datetime, timedelta, time
 
-from IrrigationApp.models import UserProfile, SimpleSchedule, WeatherHistory, Segment, Switch, Sensor
+from IrrigationApp.models import UserProfile, SimpleSchedule, RepeatableSchedule, WeatherHistory, Segment, Switch, Sensor
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -116,6 +116,7 @@ def getSystemStatus(request):
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     segments = Segment.objects.all()
     simpleSchedules = SimpleSchedule.objects.all()
+    repeatableSchedules = RepeatableSchedule.objects.all()
     
     if 'pinNumber' in request.POST :
         pinNumber = request.POST['pinNumber']
@@ -125,7 +126,7 @@ def getSystemStatus(request):
         mSwitch.save(update_fields=['status'])
         r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)      
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments, 'simpleSchedules':simpleSchedules})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
@@ -156,5 +157,37 @@ def doSimpleSchedule(request):
                                              duration=duration,
                                              segment=segment)
             mSimpleSchedule.save()
+    
+    return HttpResponse('Schedule added succesfully!')
+
+@login_required
+def showRepeatableSchedule(request):
+    segments = Segment.objects.all()
+    return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'segments':segments})
+    
+@login_required
+def doRepeatableSchedule(request):
+    
+    name = request.POST['name']
+    time = request.POST['time']
+    duration = request.POST['duration']
+    if 'enabled_checkbox' not in request.POST:
+        enabled = False
+    else:
+        enabled = True
+    days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    segments = Segment.objects.all()
+    for segment in segments :    
+        if str(segment.id) in request.POST:    
+            for day in days :
+                if day in request.POST:
+                    mRepeatableSchedule = RepeatableSchedule(
+                                                     name=name,
+                                                     enabled=enabled,
+                                                     day=day,
+                                                     time=time,
+                                                     duration=duration,
+                                                     segment=segment)
+                    mRepeatableSchedule.save()
     
     return HttpResponse('Schedule added succesfully!')
