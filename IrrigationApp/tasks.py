@@ -7,14 +7,14 @@ from django.http import HttpResponse
 import json
 import requests
 import time
-import urllib2
+from urllib.request import urlopen
 
 app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
 
 @app.task
 def get_weather_datas():
     
-    res = urllib2.urlopen('http://api.worldweatheronline.com/free/v1/weather.ashx?q=God&format=json&num_of_days=5&key=bffc71ad3fa08458dbf6fc77a0383cd421d61052')
+    res = urlopen('http://api.worldweatheronline.com/free/v1/weather.ashx?q=God&format=json&num_of_days=5&key=bffc71ad3fa08458dbf6fc77a0383cd421d61052')
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
@@ -48,7 +48,7 @@ def get_weather_datas():
 @app.task
 def automation_control():
     
-    res = urllib2.urlopen('http://192.168.0.105')
+    res = urlopen('http://192.168.0.105')
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
