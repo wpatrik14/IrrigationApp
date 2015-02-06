@@ -60,7 +60,7 @@
 				    {% for segment in segments %}
 				      
 				    <label class="checkbox" for="{{ segment.id }}">
-				      <input type="checkbox" name="{{ segment.id }}" id="segments" value="{{ segment.id }}">
+				      <input type="checkbox" name="{{ segment.id }}" id="{{ segment.id }}" value="{{ segment.id }}">
 				      {{ segment.name }}
 				    </label>
 				    
