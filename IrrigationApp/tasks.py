@@ -2,6 +2,8 @@ from __future__ import absolute_import
 from celery import Celery
 import codecs
 from datetime import datetime
+from django.utils.dateformat import DateFormat
+from django.utils.formats import get_format
 from IrrigationApp.models import WeatherHistory, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule
 from django.http import HttpResponse
 import json
@@ -107,101 +109,76 @@ def automation_control():
         if segment.type == "Automatic" :
             if segment.sensor.status>segment.moisture_minLimit:
                 #turn on irrigation
+                mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
+                mSwitch.status = 'on'
+                mSwitch.save(update_fields=['status'])
                 r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=on")
-                mSwitch = Switch(
-                                pinNumber=segment.switch.pinNumber,
-                                status="on")
-                mSwitch.save()
+                
             elif segment.sensor.status<segment.moisture_maxLimit:
                 #turn off irrigation
+                mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
+                mSwitch.status = 'off'
+                mSwitch.save(update_fields=['status'])
+                mSegment = Segment.objects.get(id=segment.id)
+                mSegment.up_time=0
+                mSegment.save(update_fields=['up_time'])
                 r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=off")
-                mSwitch = Switch(
-                            pinNumber=segment.switch.pinNumber,
-                            status="off")
-                mSwitch.save()
-                mSegment = Segment(
-                        id=segment.id,
-                        name = segment.name,
-                        sensor = segment.sensor,
-                        switch = segment.switch,
-                        up_time = 0,
-                        moisture_minLimit = segment.moisture_minLimit,
-                        moisture_maxLimit = segment.moisture_maxLimit,
-                        duration_maxLimit = segment.duration_maxLimit,
-                        forecast_enabled = segment.forecast_enabled,
-                        type = segment.type
-                                )
-                mSegment.save()
-                
                 
             if segment.switch.status == "on" :
                 if segment.up_time+2>segment.duration_maxLimit :
                     #turn off irrigation
+                    mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
+                    mSwitch.status = 'off'
+                    mSwitch.save(update_fields=['status'])
+                    mSegment = Segment.objects.get(id=segment.id)
+                    mSegment.up_time=0
+                    mSegment.save(update_fields=['up_time'])
                     r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=off")
-                    mSwitch = Switch(
-                            pinNumber=segment.switch.pinNumber,
-                            status="off")
-                    mSwitch.save()
-                    mSegment = Segment(
-                        id=segment.id,
-                        name = segment.name,
-                        sensor = segment.sensor,
-                        switch = segment.switch,
-                        up_time = 0,
-                        moisture_minLimit = segment.moisture_minLimit,
-                        moisture_maxLimit = segment.moisture_maxLimit,
-                        duration_maxLimit = segment.duration_maxLimit,
-                        forecast_enabled = segment.forecast_enabled,
-                        type = segment.type
-                                )
-                    mSegment.save()
                 else :
-                    mSegment = Segment(
-                            id=segment.id,
-                            name = segment.name,
-                            sensor = segment.sensor,
-                            switch = segment.switch,
-                            up_time = segment.up_time+1,
-                            moisture_minLimit = segment.moisture_minLimit,
-                            moisture_maxLimit = segment.moisture_maxLimit,
-                            duration_maxLimit = segment.duration_maxLimit,
-                            forecast_enabled = segment.forecast_enabled,
-                            type = segment.type
-                                    )
-                    mSegment.save()
+                    mSegment = Segment.objects.get(id=segment.id)
+                    mSegment.up_time=segment.up_time+1
+                    mSegment.save(update_fields=['up_time'])
         else :
             if segment.switch.status == "on" :
-                mSegment = Segment(
-                        id=segment.id,
-                        name = segment.name,
-                        sensor = segment.sensor,
-                        switch = segment.switch,
-                        up_time = segment.up_time+1,
-                        moisture_minLimit = segment.moisture_minLimit,
-                        moisture_maxLimit = segment.moisture_maxLimit,
-                        duration_maxLimit = segment.duration_maxLimit,
-                        forecast_enabled = segment.forecast_enabled,
-                        type = segment.type
-                                )
-                mSegment.save()
+                mSegment = Segment.objects.get(id=segment.id)
+                mSegment.up_time=segment.up_time+1
+                mSegment.save(update_fields=['up_time'])
             else :
-                mSegment = Segment(
-                        id=segment.id,
-                        name = segment.name,
-                        sensor = segment.sensor,
-                        switch = segment.switch,
-                        up_time = 0,
-                        moisture_minLimit = segment.moisture_minLimit,
-                        moisture_maxLimit = segment.moisture_maxLimit,
-                        duration_maxLimit = segment.duration_maxLimit,
-                        forecast_enabled = segment.forecast_enabled,
-                        type = segment.type
-                                )
-                mSegment.save()
+                mSegment = Segment.objects.get(id=segment.id)
+                mSegment.up_time=0
+                mSegment.save(update_fields=['up_time'])
             
     return '\n\n\n\n\n\nAUTOMATION CONTROL........... DONE'
 
 @app.task
 def scheduler():
     
+    date = datetime.now.strftime("%Y-%m-%d")
+    time = datetime.now.strftime("%H:%M")
+    dayNumber = datetime.now("%w")
+    days = ['sunday','monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    simpleSchedules = SimpleSchedule.objects.all()
+    repeatableSchedules = RepeatableSchedule.objects.all()
+    
+    ### STARTING SCHEDULES
+    for simpleSchedule in simpleSchedules :
+        if simpleSchedule.date == date :
+            if simpleSchedule.time == time :
+                mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
+                mSwitch.status = 'on'
+                mSwitch.save(update_fields=['status'])
+                simpleSchedule.status='running'
+                simpleSchedule.save(update_fields=['status'])
+                r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=on")
+                
+    for repeatableSchedule in repeatableSchedules :
+        if repeatableSchedule.day == days[dayNumber] :
+            if repeatableSchedule.time == time :
+                mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
+                mSwitch.status = 'on'
+                mSwitch.save(update_fields=['status'])
+                repeatableSchedule.status='running'
+                repeatableSchedule.save(update_fields=['status'])
+                r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=on")
+                           
     return '\n\n\n\n\n\nSCHEDULER........... DONE'

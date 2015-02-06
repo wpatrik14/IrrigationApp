@@ -66,6 +66,7 @@ class SimpleSchedule(models.Model):
     time = models.TimeField()
     duration = models.IntegerField(max_length=3)
     segment = models.ForeignKey('Segment')
+    status = models.CharField(max_length=10, default='waiting')
     def __unicode__(self):
         return self.enabled + ' ' + self.segment 
     
@@ -75,7 +76,8 @@ class RepeatableSchedule(models.Model):
     day = models.CharField(max_length=10)
     time = models.TimeField()
     duration = models.IntegerField(max_length=8)
-    segment = models.ForeignKey('Segment')  
+    segment = models.ForeignKey('Segment')
+    status = models.CharField(max_length=10, default='waiting')  
     def __unicode__(self):
         return self.enabled + ' ' + self.segment  
     
