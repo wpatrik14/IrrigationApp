@@ -27,7 +27,7 @@ def doLogin(request):
         #User authentication successful
         login(request, user)
         try:
-            getSystemStatus(request)
+            return redirect('/getSystemStatus.html')
         except:
             return HttpResponse('Error during login: ' + username)
     else:
@@ -74,7 +74,7 @@ def doRegistration(request):
                     port = port_number
                             )
                 userProfile.save()
-                return HttpResponse('User ' + username + ' registered successfully.' );
+                showLogin(request)
 
 @login_required
 def showAddNewSegment(request):
