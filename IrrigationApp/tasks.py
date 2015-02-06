@@ -172,7 +172,7 @@ def scheduler():
                 r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=on")
                 
     for repeatableSchedule in repeatableSchedules :
-        if repeatableSchedule.day == days[dayNumber] :
+        if repeatableSchedule.day == days[int(dayNumber)] :
             if repeatableSchedule.time == time :
                 mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
                 mSwitch.status = 'on'
