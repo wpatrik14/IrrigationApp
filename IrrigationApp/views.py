@@ -141,17 +141,12 @@ def doSimpleSchedule(request):
     date = request.POST['date']
     time = request.POST['time']
     duration = request.POST['duration']
-    if 'enabled_checkbox' not in request.POST:
-        enabled = False
-    else:
-        enabled = True
     
     segments = Segment.objects.all()
     for segment in segments :    
         if str(segment.id) in request.POST:    
             mSimpleSchedule = SimpleSchedule(
                                              name=name,
-                                             enabled=enabled,
                                              date=date,
                                              time=time,
                                              duration=duration,
@@ -171,10 +166,6 @@ def doRepeatableSchedule(request):
     name = request.POST['name']
     time = request.POST['time']
     duration = request.POST['duration']
-    if 'enabled_checkbox' not in request.POST:
-        enabled = False
-    else:
-        enabled = True
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     segments = Segment.objects.all()
     for segment in segments :    
@@ -183,7 +174,6 @@ def doRepeatableSchedule(request):
                 if day in request.POST:
                     mRepeatableSchedule = RepeatableSchedule(
                                                      name=name,
-                                                     enabled=enabled,
                                                      day=day,
                                                      time=time,
                                                      duration=duration,
