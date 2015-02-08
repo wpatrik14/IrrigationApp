@@ -174,8 +174,7 @@ def scheduler():
             
             if simpleSchedule.status == 'running' :
                 if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit):
-                    simpleSchedule.status='stopped'
-                    simpleSchedule.save(update_fields=['status'])
+                    simpleSchedule.delete()
                     mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
                     mSwitch.status = 'off'
                     mSwitch.save(update_fields=['status'])
