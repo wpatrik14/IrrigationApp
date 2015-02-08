@@ -163,7 +163,7 @@ def doSimpleSchedule(request):
 
     simpleSchedule = SimpleSchedule.objects.all()[:1]
     
-    return HttpResponse('date: '+simpleSchedule.date + ' time: '+simpleSchedule.time)
+    return HttpResponse('date: '+simpleSchedule[0].date + ' time: '+simpleSchedule[0].time)
 
 @login_required
 def showRepeatableSchedule(request):
