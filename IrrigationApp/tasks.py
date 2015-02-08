@@ -171,15 +171,15 @@ def scheduler():
                     simpleSchedule.status='running'
                     simpleSchedule.save(update_fields=['status'])
                     r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=on")
-            else :
-                if simpleSchedule.status == 'running' :
-                    if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) :
-                        simpleSchedule.status='stopped'
-                        simpleSchedule.save(update_fields=['status'])
-                        mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
-                        mSwitch.status = 'off'
-                        mSwitch.save(update_fields=['status'])
-                        r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=off")
+            
+            if simpleSchedule.status == 'running' :
+                if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) :
+                    simpleSchedule.status='stopped'
+                    simpleSchedule.save(update_fields=['status'])
+                    mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
+                    mSwitch.status = 'off'
+                    mSwitch.save(update_fields=['status'])
+                    r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=off")
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.enabled :
@@ -192,14 +192,13 @@ def scheduler():
                     repeatableSchedule.save(update_fields=['status'])
                     r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=on")
             
-            else :
-                if repeatableSchedule.status == 'running' :
-                    if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) :
-                        repeatableSchedule.status='stopped'
-                        repeatableSchedule.save(update_fields=['status'])
-                        mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
-                        mSwitch.status = 'off'
-                        mSwitch.save(update_fields=['status'])
-                        r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=off")
+            if repeatableSchedule.status == 'running' :
+                if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) :
+                    repeatableSchedule.status='stopped'
+                    repeatableSchedule.save(update_fields=['status'])
+                    mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
+                    mSwitch.status = 'off'
+                    mSwitch.save(update_fields=['status'])
+                    r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=off")
                            
     return '\n\n\n\n\n\nSCHEDULER........... DONE'
