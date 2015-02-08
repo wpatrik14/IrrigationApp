@@ -191,3 +191,19 @@ def doRepeatableSchedule(request):
                     mRepeatableSchedule.save()
     
     return HttpResponse('Schedule added succesfully!')
+
+@login_required
+def deleteSimpleSchedule(request):
+    
+    id = request.POST['simpleSchedule']
+    SimpleSchedule.objects.get(id=id).delete()
+        
+    return HttpResponse('Schedule deleted succesfully!')
+
+@login_required
+def deleteRepeatableSchedule(request):
+    
+    id = request.POST['repeatableSchedule']
+    RepeatableSchedule.objects.get(id=id).delete()
+        
+    return HttpResponse('Schedule deleted succesfully!')

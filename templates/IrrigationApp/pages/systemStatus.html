@@ -120,7 +120,13 @@
 		<td>{{simpleSchedule.time|time:"H:i"}}</td>
 		<td>{{simpleSchedule.duration}}</td>
 		<td>{{simpleSchedule.segment.name}}</td>
-		
+		<td>
+		<form id="deleteSimpleSchedule" action="deleteSimpleSchedule" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="simpleSchedule" value = "{{ simpleSchedule.id }}"/>
+				<button id="delete" name="delete" class="btn btn-default">DELETE</button>
+			</form>
+		</td>
 	</tr>
 	{% endfor %}
 </table>
@@ -149,7 +155,13 @@
 		<td>{{repeatableSchedule.time|time:"H:i"}}</td>
 		<td>{{repeatableSchedule.duration}}</td>
 		<td>{{repeatableSchedule.segment.name}}</td>
-		
+		<td>
+		<form id="deleteRepeatableSchedule" action="deleteRepeatableSchedule" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="repeatableSchedule" value = "{{ repeatableSchedule.id }}"/>
+				<button id="delete" name="delete" class="btn btn-default">DELETE</button>
+			</form>
+		</td>
 	</tr>
 	{% endfor %}
 </table>

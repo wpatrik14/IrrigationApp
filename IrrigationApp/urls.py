@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'doSimpleSchedule[/]?$', views.doSimpleSchedule, name='doSimpleSchedule'),
     url(r'showRepeatableSchedule[/]?$', views.showRepeatableSchedule, name='showRepeatableSchedule'),
     url(r'doRepeatableSchedule[/]?$', views.doRepeatableSchedule, name='doRepeatableSchedule'),
+    url(r'deleteSimpleSchedule[/]?$', views.deleteSimpleSchedule, name='deleteSimpleSchedule'),
+    url(r'deleteRepeatableSchedule[/]?$', views.deleteRepeatableSchedule, name='deleteRepeatableSchedule'),
     
     url(r'.*', views.showLogin, name='showLogin'),
     
