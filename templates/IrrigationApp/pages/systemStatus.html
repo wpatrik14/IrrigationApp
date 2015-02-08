@@ -114,8 +114,6 @@
 
 <table class="table table-striped table-condensed">
 	<thead>
-		<td>Schedule name</td>
-		<td>Enabled</td>
 		<td>Status</td>
 		<td>Date</td>
 		<td>Time</td>
@@ -125,8 +123,6 @@
 	</thead>
 	{% for simpleSchedule in simpleSchedules %}
 	<tr>
-		<td>{{simpleSchedule.name}}</td>
-		<td>{{simpleSchedule.enabled}}</td>
 		<td>{{simpleSchedule.status}}</td>
 		<td>{{simpleSchedule.date|date:"Y-m-d"}}</td>
 		<td>{{simpleSchedule.time|time:"H:i"}}</td>

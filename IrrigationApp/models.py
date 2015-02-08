@@ -60,8 +60,6 @@ class Switch(models.Model):
         return self.pinNumber + ' ' + self.status  
     
 class SimpleSchedule(models.Model):
-    name = models.CharField(max_length=20)
-    enabled = models.BooleanField(default=False)
     date = models.DateField()
     time = models.TimeField()
     duration = models.IntegerField(max_length=3)
