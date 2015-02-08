@@ -173,7 +173,7 @@ def scheduler():
                     r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=on")
             else :
                 if simpleSchedule.status == 'running' :
-                    if up_time < duration :
+                    if simpleSchedule.up_time < simpleSchedule.duration :
                         simpleSchedule.up_time+=1
                         simpleSchedule.save(update_fields=['up_time'])
                     else :
@@ -194,7 +194,7 @@ def scheduler():
                     r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=on")
             else :
                 if repeatableSchedule.status == 'running' :
-                    if up_time < duration :
+                    if repeatableSchedule.up_time < repeatableSchedule.duration :
                         repeatableSchedule.up_time+=1
                         repeatableSchedule.save(update_fields=['up_time'])
                     else :
