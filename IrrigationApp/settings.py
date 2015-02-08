@@ -85,12 +85,9 @@ STATICFILES_DIRS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
+TIME_ZONE = 'Europe/Budapest'
+USE_L10N = False
+DATE_FORMAT = "Y-m-d"
 USE_TZ = True
 
 
