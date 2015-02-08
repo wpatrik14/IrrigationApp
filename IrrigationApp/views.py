@@ -159,7 +159,11 @@ def doSimpleSchedule(request):
 #            mSimpleSchedule.save()
     
 #    return HttpResponse('Schedule added succesfully!')
-    return HttpResponse('date: '+date + ' time: '+time)
+
+
+    simpleSchedule = SimpleSchedule.objects.all()[:1]
+    
+    return HttpResponse('date: '+simpleSchedule.date + ' time: '+simpleSchedule.time)
 
 @login_required
 def showRepeatableSchedule(request):
