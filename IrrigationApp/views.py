@@ -146,19 +146,24 @@ def doSimpleSchedule(request):
     else:
         enabled = True
     
-    segments = Segment.objects.all()
-    for segment in segments :    
-        if str(segment.id) in request.POST:    
-            mSimpleSchedule = SimpleSchedule(
-                                             name=name,
-                                             enabled=enabled,
-                                             date=date,
-                                             time=time,
-                                             duration=duration,
-                                             segment=segment)
-            mSimpleSchedule.save()
+#    segments = Segment.objects.all()
+#    for segment in segments :    
+#        if str(segment.id) in request.POST:    
+#            mSimpleSchedule = SimpleSchedule(
+#                                             name=name,
+#                                             enabled=enabled,
+#                                             date=date,
+#                                             time=time,
+#                                             duration=duration,
+#                                             segment=segment)
+#            mSimpleSchedule.save()
     
-    return HttpResponse('Schedule added succesfully!')
+#    return HttpResponse('Schedule added succesfully!')
+
+
+    simpleSchedule = SimpleSchedule.objects.all()[:1]
+    
+    return HttpResponse('date: '+str(simpleSchedule[0].date) + ' time: '+str(simpleSchedule[0].time) +' post_date: '+str(date)+' post_time: '+str(time))
 
 @login_required
 def showRepeatableSchedule(request):
