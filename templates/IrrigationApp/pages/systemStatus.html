@@ -150,7 +150,6 @@
 <table class="table table-striped table-condensed">
 	<thead>
 		<td>Schedule name</td>
-		<td>Enabled</td>
 		<td>Status</td>
 		<td>Day</td>
 		<td>Time</td>
@@ -161,7 +160,6 @@
 	{% for repeatableSchedule in repeatableSchedules %}
 	<tr>
 		<td>{{repeatableSchedule.name}}</td>
-		<td>{{repeatableSchedule.enabled}}</td>
 		<td>{{repeatableSchedule.status}}</td>
 		<td>{{repeatableSchedule.day}}</td>
 		<td>{{repeatableSchedule.time|time:"H:i"}}</td>

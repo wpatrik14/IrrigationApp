@@ -70,7 +70,6 @@ class SimpleSchedule(models.Model):
     
 class RepeatableSchedule(models.Model):
     name = models.CharField(max_length=20)
-    enabled = models.BooleanField(default=False)
     day = models.CharField(max_length=10)
     time = models.TimeField()
     duration = models.IntegerField(max_length=3)
