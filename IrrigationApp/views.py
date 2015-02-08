@@ -137,16 +137,13 @@ def showSimpleSchedule(request):
 @login_required
 def doSimpleSchedule(request):
     
-    name = request.POST['name']
     date = request.POST['date']
     time = request.POST['time']
     duration = request.POST['duration']
-    
     segments = Segment.objects.all()
     for segment in segments :    
         if str(segment.id) in request.POST:    
             mSimpleSchedule = SimpleSchedule(
-                                             name=name,
                                              date=date,
                                              time=time,
                                              duration=duration,
