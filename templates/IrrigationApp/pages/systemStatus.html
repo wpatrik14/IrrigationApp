@@ -16,8 +16,8 @@
 		<td>{{currentWeather.place}}</td>
 	</tr>
 	<tr>
-		<td>Observation:</td>
-		<td>{{currentWeather.observation_time|date:"Y m d"}} {{currentWeather.observation_time|time:"H.i"}}</td>
+		<td>Observation time:</td>
+		<td>{{currentWeather.observation_time|date:"Y-m-d"}} {{currentWeather.observation_time|time:"H:i"}}</td>
 	</tr>
 	<tr>
 		<td>Temp (C):</td>
@@ -108,7 +108,7 @@
 		<td>Schedule name</td>
 		<td>Enabled</td>
 		<td>Date</td>
-		<td>Time (UTC)</td>
+		<td>Time</td>
 		<td>Duration</td>
 		<td>Segments</td>
 	</thead>
@@ -116,7 +116,7 @@
 	<tr>
 		<td>{{simpleSchedule.name}}</td>
 		<td>{{simpleSchedule.enabled}}</td>
-		<td>{{simpleSchedule.date|date:"Y m d"}}</td>
+		<td>{{simpleSchedule.date|date:"Y-m-d"}}</td>
 		<td>{{simpleSchedule.time|time:"H:i"}}</td>
 		<td>{{simpleSchedule.duration}}</td>
 		<td>{{simpleSchedule.segment.name}}</td>
@@ -137,7 +137,7 @@
 		<td>Schedule name</td>
 		<td>Enabled</td>
 		<td>Day</td>
-		<td>Time (UTC)</td>
+		<td>Time</td>
 		<td>Duration</td>
 		<td>Segments</td>
 	</thead>
@@ -145,7 +145,7 @@
 	<tr>
 		<td>{{repeatableSchedule.name}}</td>
 		<td>{{repeatableSchedule.enabled}}</td>
-		<td>{{repeatableSchedule.day|date:"Y m d"}}</td>
+		<td>{{repeatableSchedule.day|date:"Y-m-d"}}</td>
 		<td>{{repeatableSchedule.time|time:"H:i"}}</td>
 		<td>{{repeatableSchedule.duration}}</td>
 		<td>{{repeatableSchedule.segment.name}}</td>
