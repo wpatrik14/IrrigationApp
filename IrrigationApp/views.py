@@ -198,7 +198,7 @@ def deleteSimpleSchedule(request):
     id = request.POST['simpleSchedule']
     SimpleSchedule.objects.get(id=id).delete()
         
-    return HttpResponse('Schedule deleted succesfully!')
+    return redirect('/getSystemStatus')
 
 @login_required
 def deleteRepeatableSchedule(request):
@@ -206,4 +206,4 @@ def deleteRepeatableSchedule(request):
     id = request.POST['repeatableSchedule']
     RepeatableSchedule.objects.get(id=id).delete()
         
-    return HttpResponse('Schedule deleted succesfully!')
+    return redirect('/getSystemStatus')
