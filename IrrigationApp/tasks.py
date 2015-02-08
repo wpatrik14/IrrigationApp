@@ -173,7 +173,7 @@ def scheduler():
                     r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=on")
             
             if simpleSchedule.status == 'running' :
-                if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) :
+                if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit):
                     simpleSchedule.status='stopped'
                     simpleSchedule.save(update_fields=['status'])
                     mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
@@ -193,7 +193,7 @@ def scheduler():
                     r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=on")
             
             if repeatableSchedule.status == 'running' :
-                if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) :
+                if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) :
                     repeatableSchedule.status='stopped'
                     repeatableSchedule.save(update_fields=['status'])
                     mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
