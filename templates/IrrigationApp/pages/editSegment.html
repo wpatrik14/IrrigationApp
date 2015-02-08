@@ -1,0 +1,105 @@
+{% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+
+		<form class="form-horizontal" id="doEditSegment" action="{% url 'doEditSegment'%}" method="post">
+				{% csrf_token %}
+				<fieldset>
+				
+				<!-- Form Name -->
+				<legend>Edit segment</legend>
+				
+				<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="name">Name of the segment:</label>
+				  <div class="controls">
+				    <input id="name" name="name" type="text" value="{{ segment.name }}" placeholder="Name of the Segment" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+				<!-- Select Basic -->
+				<div class="control-group">
+				  <label class="control-label" for="sensor">Sensor</label>
+				  <div class="controls">
+				    <select id="sensor" name="sensor" class="input-xlarge">
+				      {% for sensor in sensors %}
+				      <option>{{ sensor.pinNumber }}</option>
+				      {% endfor %}
+				    </select>
+				  </div>
+				</div>
+				
+				<!-- Select Basic -->
+				<div class="control-group">
+				  <label class="control-label" for="switch">Switch</label>
+				  <div class="controls">
+				    <select id="switch" name="switch" class="input-xlarge">
+				      {% for switch in switches %}
+				      <option>{{ switch.pinNumber }}</option>
+				      {% endfor %}
+				    </select>
+				  </div>
+				</div>
+				
+				<!-- Select Basic -->
+				<div class="control-group">
+				  <label class="control-label" for="type">Irrigation type</label>
+				  <div class="controls">
+				    <select id="type" name="type" class="input-xlarge">
+				      <option>Manual</option>
+				      <option>Automatic</option>
+				    </select>
+				  </div>
+				</div>
+				
+				<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="moisture_minLimit">Minimum of moisture</label>
+				  <div class="controls">
+				    <input id="moisture_minLimit" name="moisture_minLimit"  value="{{ segment.moisture_minLimit }}" type="text" placeholder="Minimum of moisture" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+				<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="moisture_maxLimit">Maxiumum of moisture</label>
+				  <div class="controls">
+				    <input id="moisture_maxLimit" name="moisture_maxLimit" type="text" value="{{ segment.moisture_maxLimit }}" placeholder="Maximum of moisture" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+				<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="duration_maxLimit">Maxiumum of duration (min)</label>
+				  <div class="controls">
+				    <input id="duration_maxLimit" name="duration_maxLimit" type="text" value="{{ segment.duration_maxLimit }}" placeholder="Maxiumum of duration (min)" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+				<!-- Multiple Checkboxes -->
+				<div class="control-group">
+				  <label class="control-label" for="checkboxes">Forecast enabled</label>
+				  <div class="controls">
+				    <label class="checkbox" for="enabled">
+				      <input type="checkbox" name="checkboxes" id="checkboxes" value="enabled">
+				    </label>
+				  </div>
+				</div>
+				
+				<input type="hidden" name="segment_id" value = "{{ segment.id }}"/>
+				
+				<!-- Button -->
+				<div class="control-group">
+				  <label class="control-label" for="submit"></label>
+				  <div class="controls">
+				    <button id="submit" name="submit" class="btn btn-success">Add segment</button>
+				  </div>
+				</div>
+				
+				</fieldset>
+				</form>
+
+</body>
+</html>

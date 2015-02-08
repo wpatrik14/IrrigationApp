@@ -67,6 +67,7 @@
 		<td>Moisure max. limit</td>
 		<td>Duration max. limit</td>
 		<td>Forecast enabled</td>
+		<td>Edit</td>
 	</thead>
 	{% for segment in segments %}
 	<tr>
@@ -91,7 +92,14 @@
 		<td>{{segment.moisture_minLimit}}</td>
 		<td>{{segment.moisture_maxLimit}}</td>
 		<td>{{segment.duration_maxLimit}}</td>
-		<td>{{segment.forecast_enabled}}</td>		
+		<td>{{segment.forecast_enabled}}</td>
+		<td>
+		<form id="showEditSegment" action="showEditSegment" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="editSegment" value = "{{ segment.id }}"/>
+				<button id="delete" name="delete" class="btn btn-default">EDIT</button>
+			</form>		
+		</td>
 	</tr>
 	{% endfor %}
 </table>
@@ -111,6 +119,7 @@
 		<td>Time</td>
 		<td>Duration</td>
 		<td>Segments</td>
+		<td>Delete</td>
 	</thead>
 	{% for simpleSchedule in simpleSchedules %}
 	<tr>
@@ -146,6 +155,7 @@
 		<td>Time</td>
 		<td>Duration</td>
 		<td>Segments</td>
+		<td>Delete</td>
 	</thead>
 	{% for repeatableSchedule in repeatableSchedules %}
 	<tr>

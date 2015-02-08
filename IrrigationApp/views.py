@@ -108,7 +108,7 @@ def doAddNewSegment(request):
                     type = type
                             )
     mSegment.save()
-    return HttpResponse('Segment has been added succesfully!  Sensor: ' + sensor_list[0].pinNumber + 'Switch: ' + switch_list[0].pinNumber);
+    return redirect('/getSystemStatus')
 
 @login_required
 def getSystemStatus(request):
@@ -190,7 +190,7 @@ def doRepeatableSchedule(request):
                                                      segment=segment)
                     mRepeatableSchedule.save()
     
-    return HttpResponse('Schedule added succesfully!')
+    return redirect('/getSystemStatus')
 
 @login_required
 def deleteSimpleSchedule(request):
@@ -206,4 +206,45 @@ def deleteRepeatableSchedule(request):
     id = request.POST['repeatableSchedule']
     RepeatableSchedule.objects.get(id=id).delete()
         
+    return redirect('/getSystemStatus')
+
+@login_required
+def showEditSegment(request):
+    
+    id = request.POST['editSegment']
+    segment = Segment.objects.get(id=id)
+        
+    return render(request, 'IrrigationApp/pages/editSegment.html', { 'segment':segment})
+
+@login_required
+def doEditSegment(request):
+    
+    id = request.POST['segment_id']
+    name = request.POST['name']
+    sensor = request.POST['sensor']
+    switch = request.POST['switch']
+    moisture_minLimit = request.POST['moisture_minLimit']
+    moisture_maxLimit = request.POST['moisture_maxLimit']
+    duration_maxLimit = request.POST['duration_maxLimit']
+    type = request.POST['type']
+    if 'checkboxes' not in request.POST:
+        enabled = False
+    else:
+        enabled = True
+    
+    sensor_list = list(Sensor.objects.all().filter(pinNumber=sensor))
+    switch_list = list(Switch.objects.all().filter(pinNumber=switch))
+    
+    mSegment = Segment(
+                    id = id,
+                    name = name,
+                    sensor = sensor_list[0],
+                    switch = switch_list[0],
+                    moisture_minLimit = moisture_minLimit,
+                    moisture_maxLimit = moisture_maxLimit,
+                    duration_maxLimit = duration_maxLimit,
+                    forecast_enabled = enabled,
+                    type = type
+                            )
+    mSegment.save()
     return redirect('/getSystemStatus')

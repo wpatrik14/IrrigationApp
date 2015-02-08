@@ -17,6 +17,8 @@ urlpatterns = patterns('',
     url(r'getSystemStatus[/]?$', views.getSystemStatus, name='getSystemStatus'),
     url(r'showAddNewSegment[/]?$', views.showAddNewSegment, name='showAddNewSegment'),
     url(r'doAddNewSegment[/]?$', views.doAddNewSegment, name='doAddNewSegment'),
+    url(r'showEditSegment[/]?$', views.showEditSegment, name='showEditSegment'),
+    url(r'doEditSegment[/]?$', views.doEditSegment, name='doEditSegment'),
     
     url(r'showSimpleSchedule[/]?$', views.showSimpleSchedule, name='showSimpleSchedule'),
     url(r'doSimpleSchedule[/]?$', views.doSimpleSchedule, name='doSimpleSchedule'),
