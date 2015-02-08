@@ -116,8 +116,8 @@
 	<tr>
 		<td>{{simpleSchedule.name}}</td>
 		<td>{{simpleSchedule.enabled}}</td>
-		<td>{{simpleSchedule.date}}</td>
-		<td>{{simpleSchedule.time}}</td>
+		<td>{{str(simpleSchedule.date)}}</td>
+		<td>{{str(simpleSchedule.time)}}</td>
 		<td>{{simpleSchedule.duration}}</td>
 		<td>{{simpleSchedule.segment.name}}</td>
 		
@@ -146,7 +146,7 @@
 		<td>{{repeatableSchedule.name}}</td>
 		<td>{{repeatableSchedule.enabled}}</td>
 		<td>{{repeatableSchedule.day}}</td>
-		<td>{{repeatableSchedule.time}}</td>
+		<td>{{str(repeatableSchedule.time)}}</td>
 		<td>{{repeatableSchedule.duration}}</td>
 		<td>{{repeatableSchedule.segment.name}}</td>
 		

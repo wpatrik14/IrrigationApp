@@ -162,8 +162,8 @@ def scheduler():
     
     ### STARTING SCHEDULES
     for simpleSchedule in simpleSchedules :
-        if simpleSchedule.date == date :
-            if simpleSchedule.time == time :
+        if str(simpleSchedule.date) == str(date) :
+            if str(simpleSchedule.time) == str(time) :
                 mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
                 mSwitch.status = 'on'
                 mSwitch.save(update_fields=['status'])
@@ -173,7 +173,7 @@ def scheduler():
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
-            if repeatableSchedule.time == time :
+            if str(repeatableSchedule.time) == str(time) :
                 mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
                 mSwitch.status = 'on'
                 mSwitch.save(update_fields=['status'])
