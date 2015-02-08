@@ -213,8 +213,11 @@ def showEditSegment(request):
     
     id = request.POST['editSegment']
     segment = Segment.objects.get(id=id)
+    
+    sensors = Sensor.objects.all()
+    switches = Switch.objects.all()
         
-    return render(request, 'IrrigationApp/pages/editSegment.html', { 'segment':segment})
+    return render(request, 'IrrigationApp/pages/editSegment.html', { 'segment':segment, 'sensors':sensors, 'switches':switches })
 
 @login_required
 def doEditSegment(request):
