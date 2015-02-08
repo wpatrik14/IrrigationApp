@@ -158,7 +158,7 @@ def doSimpleSchedule(request):
                                              segment=segment)
             mSimpleSchedule.save()
     
-    return HttpResponse('Schedule added succesfully!')
+    return redirect('/getSystemStatus')
 
 @login_required
 def showRepeatableSchedule(request):
