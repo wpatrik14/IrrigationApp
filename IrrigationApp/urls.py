@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'doLogout[/]?$', views.doLogout, name='doLogout'),
     
     url(r'showWeatherStatus[/]?$', views.showWeatherStatus, name='showWeatherStatus'),
+    url(r'showIrrigationHistory[/]?$', views.showIrrigationHistory, name='showIrrigationHistory'),
     
     url(r'getSystemStatus[/]?$', views.getSystemStatus, name='getSystemStatus'),
     url(r'showAddNewSegment[/]?$', views.showAddNewSegment, name='showAddNewSegment'),
