@@ -113,7 +113,6 @@ def doAddNewSegment(request):
 @login_required
 def getSystemStatus(request):
     
-    segments = Segment.objects.all()
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
     
@@ -127,18 +126,22 @@ def getSystemStatus(request):
                                                    moisture_startValue=mSegment.sensor.status
                                                    )
             mIrrigationHistory.save()
-            mSegment.irrigation_history=mIrrigationHistory 
+            mSegment.irrigation_history=mIrrigationHistory
+            mSegment.switch.status = status
+            mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
+            urlopen("http://192.168.0.105:80/?pinNumber="+mSegment.switch.pinNumber+"&status="+mSegment.switch.status)
         else :
             mSegment.up_time = 0
             mSegment.irrigation_history.end_date=datetime.now()
             mSegment.irrigation_history.duration=mSegment.up_time
             mSegment.irrigation_history.moisture_endValue=mSegment.sensor.status
             mSegment.irrigation_history.status='done'
-        
-        urlopen("http://192.168.0.105:80/?pinNumber="+mSegment.switch.pinNumber+"&status="+status)
-        mSegment.switch.status = status
-        mSegment.save(update_fields=['switch','up_time','irrigation_history'])      
+            mSegment.switch.status = status
+            mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
+            urlopen("http://192.168.0.105:80/?pinNumber="+mSegment.switch.pinNumber+"&status="+mSegment.switch.status)
     
+    
+    segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
