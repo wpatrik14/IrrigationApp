@@ -78,40 +78,40 @@ def get_weather_datas():
     mWeatherForecast_0 = WeatherForecast(
         forecast_date=date_0,
         precipMM=precipMM_0,
-        tempMaxC=tempMaxC_0,
-        tempMinC=tempMinC_0,
+        tempMax_C=tempMaxC_0,
+        tempMin_C=tempMinC_0,
         icon=icon)
     mWeatherForecast_0.save()
     
     mWeatherForecast_1 = WeatherForecast(
         forecast_date=date_1,
         precipMM=precipMM_1,
-        tempMaxC=tempMaxC_1,
-        tempMinC=tempMinC_1,
+        tempMax_C=tempMaxC_1,
+        tempMin_C=tempMinC_1,
         icon=icon)
     mWeatherForecast_1.save()
     
     mWeatherForecast_2 = WeatherForecast(
         forecast_date=date_2,
         precipMM=precipMM_2,
-        tempMaxC=tempMaxC_2,
-        tempMinC=tempMinC_2,
+        tempMax_C=tempMaxC_2,
+        tempMin_C=tempMinC_2,
         icon=icon)
     mWeatherForecast_2.save()
     
     mWeatherForecast_3 = WeatherForecast(
         forecast_date=date_3,
         precipMM=precipMM_3,
-        tempMaxC=tempMaxC_3,
-        tempMinC=tempMinC_3,
+        tempMax_C=tempMaxC_3,
+        tempMin_C=tempMinC_3,
         icon=icon)
     mWeatherForecast_3.save()
     
     mWeatherForecast_4 = WeatherForecast(
         forecast_date=date_4,
         precipMM=precipMM_4,
-        tempMaxC=tempMaxC_4,
-        tempMinC=tempMinC_4,
+        tempMax_C=tempMaxC_4,
+        tempMin_C=tempMinC_4,
         icon=icon)
     mWeatherForecast_4.save()
     
