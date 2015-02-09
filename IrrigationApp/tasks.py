@@ -134,8 +134,9 @@ def switchIrrigation(mSegment, status):
     
     mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
     mSwitch.status = status
+    mSwitch.save(update_fields=['status'])
     mSegment.save(update_fields=['up_time','irrigation_history']) 
-    urlopen("http://192.168.0.105:80/?pinNumber="+mSegment.switch.pinNumber+"&status="+mSegment.switch.status)
+    urlopen("http://192.168.0.105:80/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     return
 
 def changeSegment(segment, up_time):    

@@ -136,8 +136,9 @@ def getSystemStatus(request):
     
         mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
         mSwitch.status = status
+        mSwitch.save(update_fields=['status'])
         mSegment.save(update_fields=['up_time','irrigation_history']) 
-        urlopen("http://192.168.0.105:80/?pinNumber="+mSegment.switch.pinNumber+"&status="+mSegment.switch.status)
+        urlopen("http://192.168.0.105:80/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
     segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
