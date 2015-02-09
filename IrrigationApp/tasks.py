@@ -121,7 +121,7 @@ def switchIrrigation(segment, status):
     mSegment = Segment.objects.get(id=segment)
     if status == 'on' :
         mSegment.up_time = mSegment.up_time
-        mIrrigationHistory = IrrigationHistory(segment=mSegment,
+        mIrrigationHistory = IrrigationHistory(segment=mSegment.name,
                                                    moistrue_startValue=mSegment.sensor.status
                                                    )
         mIrrigationHistory.save()

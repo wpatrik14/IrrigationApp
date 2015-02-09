@@ -81,7 +81,7 @@ class RepeatableSchedule(models.Model):
         return self.enabled + ' ' + self.segment  
     
 class IrrigationHistory(models.Model):
-    segment = models.ForeignKey('Segment')
+    segment = models.CharField(max_length=20)
     start_date = models.DateTimeField(default=datetime.now, blank=True)
     end_date = models.DateTimeField(default=datetime.now, blank=True)
     duration = models.IntegerField(max_length=3, default=0)
