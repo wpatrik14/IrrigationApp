@@ -4,7 +4,7 @@
 
 	<!-- Form Name -->
 	<legend>Weather forecast</legend>
-
+	Last update: {{weatherForecasts[0].update|date:"Y-m-d"}} {{weatherForecast.update|time:"H:i"}}
 {% for weatherForecast in weatherForecasts %}
 <table class="table table-striped table-condensed">
 	<tr>
@@ -26,10 +26,6 @@
 	<tr>
 		<td>Precipitation (mm):</td>
 		<td>{{weatherForecast.precipMM}}</td>
-	</tr>
-	<tr>
-		<td>Update time:</td>
-		<td>{{weatherForecast.update|date:"Y-m-d"}} {{weatherForecast.update|time:"H:i"}}</td>
 	</tr>
 </table>
 	{% endfor %}
