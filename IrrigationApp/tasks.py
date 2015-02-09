@@ -116,28 +116,25 @@ def get_weather_datas():
     
     return '\n\nGETTING WEATHER DATAS........... DONE'
 
-def switchIrrigation(segment, status):
+def switchIrrigation(mSegment, status):
     
-    mSegment = Segment.objects.get(id=segment)
     if status == 'on' :
         mSegment.up_time = mSegment.up_time
         mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                    moisture_startValue=mSegment.sensor.status
                                                    )
         mIrrigationHistory.save()
-        mSegment.irrigation_history=mIrrigationHistory
-            
+        mSegment.irrigation_history=mIrrigationHistory   
     else :
         mSegment.up_time = 0
         mSegment.irrigation_history.end_date=datetime.now()
         mSegment.irrigation_history.duration=mSegment.up_time
         mSegment.irrigation_history.moisture_endValue=mSegment.sensor.status
         mSegment.irrigation_history.status='done'
-        
+    
+    urlopen("http://192.168.0.105:80/?pinNumber="+mSegment.switch.pinNumber+"&status="+status)    
     mSegment.switch.status = status
     mSegment.save(update_fields=['switch','up_time','irrigation_history'])
-    
-    urlopen("http://192.168.0.105:80/?pinNumber="+pinNumber+"&status="+status)
     return
 
 def changeSegment(segment, up_time):    
