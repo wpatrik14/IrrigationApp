@@ -123,7 +123,7 @@ def getSystemStatus(request):
         mSegment = Segment.objects.get(id=segment)
         if status == 'on' :
             mSegment.up_time = mSegment.up_time
-            mIrrigationHistory = IrrigationHistory(segment=mSegment,
+            mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                    moisture_startValue=mSegment.sensor.status
                                                    )
             mIrrigationHistory.save()
