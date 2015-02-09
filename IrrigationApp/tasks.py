@@ -45,6 +45,76 @@ def get_weather_datas():
         icon=icon)
     mWeatherHistory.save()
     
+    date_0=js['data']['weather'][0]['date']
+    precipMM_0=js['data']['weather'][0]['precipMM']
+    tempMaxC_0=js['data']['weather'][0]['tempMaxC']
+    tempMinC_0=js['data']['weather'][0]['tempMinC']
+    icon_0=js['data']['weather'][0]['weatherIconUrl'][0]['value'];
+    
+    date_1=js['data']['weather'][1]['date']
+    precipMM_1=js['data']['weather'][1]['precipMM']
+    tempMaxC_1=js['data']['weather'][1]['tempMaxC']
+    tempMinC_1=js['data']['weather'][1]['tempMinC']
+    icon_1=js['data']['weather'][1]['weatherIconUrl'][0]['value'];
+    
+    date_2=js['data']['weather'][2]['date']
+    precipMM_2=js['data']['weather'][2]['precipMM']
+    tempMaxC_2=js['data']['weather'][2]['tempMaxC']
+    tempMinC_2=js['data']['weather'][2]['tempMinC']
+    icon_2=js['data']['weather'][2]['weatherIconUrl'][0]['value'];
+    
+    date_3=js['data']['weather'][3]['date']
+    precipMM_3=js['data']['weather'][3]['precipMM']
+    tempMaxC_3=js['data']['weather'][3]['tempMaxC']
+    tempMinC_3=js['data']['weather'][3]['tempMinC']
+    icon_3=js['data']['weather'][3]['weatherIconUrl'][0]['value'];
+    
+    date_4=js['data']['weather'][4]['date']
+    precipMM_4=js['data']['weather'][4]['precipMM']
+    tempMaxC_4=js['data']['weather'][4]['tempMaxC']
+    tempMinC_4=js['data']['weather'][4]['tempMinC']
+    icon_4=js['data']['weather'][4]['weatherIconUrl'][0]['value'];
+        
+    mWeatherForecast_0 = WeatherForecast(
+        forecast_date=date_0,
+        precipMM=precipMM_0,
+        tempMaxC=tempMaxC_0,
+        tempMinC=tempMinC_0,
+        icon=icon)
+    mWeatherForecast_0.save()
+    
+    mWeatherForecast_1 = WeatherForecast(
+        forecast_date=date_1,
+        precipMM=precipMM_1,
+        tempMaxC=tempMaxC_1,
+        tempMinC=tempMinC_1,
+        icon=icon)
+    mWeatherForecast_1.save()
+    
+    mWeatherForecast_2 = WeatherForecast(
+        forecast_date=date_2,
+        precipMM=precipMM_2,
+        tempMaxC=tempMaxC_2,
+        tempMinC=tempMinC_2,
+        icon=icon)
+    mWeatherForecast_2.save()
+    
+    mWeatherForecast_3 = WeatherForecast(
+        forecast_date=date_3,
+        precipMM=precipMM_3,
+        tempMaxC=tempMaxC_3,
+        tempMinC=tempMinC_3,
+        icon=icon)
+    mWeatherForecast_3.save()
+    
+    mWeatherForecast_4 = WeatherForecast(
+        forecast_date=date_4,
+        precipMM=precipMM_4,
+        tempMaxC=tempMaxC_4,
+        tempMinC=tempMinC_4,
+        icon=icon)
+    mWeatherForecast_4.save()
+    
     return '\n\n\nGETTING WEATHER DATAS........... DONE'
 
 @app.task
@@ -105,9 +175,10 @@ def automation_control():
     mSwitch4.save()
     
     segments = Segment.objects.all()
+    weatherForecast = WeatherForecast.objects.all().order_by('-forecast_date')[:1]
     for segment in segments :
         if segment.type == "Automatic" :
-            if segment.sensor.status>segment.moisture_minLimit:
+            if segment.sensor.status>segment.moisture_minLimit and weatherForecast[0].precipMM < 0.0 :
                 #turn on irrigation
                 mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
                 mSwitch.status = 'on'

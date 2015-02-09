@@ -29,8 +29,8 @@ class WeatherForecast(models.Model):
     tempMax_C = models.IntegerField(max_length=3)
     tempMin_C = models.IntegerField(max_length=3)
     precipMM=models.IntegerField(max_length=4)
-    forecast_date=models.DateField()
-    update=models.DateField()
+    forecast_date=models.DateField(primary_key=True)
+    update=models.DateTimeField(default=datetime.now, blank=True)
     def __unicode__(self):
         return self.tempMax_C + ' ' + self.tempMin_C
     

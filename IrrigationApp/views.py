@@ -238,3 +238,10 @@ def doEditSegment(request):
                             )
     mSegment.save()
     return redirect('/getSystemStatus')
+
+@login_required
+def showWeatherForecast(request):
+    
+    weatherForecasts = WeatherForecast.objects.all()
+        
+    return render(request, 'IrrigationApp/pages/weatherForecast.html', { 'weatherForecasts':weatherForecasts })
