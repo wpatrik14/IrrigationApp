@@ -10,7 +10,7 @@ from IrrigationApp.models import UserProfile, SimpleSchedule, RepeatableSchedule
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-import requests
+from urllib.request import urlopen
 
 def showMenu(request):
     return render(request, 'IrrigationApp/pages/menu.html')
@@ -123,7 +123,7 @@ def getSystemStatus(request):
         mSwitch = Switch.objects.get(pinNumber=pinNumber)
         mSwitch.status = status
         mSwitch.save(update_fields=['status'])
-        r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)      
+        urlopen("http://192.168.0.105:80/?pinNumber="+pinNumber+"&status="+status)      
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 

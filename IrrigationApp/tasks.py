@@ -7,7 +7,6 @@ from django.utils.formats import get_format
 from IrrigationApp.models import WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule
 from django.http import HttpResponse
 import json
-import requests
 import time
 from urllib.request import urlopen
 
@@ -121,7 +120,6 @@ def switchIrrigation(pinNumber, status):
     mSwitch = Switch.objects.get(pinNumber=pinNumber)
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
-    #r = requests.get("http://192.168.0.105:80/?pinNumber="+pinNumber+"&status="+status)
     urlopen("http://192.168.0.105:80/?pinNumber="+pinNumber+"&status="+status)
     return
 
