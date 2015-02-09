@@ -115,7 +115,26 @@ def get_weather_datas():
         icon=icon_4)
     mWeatherForecast_4.save()
     
-    return '\n\n\nGETTING WEATHER DATAS........... DONE'
+    return '\n\nGETTING WEATHER DATAS........... DONE'
+
+def switchIrrigation(pinNumber, status):
+    mSwitch = Switch.objects.get(pinNumber=pinNumber)
+    mSwitch.status = status
+    mSwitch.save(update_fields=['status'])
+    #r = requests.get("http://192.168.0.105:80/?pinNumber="+pinNumber+"&status="+status)
+    urlopen("http://192.168.0.105:80/?pinNumber="+pinNumber+"&status="+status)
+    return
+
+def changeSegment(segment, up_time):    
+    mSegment = Segment.objects.get(id=segment.id)
+    mSegment.up_time=up_time
+    mSegment.save(update_fields=['up_time'])
+    return
+
+def changeSchedule(schedule, status):
+    schedule.status=status
+    schedule.save(update_fields=['status'])
+    return
 
 @app.task
 def automation_control():
@@ -178,58 +197,39 @@ def automation_control():
     weatherForecast = WeatherForecast.objects.all().order_by('-forecast_date')[:1]
     for segment in segments :
         if segment.type == "Automatic" :
-            if segment.sensor.status>segment.moisture_minLimit and weatherForecast[0].precipMM < 0.0 :
-                #turn on irrigation
-                mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
-                mSwitch.status = 'on'
-                mSwitch.save(update_fields=['status'])
-                r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=on")
+            if segment.sensor.status>segment.moisture_minLimit :
+                if segment.forecast_enabled :
+                    if weatherForecast[0].precipMM < 0.5 :
+                        #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
+                        switchIrrigation(segment.switch.pinNumber, 'on')
+                else :
+                   #turn on irrigation anyway
+                    switchIrrigation(segment.switch.pinNumber, 'on') 
                 
             elif segment.sensor.status<segment.moisture_maxLimit:
                 #turn off irrigation
-                mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
-                mSwitch.status = 'off'
-                mSwitch.save(update_fields=['status'])
-                mSegment = Segment.objects.get(id=segment.id)
-                mSegment.up_time=0
-                mSegment.save(update_fields=['up_time'])
-                r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=off")
+                switchIrrigation(segment.switch.pinNumber, 'off')
+                changeSegment(segment, 0)
                 
             if segment.switch.status == "on" :
                 if segment.up_time+2>segment.duration_maxLimit :
                     #turn off irrigation
-                    mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
-                    mSwitch.status = 'off'
-                    mSwitch.save(update_fields=['status'])
-                    mSegment = Segment.objects.get(id=segment.id)
-                    mSegment.up_time=0
-                    mSegment.save(update_fields=['up_time'])
-                    r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=off")
+                    switchIrrigation(segment.switch.pinNumber, 'off')
+                    changeSegment(segment, 0)
                 else :
-                    mSegment = Segment.objects.get(id=segment.id)
-                    mSegment.up_time=segment.up_time+1
-                    mSegment.save(update_fields=['up_time'])
+                    changeSegment(segment, segment.up_time+1)
         else :
             if segment.up_time+2>segment.duration_maxLimit :
                 #turn off irrigation
-                mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
-                mSwitch.status = 'off'
-                mSwitch.save(update_fields=['status'])
-                mSegment = Segment.objects.get(id=segment.id)
-                mSegment.up_time=0
-                mSegment.save(update_fields=['up_time'])
-                r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=off") 
+                switchIrrigation(segment.switch.pinNumber, 'off')
+                changeSegment(segment, 0)
             
             if segment.switch.status == "on" :
-                mSegment = Segment.objects.get(id=segment.id)
-                mSegment.up_time=segment.up_time+1
-                mSegment.save(update_fields=['up_time'])
+                changeSegment(segment, segment.up_time+1)
             else :
-                mSegment = Segment.objects.get(id=segment.id)
-                mSegment.up_time=0
-                mSegment.save(update_fields=['up_time'])
+                changeSegment(segment, 0)
             
-    return '\n\n\n\n\n\nAUTOMATION CONTROL........... DONE'
+    return '\n\nAUTOMATION CONTROL........... DONE'
 
 @app.task
 def scheduler():
@@ -245,38 +245,23 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
-                mSwitch.status = 'on'
-                mSwitch.save(update_fields=['status'])
-                simpleSchedule.status='running'
-                simpleSchedule.save(update_fields=['status'])
-                r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=on")
+                switchIrrigation(segment.switch.pinNumber, 'on')
+                changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit):
                 simpleSchedule.delete()
-                mSwitch = Switch.objects.get(pinNumber=simpleSchedule.segment.switch.pinNumber)
-                mSwitch.status = 'off'
-                mSwitch.save(update_fields=['status'])
-                r = requests.get("http://192.168.0.105:80/?pinNumber="+simpleSchedule.segment.switch.pinNumber+"&status=off")
+                switchIrrigation(segment.switch.pinNumber, 'off')
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
-                mSwitch.status = 'on'
-                mSwitch.save(update_fields=['status'])
-                repeatableSchedule.status='running'
-                repeatableSchedule.save(update_fields=['status'])
-                r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=on")
+                switchIrrigation(segment.switch.pinNumber, 'on')
+                changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) :
-                repeatableSchedule.status='stopped'
-                repeatableSchedule.save(update_fields=['status'])
-                mSwitch = Switch.objects.get(pinNumber=repeatableSchedule.segment.switch.pinNumber)
-                mSwitch.status = 'off'
-                mSwitch.save(update_fields=['status'])
-                r = requests.get("http://192.168.0.105:80/?pinNumber="+repeatableSchedule.segment.switch.pinNumber+"&status=off")
+                changeSchedule(repeatableSchedule,'stopped')
+                switchIrrigation(segment.switch.pinNumber, 'off')
                            
-    return '\n\n\n\n\n\nSCHEDULER........... DONE'
+    return '\n\nSCHEDULER........... DONE'
