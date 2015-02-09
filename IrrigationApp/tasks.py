@@ -80,7 +80,7 @@ def get_weather_datas():
         precipMM=precipMM_0,
         tempMax_C=tempMaxC_0,
         tempMin_C=tempMinC_0,
-        icon=icon)
+        icon=icon_0)
     mWeatherForecast_0.save()
     
     mWeatherForecast_1 = WeatherForecast(
@@ -88,7 +88,7 @@ def get_weather_datas():
         precipMM=precipMM_1,
         tempMax_C=tempMaxC_1,
         tempMin_C=tempMinC_1,
-        icon=icon)
+        icon=icon_1)
     mWeatherForecast_1.save()
     
     mWeatherForecast_2 = WeatherForecast(
@@ -96,7 +96,7 @@ def get_weather_datas():
         precipMM=precipMM_2,
         tempMax_C=tempMaxC_2,
         tempMin_C=tempMinC_2,
-        icon=icon)
+        icon=icon_2)
     mWeatherForecast_2.save()
     
     mWeatherForecast_3 = WeatherForecast(
@@ -104,7 +104,7 @@ def get_weather_datas():
         precipMM=precipMM_3,
         tempMax_C=tempMaxC_3,
         tempMin_C=tempMinC_3,
-        icon=icon)
+        icon=icon_3)
     mWeatherForecast_3.save()
     
     mWeatherForecast_4 = WeatherForecast(
@@ -112,7 +112,7 @@ def get_weather_datas():
         precipMM=precipMM_4,
         tempMax_C=tempMaxC_4,
         tempMin_C=tempMinC_4,
-        icon=icon)
+        icon=icon_4)
     mWeatherForecast_4.save()
     
     return '\n\n\nGETTING WEATHER DATAS........... DONE'
