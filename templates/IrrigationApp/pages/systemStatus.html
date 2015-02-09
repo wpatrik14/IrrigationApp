@@ -28,11 +28,11 @@
 			<form id="change_switch" action="getSystemStatus" method="post">
 				{% csrf_token %}
 				{% if segment.switch.status == "on" %}
-				<input type="hidden" name="pinNumber" value = "{{ segment.switch.pinNumber }}"/>
+				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
 				<input type="hidden" name="status" value = "off"/>
 				<button id="switch" name="switch" class="btn btn-default">ON </button>
 				{% else %}
-				<input type="hidden" name="pinNumber" value = "{{ segment.switch.pinNumber }}"/>
+				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
 				<input type="hidden" name="status" value = "on"/>
 				<button id="switch" name="switch" class="btn btn-default">OFF</button>
 				{% endif %}

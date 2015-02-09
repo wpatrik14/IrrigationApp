@@ -117,12 +117,27 @@ def getSystemStatus(request):
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
     
-    if 'pinNumber' in request.POST :
-        pinNumber = request.POST['pinNumber']
+    if 'segment' in request.POST :
+        segment = request.POST['segment']
         status = request.POST['status']
-        mSwitch = Switch.objects.get(pinNumber=pinNumber)
-        mSwitch.status = status
-        mSwitch.save(update_fields=['status'])
+        mSegment = Segment.objects.get(id=segment)
+        if status == 'on' :
+            mSegment.up_time = mSegment.up_time
+            mIrrigationHistory = IrrigationHistory(segment=mSegment,
+                                                   moistrue_startValue=mSegment.sensor.status
+                                                   )
+            mIrrigationHistory.save()
+            mSegment.irrigation_history=mIrrigationHistory
+            
+        else :
+            mSegment.up_time = 0
+            mSegment.irrigation_history.end_date=datetime.now()
+            mSegment.irrigation_history.duration=mSegment.up_time
+            mSegment.irrigation_history.moisture_endValue=mSegment.sensor.status
+            mSegment.irrigation_history.status='done'
+        
+        mSegment.switch.status = status
+        mSegment.save(update_fields=['switch','up_time','irrigation_history'])
         urlopen("http://192.168.0.105:80/?pinNumber="+pinNumber+"&status="+status)      
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
@@ -245,3 +260,10 @@ def showWeatherStatus(request):
     weatherForecasts = WeatherForecast.objects.all()
         
     return render(request, 'IrrigationApp/pages/weatherStatus.html', { 'weathers':currentWeather, 'weatherForecasts':weatherForecasts })
+
+@login_required
+def showIrrigationHistory(request):
+    
+    irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
+        
+    return render(request, 'IrrigationApp/pages/history.html', { 'irrigationHistories':irrigationHistories })

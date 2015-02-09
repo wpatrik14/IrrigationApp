@@ -45,6 +45,7 @@ class Segment(models.Model):
     duration_maxLimit=models.IntegerField(max_length=3)
     forecast_enabled=models.BooleanField(default=False)
     type=models.CharField(max_length=10)
+    irrigation_history=models.ForeignKey('IrrigationHistory', null = True)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
@@ -81,10 +82,12 @@ class RepeatableSchedule(models.Model):
     
 class IrrigationHistory(models.Model):
     segment = models.ForeignKey('Segment')
-    date = models.DateField()
-    duration = models.IntegerField(max_length=8)
+    start_date = models.DateTimeField(default=datetime.now, blank=True)
+    end_date = models.DateTimeField(default=datetime.now, blank=True)
+    duration = models.IntegerField(max_length=3, default=0)
     moisture_startValue = models.IntegerField(max_length=3)
-    moisture_endValue = models.IntegerField(max_length=3)
+    moisture_endValue = models.IntegerField(max_length=3,default=0)
+    status = models.CharField(max_length=10, default='running')
     def __unicode__(self):
         return self.segment + ' ' + self.date
     
