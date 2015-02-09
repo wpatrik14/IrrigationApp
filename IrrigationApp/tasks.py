@@ -210,6 +210,16 @@ def automation_control():
                     mSegment.up_time=segment.up_time+1
                     mSegment.save(update_fields=['up_time'])
         else :
+            if segment.up_time+2>segment.duration_maxLimit :
+                #turn off irrigation
+                mSwitch = Switch.objects.get(pinNumber=segment.switch.pinNumber)
+                mSwitch.status = 'off'
+                mSwitch.save(update_fields=['status'])
+                mSegment = Segment.objects.get(id=segment.id)
+                mSegment.up_time=0
+                mSegment.save(update_fields=['up_time'])
+                r = requests.get("http://192.168.0.105:80/?pinNumber="+segment.switch.pinNumber+"&status=off") 
+            
             if segment.switch.status == "on" :
                 mSegment = Segment.objects.get(id=segment.id)
                 mSegment.up_time=segment.up_time+1
