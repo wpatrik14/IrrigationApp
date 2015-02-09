@@ -1,0 +1,71 @@
+{% include "IrrigationApp/pages/frame/htmlHeader_refresh.html" %}
+
+<fieldset>
+
+	<!-- Form Name -->
+	<legend>Actual Weather</legend>
+
+<table class="table table-striped table-condensed">
+	
+	<thead>
+		<th>Icon</th>
+		<th>Location</th>
+		<th>Observation time</th>
+		<th>Temp (C)</th>
+		<th>Precipitation (mm)</th>
+		<th>Pressure</th>
+		<th>Cloudcover</th>
+		<th>Humidity</th>
+		<th>Wind speed</th>
+		<th>Wind direction</th>
+	</thead>
+	
+	{% for currentWeather in weathers %}
+	<tr>
+		<td><img src="{{ currentWeather.icon }}"></td>
+		<td>{{currentWeather.place}}</td>
+		<td>{{currentWeather.observation_time|date:"Y-m-d"}} {{currentWeather.observation_time|time:"H:i"}}</td>
+		<td>{{currentWeather.temp_C}}</td>
+		<td>{{currentWeather.precipMM}}</td>
+		<td>{{currentWeather.pressure}}</td>
+		<td>{{currentWeather.cloudcover}}</td>
+		<td>{{currentWeather.humidity}}</td>
+		<td>{{currentWeather.windspeedKmph}}</td>
+		<td>{{currentWeather.winddirDegree}}</td>
+	</tr>
+	{% endfor %}
+</table>
+</fieldset>
+
+
+<fieldset>
+
+	<!-- Form Name -->
+	<legend>Weather forecast</legend>
+
+{% for weatherForecast in weatherForecasts %}
+<table class="table table-striped table-condensed">
+	
+	<thead>
+		<th>Icon</th>
+		<th>Forecast date</th>
+		<th>Min Temp (C)</th>
+		<th>Max Temp (C)</th>
+		<th>Precipitation (mm)</th>
+		<th>Last update</th>
+	</thead>
+	
+	<tr>
+		<td><img src="{{ weatherForecast.icon }}"></td>
+		<td>{{weatherForecast.forecast_date|date:"Y-m-d"}}</td>
+		<td>{{weatherForecast.tempMin_C}}</td>
+		<td>{{weatherForecast.tempMax_C}}</td>
+		<td>{{weatherForecast.precipMM}}</td>
+		<td>{{weatherForecast.update|date:"Y-m-d"}} {{weatherForecast.update|time:"H:i"}}</td>
+	</tr>
+</table>
+	{% endfor %}
+</fieldset>
+
+</body>
+</html>

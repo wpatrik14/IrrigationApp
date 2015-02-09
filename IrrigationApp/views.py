@@ -113,7 +113,6 @@ def doAddNewSegment(request):
 @login_required
 def getSystemStatus(request):
     
-    currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     segments = Segment.objects.all()
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
@@ -126,7 +125,7 @@ def getSystemStatus(request):
         mSwitch.save(update_fields=['status'])
         r = requests.get("http://192.168.0.105:80/?pinNumber="+ pinNumber +"&status="+ status)      
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'weathers':currentWeather, 'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
@@ -240,8 +239,9 @@ def doEditSegment(request):
     return redirect('/getSystemStatus')
 
 @login_required
-def showWeatherForecast(request):
+def showWeatherStatus(request):
     
+    currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     weatherForecasts = WeatherForecast.objects.all()
         
-    return render(request, 'IrrigationApp/pages/weatherForecast.html', { 'weatherForecasts':weatherForecasts })
+    return render(request, 'IrrigationApp/pages/weatherForecast.html', { 'weathers':currentWeather, 'weatherForecasts':weatherForecasts })
