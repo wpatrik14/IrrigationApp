@@ -170,7 +170,7 @@ def getSystemStatus(request):
         mSwitch.save(update_fields=['status'])
         mSegment.switch=mSwitch
         mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-        urlopen("http://"+settings.arduino_IP+":"+arduino_PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
+        urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
         switches = Switch.objects.all()
         pump_status = False
