@@ -4,7 +4,7 @@ import codecs
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
-from IrrigationApp.models import WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule, IrrigationHistory
+from IrrigationApp.models import WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings
 from django.http import HttpResponse
 import json
 import time
