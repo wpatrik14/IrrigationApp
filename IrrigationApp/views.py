@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden
 from django.utils import timezone
 from django.shortcuts import redirect
 from datetime import date, datetime, timedelta, time
+from django.contrib.auth.models import User
 
 from IrrigationApp.models import UserProfile, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory
 
@@ -69,11 +70,6 @@ def doRegistration(request):
             except User.DoesNotExist:
                 user = User.objects.create_user(username, email, password)
                 user.save()
-                userProfile = UserProfile(
-                    user = user,
-                    fullname = fullname
-                            )
-                userProfile.save()
                 
                 mIrrigationSettings = IrrigationSettings(user_profile=userProfile,
                                                          arduino_IP=ip_address,
@@ -123,12 +119,14 @@ def doAddNewSegment(request):
 
 @login_required
 def getSystemStatus(request):
-    
-    username = request.session.get('username')
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
-    settings = IrrigationSettings.objects.all()[:1]
     
     if 'segment' in request.POST :
         segment = request.POST['segment']
@@ -171,16 +169,26 @@ def getSystemStatus(request):
     settings[0].pump=pump
     settings[0].save(update_fields=['pump'])
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':username,'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username,'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
 def showSimpleSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
+    
     segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'segments':segments})
     
 @login_required
 def doSimpleSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
+    
     
     date = request.POST['date']
     time = request.POST['time']
@@ -199,11 +207,20 @@ def doSimpleSchedule(request):
 
 @login_required
 def showRepeatableSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
+    
     segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'segments':segments})
     
 @login_required
 def doRepeatableSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
     
     name = request.POST['name']
     time = request.POST['time']
@@ -226,6 +243,10 @@ def doRepeatableSchedule(request):
 
 @login_required
 def deleteSimpleSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
     
     id = request.POST['simpleSchedule']
     SimpleSchedule.objects.get(id=id).delete()
@@ -234,6 +255,10 @@ def deleteSimpleSchedule(request):
 
 @login_required
 def deleteRepeatableSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
     
     id = request.POST['repeatableSchedule']
     RepeatableSchedule.objects.get(id=id).delete()
@@ -242,6 +267,11 @@ def deleteRepeatableSchedule(request):
 
 @login_required
 def showEditSegment(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
+    
     
     id = request.POST['editSegment']
     segment = Segment.objects.get(id=id)
@@ -253,6 +283,11 @@ def showEditSegment(request):
 
 @login_required
 def doEditSegment(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
+    
     
     id = request.POST['segment_id']
     name = request.POST['name']
@@ -286,6 +321,11 @@ def doEditSegment(request):
 
 @login_required
 def showWeatherStatus(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
+    
     
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     weatherForecasts = WeatherForecast.objects.all()
@@ -294,6 +334,11 @@ def showWeatherStatus(request):
 
 @login_required
 def showIrrigationHistory(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+    else :
+        return redirect('/showLogin')
+    
     
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
         

@@ -1,12 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-  
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
-    fullname = models.CharField(max_length=50)
-    def __unicode__(self):
-        return self.fullname
 
 class WeatherHistory(models.Model):
     temp_C = models.IntegerField(max_length=3)
