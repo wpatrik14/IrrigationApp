@@ -254,6 +254,8 @@ def automation_control():
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
                         switchIrrigation(segment, 'on', settings, arduino)
+                    else :
+                        switchIrrigation(segment, 'off', settings, arduino)
                 else :
                    #turn on irrigation anyway
                     switchIrrigation(segment, 'on', settings, arduino) 
