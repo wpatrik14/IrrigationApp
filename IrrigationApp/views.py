@@ -420,8 +420,8 @@ def doAddArduino(request):
     else :
         return redirect('/showLogin')
 
-    ip = request.POST['arduino_IP']
-    port = request.POST['arduino_PORT']
+    ip = request.POST['ip_address']
+    port = request.POST['port_number']
 
     arduino = Arduino(id=0,
                       IP=ip,
