@@ -187,7 +187,7 @@ def getSystemStatus(request):
         urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
     
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
