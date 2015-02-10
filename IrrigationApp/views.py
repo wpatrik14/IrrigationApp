@@ -128,17 +128,17 @@ def getSystemStatus(request):
     else :
         return redirect('/showLogin')
     
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return redirect('/showAddSettings')
-    
     arduino = Arduino.objects.all()
     if arduino.exists() :
         arduino = Arduino.objects.get(id=0)
     else:
         return redirect('/showAddArduino')
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return redirect('/showAddSettings')
     
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
