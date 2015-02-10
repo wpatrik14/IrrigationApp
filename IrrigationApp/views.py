@@ -156,13 +156,17 @@ def getSystemStatus(request):
         urlopen("http://192.168.0.105:80/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
     switches = Switch.objects.all()
+    settings = IrrigationSettings.objects.all()[:1]
     pump_status = False
     for switch in switches :
-        if switch.status == 'on' :
-            pump_status = True
+        if switch.pinNumber != settings[0].pump.pinNumber :
+            if switch.status == 'on' :
+                pump_status = True
     
-    settings = IrrigationSettings.objects.all()[:1]
-    settings[0].pump = pump_status
+    pump= Switch.object.get(pinNumber=settings[0].pump.pinNumber)
+    pump.status = pump_status
+    pump.save(update_fields=['status'])
+    settings[0].pump=pump
     settings[0].save(update_fields=['pump'])
     segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
