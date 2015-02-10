@@ -161,7 +161,11 @@ def switchIrrigation(mSegment, status, settings, arduino):
     pump.save(update_fields=['status'])
     settings.pump=pump
     settings.save(update_fields=['pump'])
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
+    if pump.status :
+        status = "on"
+    else :
+        status = "off"
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+status)
     
     return
 
