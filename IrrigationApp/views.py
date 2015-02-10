@@ -163,7 +163,7 @@ def getSystemStatus(request):
             if switch.status == 'on' :
                 pump_status = True
     
-    pump= Switch.object.get(pinNumber=settings[0].pump.pinNumber)
+    pump= Switch.objects.get(pinNumber=settings[0].pump.pinNumber)
     pump.status = pump_status
     pump.save(update_fields=['status'])
     settings[0].pump=pump
