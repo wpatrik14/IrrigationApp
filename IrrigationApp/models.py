@@ -98,8 +98,8 @@ class IrrigationTemplateControl(models.Model):
 
 class Arduino(models.Model):
     id = models.IntegerField(max_length=1, primary_key=True)
-    IP = models.IPAddressField()
-    PORT = models.IntegerField(max_length=5)
+    IP = models.CharField(max_length=17)
+    PORT = models.CharField(max_length=5)
     def __unicode__(self):
         return self.IP
    
