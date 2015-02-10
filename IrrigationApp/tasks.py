@@ -120,19 +120,22 @@ def switchIrrigation(mSegment, status):
     
     if status == 'on' :
         mSegment.up_time = mSegment.up_time
-        mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
+        if mSegment.irrigationHistory is None :
+            mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                    moisture_startValue=mSegment.sensor.status
                                                    )
-        mIrrigationHistory.save()
-        mSegment.irrigation_history=mIrrigationHistory
+            mIrrigationHistory.save()
+            mSegment.irrigation_history=mIrrigationHistory
+            
     else :
-        mSegment.up_time = 0
         mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
         mHistory.end_date=datetime.now()
         mHistory.duration=mSegment.up_time
         mHistory.moisture_endValue=mSegment.sensor.status
         mHistory.status='done'
         mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+        mSegment.up_time = 0
+        mSegment.irrigation_history=None
     
     mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
     mSwitch.status = status

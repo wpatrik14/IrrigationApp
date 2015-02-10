@@ -5,10 +5,8 @@ from datetime import datetime
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     fullname = models.CharField(max_length=50)
-    ip_address = models.IPAddressField()
-    port = models.IntegerField(max_length=5)
     def __unicode__(self):
-        return self.fullname + ' ' + self.ip_address
+        return self.fullname
 
 class WeatherHistory(models.Model):
     temp_C = models.IntegerField(max_length=3)
@@ -107,5 +105,7 @@ class IrrigationTemplateControl(models.Model):
 class IrrigationSettings(models.Model):
     user = models.ForeignKey('UserProfile')
     type = models.CharField(max_length=20)
+    arduino_ip_address = models.IPAddressField()
+    arduino_port = models.IntegerField(max_length=5)
     def __unicode__(self):
         return self.user + ' ' + self.type
