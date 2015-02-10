@@ -124,6 +124,8 @@ def doAddNewSegment(request):
 @login_required
 def getSystemStatus(request):
     
+    username = request.session.get('username')
+    
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
     settings = IrrigationSettings.objects.all()[:1]
@@ -169,7 +171,7 @@ def getSystemStatus(request):
     settings[0].pump=pump
     settings[0].save(update_fields=['pump'])
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':username,'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
