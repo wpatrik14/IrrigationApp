@@ -23,7 +23,7 @@ def doLogin(request):
         #User authentication successful
         login(request, user)
         try:
-            return redirect('/getSystemStatus')
+            return redirect('/getSystemStatus', username=username)
         except:
             return HttpResponse('Error during login: ' + username)
     else:
@@ -90,7 +90,7 @@ def showAddNewSegment(request):
     return render(request, 'IrrigationApp/pages/addNewSegment.html', {'sensors':sensors, 'switches':switches})
     
 @login_required
-def doAddNewSegment(request):
+def doAddNewSegment(request,username):
     
     name = request.POST['name']
     sensor = request.POST['sensor']
@@ -118,10 +118,10 @@ def doAddNewSegment(request):
                     type = type
                             )
     mSegment.save()
-    return redirect('/getSystemStatus')
+    return redirect('/getSystemStatus',username=username)
 
 @login_required
-def getSystemStatus(request):
+def getSystemStatus(request,username):
     
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
@@ -154,17 +154,26 @@ def getSystemStatus(request):
         mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
         urlopen("http://192.168.0.105:80/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
+    switches = Switch.objects.all()
+    pump_status = False
+    for switch in switches :
+        if switch.status == 'on' :
+            pump_status = True
+    
+    settings = IrrigationSettings.objects.all()[:1]
+    settings[0].pump = pump_status
+    settings[0].save(update_fields=['pump'])
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':username, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
-def showSimpleSchedule(request):
+def showSimpleSchedule(request,username):
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'segments':segments})
+    return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'username':username, 'segments':segments})
     
 @login_required
-def doSimpleSchedule(request):
+def doSimpleSchedule(request,username):
     
     date = request.POST['date']
     time = request.POST['time']
@@ -179,15 +188,15 @@ def doSimpleSchedule(request):
                                              segment=segment)
             mSimpleSchedule.save()
     
-    return redirect('/getSystemStatus')
+    return redirect('/getSystemStatus',username=username)
 
 @login_required
-def showRepeatableSchedule(request):
+def showRepeatableSchedule(request,username):
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'segments':segments})
+    return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'username':username, 'segments':segments})
     
 @login_required
-def doRepeatableSchedule(request):
+def doRepeatableSchedule(request,username):
     
     name = request.POST['name']
     time = request.POST['time']
@@ -206,26 +215,26 @@ def doRepeatableSchedule(request):
                                                      segment=segment)
                     mRepeatableSchedule.save()
     
-    return redirect('/getSystemStatus')
+    return redirect('/getSystemStatus',username=username)
 
 @login_required
-def deleteSimpleSchedule(request):
+def deleteSimpleSchedule(request,username):
     
     id = request.POST['simpleSchedule']
     SimpleSchedule.objects.get(id=id).delete()
         
-    return redirect('/getSystemStatus')
+    return redirect('/getSystemStatus',username=username)
 
 @login_required
-def deleteRepeatableSchedule(request):
+def deleteRepeatableSchedule(request,username):
     
     id = request.POST['repeatableSchedule']
     RepeatableSchedule.objects.get(id=id).delete()
         
-    return redirect('/getSystemStatus')
+    return redirect('/getSystemStatus',username=username)
 
 @login_required
-def showEditSegment(request):
+def showEditSegment(request,username):
     
     id = request.POST['editSegment']
     segment = Segment.objects.get(id=id)
@@ -233,10 +242,10 @@ def showEditSegment(request):
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
         
-    return render(request, 'IrrigationApp/pages/editSegment.html', { 'segment':segment, 'sensors':sensors, 'switches':switches })
+    return render(request, 'IrrigationApp/pages/editSegment.html', { 'username':username, 'segment':segment, 'sensors':sensors, 'switches':switches })
 
 @login_required
-def doEditSegment(request):
+def doEditSegment(request,username):
     
     id = request.POST['segment_id']
     name = request.POST['name']
@@ -266,19 +275,19 @@ def doEditSegment(request):
                     type = type
                             )
     mSegment.save()
-    return redirect('/getSystemStatus')
+    return redirect('/getSystemStatus',username=username)
 
 @login_required
-def showWeatherStatus(request):
+def showWeatherStatus(request,username):
     
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     weatherForecasts = WeatherForecast.objects.all()
         
-    return render(request, 'IrrigationApp/pages/weatherStatus.html', { 'weathers':currentWeather, 'weatherForecasts':weatherForecasts })
+    return render(request, 'IrrigationApp/pages/weatherStatus.html', { 'username':username, 'weathers':currentWeather, 'weatherForecasts':weatherForecasts })
 
 @login_required
-def showIrrigationHistory(request):
+def showIrrigationHistory(request,username):
     
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
         
-    return render(request, 'IrrigationApp/pages/history.html', { 'irrigationHistories':irrigationHistories })
+    return render(request, 'IrrigationApp/pages/history.html', { 'username':username, 'irrigationHistories':irrigationHistories })
