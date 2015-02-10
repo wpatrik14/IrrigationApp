@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from datetime import date, datetime, timedelta, time
 from django.contrib.auth.models import User
 
-from IrrigationApp.models import UserProfile, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory
+from IrrigationApp.models import IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
