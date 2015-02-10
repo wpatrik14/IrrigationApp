@@ -97,6 +97,7 @@ class IrrigationTemplateControl(models.Model):
         return self.template + ' ' + self.segment
     
 class IrrigationSettings(models.Model):
+    id = models.IntegerField(max_length=1, primary_key=True)
     pump = models.ForeignKey('Switch')
     arduino_IP = models.IPAddressField()
     arduino_PORT = models.IntegerField(max_length=5)

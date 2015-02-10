@@ -121,7 +121,7 @@ def get_weather_datas():
     
     return '\n\nGETTING WEATHER DATAS........... DONE'
 
-def switchIrrigation(mSegment, status):
+def switchIrrigation(mSegment, status, settings):
     
     if status == 'on' :
         mSegment.up_time = mSegment.up_time
@@ -147,7 +147,7 @@ def switchIrrigation(mSegment, status):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    urlopen("http://192.168.0.105:80/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
+    urlopen("http://"+settings.arduino_IP+":"+arduino_PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     return
 
 def changeSegment(segment, up_time):    
@@ -164,7 +164,9 @@ def changeSchedule(schedule, status):
 @app.task
 def automation_control():
     
-    res = urlopen('http://192.168.0.105')
+    settings = IrrigationSettings.objects.get(id=0)
+    
+    res = urlopen('http://'+settings.arduino_IP+':'+arduino_PORT)
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
@@ -231,27 +233,27 @@ def automation_control():
                 if segment.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
-                        switchIrrigation(segment, 'on')
+                        switchIrrigation(segment, 'on',settings)
                 else :
                    #turn on irrigation anyway
-                    switchIrrigation(segment, 'on') 
+                    switchIrrigation(segment, 'on',settings) 
                 
             elif segment.sensor.status<segment.moisture_maxLimit:
                 #turn off irrigation
-                switchIrrigation(segment, 'off')
+                switchIrrigation(segment, 'off',settings)
                 changeSegment(segment, 0)
                 
             if segment.switch.status == "on" :
                 if segment.up_time+2>segment.duration_maxLimit :
                     #turn off irrigation
-                    switchIrrigation(segment, 'off')
+                    switchIrrigation(segment, 'off',settings)
                     changeSegment(segment, 0)
                 else :
                     changeSegment(segment, segment.up_time+1)
         else :
             if segment.up_time+2>segment.duration_maxLimit :
                 #turn off irrigation
-                switchIrrigation(segment, 'off')
+                switchIrrigation(segment, 'off',settings)
                 changeSegment(segment, 0)
             
             if segment.switch.status == "on" :
@@ -264,6 +266,8 @@ def automation_control():
 @app.task
 def scheduler():
     
+    settings = IrrigationSettings.objects.get(id=0)
+    
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%H:%M")
     dayNumber = datetime.now().strftime("%w")
@@ -275,23 +279,23 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                switchIrrigation(segment, 'on')
+                switchIrrigation(segment, 'on',settings)
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit):
                 simpleSchedule.delete()
-                switchIrrigation(segment, 'off')
+                switchIrrigation(segment, 'off',settings)
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                switchIrrigation(segment, 'on')
+                switchIrrigation(segment, 'on',settings)
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) :
                 changeSchedule(repeatableSchedule,'stopped')
-                switchIrrigation(segment, 'off')
+                switchIrrigation(segment, 'off',settings)
                            
     return '\n\nSCHEDULER........... DONE'

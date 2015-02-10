@@ -1,6 +1,8 @@
 {% include "IrrigationApp/pages/frame/htmlHeader_refresh.html" %}
 
-username: {{username}}
+</br>Welcome {{username}}!
+</br>Arduino IP address: {{settings.arduino_IP}}
+</br>Arduino port: {{settings.arduino_PORT}}
 
 <fieldset>
 
@@ -61,9 +63,7 @@ username: {{username}}
 
 	<!-- Form Name -->
 	<legend>Pump status</legend>
-	{% for setting in settings %}
-	Pump is: {{ setting.pump.status }} (pin-number: {{ setting.pump.pinNumber }})
-	{% endfor %}
+	Pump is: {{ settings.pump.status }} (pin-number: {{ settings.pump.pinNumber }})</br>
 </fieldset>
 
 <fieldset>
