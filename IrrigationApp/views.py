@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.shortcuts import redirect
 from datetime import date, datetime, timedelta, time
 from django.contrib.auth.models import User
+import codecs
+import json
 
 from IrrigationApp.models import IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino
 
