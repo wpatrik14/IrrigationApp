@@ -55,11 +55,6 @@ def doRegistration(request):
     password_check = request.POST['password_check']
     email = request.POST['email']
     fullname = request.POST['fullname']
-    ip_address = request.POST['ip_address']
-    port_number = request.POST['port_number']
-    switch = request.POST['switch']
-    
-    switch = Switch.objects.get(pinNumber=switch)
     
     if password != password_check:
         return HttpResponse('Passwords do not match: ' + password + ' != ' + password_check)                       
@@ -71,13 +66,7 @@ def doRegistration(request):
                 user = User.objects.create_user(username, email, password)
                 user.save()
                 
-                mIrrigationSettings = IrrigationSettings(id=0,
-                                                         arduino_IP=ip_address,
-                                                         arduino_PORT=port_number,
-                                                         pump=switch)
-                mIrrigationSettings.save()
-                
-                return redirect('/showLogin')
+    return redirect('/showLogin')
 
 @login_required
 def showAddNewSegment(request):
