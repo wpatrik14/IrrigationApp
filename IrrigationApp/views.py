@@ -71,7 +71,7 @@ def doRegistration(request):
                 user = User.objects.create_user(username, email, password)
                 user.save()
                 
-                mIrrigationSettings = IrrigationSettings(user_profile=userProfile,
+                mIrrigationSettings = IrrigationSettings(
                                                          arduino_IP=ip_address,
                                                          arduino_PORT=port_number,
                                                          pump=switch)
