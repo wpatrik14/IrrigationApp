@@ -221,8 +221,9 @@ def automation_control():
     segments = Segment.objects.all()
     weatherForecast = WeatherForecast.objects.all().order_by('-forecast_date')[:1]
     
-    if weatherForecast is None :
+    if not weatherForecast.exists() :
         get_weather_data_from_server()
+        weatherForecast = WeatherForecast.objects.all().order_by('-forecast_date')[:1]
     
     for segment in segments :
         if segment.type == "Automatic" :
