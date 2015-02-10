@@ -58,7 +58,7 @@
 		<fieldset>
 
 			<!-- Form Name -->
-			<legend>Arduino</legend>
+			<legend>Settings</legend>
 			
 			<!-- Text input-->
 			<div class="control-group">
@@ -77,6 +77,18 @@
 			    <p class="help-block">range: 0-65535</p>
 			  </div>
 			</div>
+			
+			<!-- Select Basic -->
+				<div class="control-group">
+				  <label class="control-label" for="switch">Pump</label>
+				  <div class="controls">
+				    <select id="switch" name="switch" class="input-xlarge">
+				      {% for switch in switches %}
+				      <option>{{ switch.pinNumber }}</option>
+				      {% endfor %}
+				    </select>
+				  </div>
+				</div>
 			
 		</fieldset>
 		

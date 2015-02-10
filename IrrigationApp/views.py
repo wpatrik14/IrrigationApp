@@ -43,7 +43,9 @@ def showLogin(request):
         return render(request, 'IrrigationApp/pages/login.html', {})
 
 def showRegistration(request):
-    return render(request, 'IrrigationApp/pages/register.html', {})
+    switches = Switch.objects.all()
+    
+    return render(request, 'IrrigationApp/pages/register.html', {'switches':switches})
         
 def doRegistration(request):
     username = request.POST['username']
@@ -53,6 +55,9 @@ def doRegistration(request):
     fullname = request.POST['fullname']
     ip_address = request.POST['ip_address']
     port_number = request.POST['port_number']
+    switch = request.POST['switch']
+    
+    switch = Switch.objects.get(pinNumber=switch)
     
     if password != password_check:
         return HttpResponse('Passwords do not match: ' + password + ' != ' + password_check)                       
@@ -65,11 +70,16 @@ def doRegistration(request):
                 user.save()
                 userProfile = UserProfile(
                     user = user,
-                    fullname = fullname,
-                    ip_address = ip_address,
-                    port = port_number
+                    fullname = fullname
                             )
                 userProfile.save()
+                
+                mIrrigationSettings = IrrigationSettings(user_profile=userProfile,
+                                                         arduino_IP=ip_address,
+                                                         arduino_PORT=port_number,
+                                                         pump=switch)
+                mIrrigationSettings.save()
+                
                 return redirect('/showLogin')
 
 @login_required
@@ -94,13 +104,13 @@ def doAddNewSegment(request):
     else:
         enabled = True
     
-    sensor_list = list(Sensor.objects.all().filter(pinNumber=sensor))
-    switch_list = list(Switch.objects.all().filter(pinNumber=switch))
+    sensor = Sensor.objects.get(pinNumber=sensor)
+    switch = Switch.objects.get(pinNumber=switch)
     
     mSegment = Segment(
                     name = name,
-                    sensor = sensor_list[0],
-                    switch = switch_list[0],
+                    sensor = sensor,
+                    switch = switch,
                     moisture_minLimit = moisture_minLimit,
                     moisture_maxLimit = moisture_maxLimit,
                     duration_maxLimit = duration_maxLimit,

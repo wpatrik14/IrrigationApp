@@ -57,7 +57,7 @@ class Switch(models.Model):
     pinNumber = models.CharField(max_length=3, primary_key=True)
     status = models.CharField(max_length=3)
     def __unicode__(self):
-        return self.pinNumber + ' ' + self.status  
+        return self.pinNumber + ' ' + self.status 
     
 class SimpleSchedule(models.Model):
     date = models.DateField()
@@ -103,9 +103,9 @@ class IrrigationTemplateControl(models.Model):
         return self.template + ' ' + self.segment
     
 class IrrigationSettings(models.Model):
-    user = models.ForeignKey('UserProfile')
-    type = models.CharField(max_length=20)
-    arduino_ip_address = models.IPAddressField()
-    arduino_port = models.IntegerField(max_length=5)
+    user_profile = models.ForeignKey('UserProfile')
+    pump = models.ForeignKey('Switch')
+    arduino_IP = models.IPAddressField()
+    arduino_PORT = models.IntegerField(max_length=5)
     def __unicode__(self):
-        return self.user + ' ' + self.type
+        return self.type
