@@ -125,7 +125,7 @@ def getSystemStatus(request):
     
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
-    settings = IrrigationSettings.objects.get.all()[:1]
+    settings = IrrigationSettings.objects.all()[:1]
     
     if 'segment' in request.POST :
         segment = request.POST['segment']
