@@ -61,8 +61,9 @@
 
 	<!-- Form Name -->
 	<legend>Pump status</legend>
-	Pump is: {{ settings.pump.status }} (pin-number: {{ settings.pump.pinNumber }})
-
+	{% for setting in settings %}
+	Pump is: {{ setting.pump.status }} (pin-number: {{ setting.pump.pinNumber }})
+	{% endfor %}
 </fieldset>
 
 <fieldset>

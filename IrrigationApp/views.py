@@ -155,7 +155,7 @@ def getSystemStatus(request):
         urlopen("http://192.168.0.105:80/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'settings':settings[0],'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
