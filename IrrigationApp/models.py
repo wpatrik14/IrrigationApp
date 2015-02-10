@@ -95,11 +95,16 @@ class IrrigationTemplateControl(models.Model):
     day_counter = models.IntegerField(max_length=3)
     def __unicode__(self):
         return self.template + ' ' + self.segment
-    
+
+class Arduino(models.Model):
+    id = models.IntegerField(max_length=1, primary_key=True)
+    IP = models.IPAddressField()
+    PORT = models.IntegerField(max_length=5)
+    def __unicode__(self):
+        return self.IP
+   
 class IrrigationSettings(models.Model):
     id = models.IntegerField(max_length=1, primary_key=True)
     pump = models.ForeignKey('Switch')
-    arduino_IP = models.IPAddressField()
-    arduino_PORT = models.IntegerField(max_length=5)
     def __unicode__(self):
-        return self.type
+        return self.pump

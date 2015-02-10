@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from datetime import date, datetime, timedelta, time
 from django.contrib.auth.models import User
 
-from IrrigationApp.models import IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory
+from IrrigationApp.models import IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -140,6 +140,7 @@ def getSystemStatus(request):
         return redirect('/showLogin')
     
     settings = IrrigationSettings.objects.get(id=0)
+    arduino = Arduino.objects.get(id=0)
     
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
@@ -171,18 +172,20 @@ def getSystemStatus(request):
         mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
         urlopen("http://"+settings.arduino_IP+":"+arduino_PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
-    switches = Switch.objects.all()
-    pump_status = False
-    for switch in switches :
-        if switch.pinNumber != settings.pump.pinNumber :
-            if switch.status == 'on' :
-                pump_status = True
+        switches = Switch.objects.all()
+        pump_status = False
+        for switch in switches :
+            if switch.pinNumber != settings.pump.pinNumber :
+                if switch.status == 'on' :
+                    pump_status = True
+        
+        pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
+        pump.status = pump_status
+        pump.save(update_fields=['status'])
+        settings.pump=pump
+        settings.save(update_fields=['pump'])
+        urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
     
-    pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
-    pump.status = pump_status
-    pump.save(update_fields=['status'])
-    settings.pump=pump
-    settings.save(update_fields=['pump'])
     segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
@@ -328,14 +331,14 @@ def doEditSegment(request):
     else:
         enabled = True
     
-    sensor_list = list(Sensor.objects.all().filter(pinNumber=sensor))
-    switch_list = list(Switch.objects.all().filter(pinNumber=switch))
+    sensor = Sensor.objects.get(pinNumber=sensor)
+    switch = Switch.objects.get(pinNumber=switch)
     
     mSegment = Segment(
                     id = id,
                     name = name,
-                    sensor = sensor_list[0],
-                    switch = switch_list[0],
+                    sensor = sensor,
+                    switch = switch,
                     moisture_minLimit = moisture_minLimit,
                     moisture_maxLimit = moisture_maxLimit,
                     duration_maxLimit = duration_maxLimit,
@@ -371,3 +374,114 @@ def showIrrigationHistory(request):
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
         
     return render(request, 'IrrigationApp/pages/history.html', { 'username':user.username, 'settings':settings, 'irrigationHistories':irrigationHistories })
+
+@login_required
+def showAddSettings(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    switches = Switch.objects.all()
+        
+    return render(request, 'IrrigationApp/pages/addSettings.html', { 'username':user.username, 'switches':switches })
+
+@login_required
+def doAddSettings(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    switch = request.POST['switch']
+    
+    switch = Switch.objects.get(pinNumber=switch)
+    settings = IrrigationSettings(id=0,
+                                  pump=switch)
+    settings.save()
+    
+    return redirect('/getSystemStatus')
+
+@login_required
+def showAddArduino(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+        
+    return render(request, 'IrrigationApp/pages/addArduino.html', { 'username':user.username })
+
+@login_required
+def doAddArduino(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+
+    ip = request.POST['arduino_IP']
+    port = request.POST['arduino_PORT']
+
+    arduino = Arduino(id=0,
+                      IP=ip,
+                      PORT=port)
+    arduino.save()
+
+    res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
+    reader = codecs.getreader("utf-8")
+    js = json.load(reader(res))
+    
+    d01_status=js['digital']['D1'];
+    d02_status=js['digital']['D2'];
+    d03_status=js['digital']['D3'];
+    d04_status=js['digital']['D4'];
+    
+    a01_status=js['analog']['A1'];
+    a02_status=js['analog']['A2'];
+    a03_status=js['analog']['A3'];
+    a04_status=js['analog']['A4'];
+    
+    mSensor1 = Sensor(
+        pinNumber='a1',
+        status=a01_status)
+    mSensor1.save()
+    
+    mSensor2 = Sensor(
+        pinNumber='a2',
+        status=a02_status)
+    mSensor2.save()
+    
+    mSensor3 = Sensor(
+        pinNumber='a3',
+        status=a03_status)
+    mSensor3.save()
+    
+    mSensor4 = Sensor(
+        pinNumber='a4',
+        status=a04_status)
+    mSensor4.save()
+    
+    mSwitch1 = Switch(
+        pinNumber='d1',
+        status=d01_status)
+    mSwitch1.save()
+    
+    mSwitch2 = Switch(
+        pinNumber='d2',
+        status=d02_status)
+    mSwitch2.save()
+    
+    mSwitch3 = Switch(
+        pinNumber='d3',
+        status=d03_status)
+    mSwitch3.save()
+    
+    mSwitch4 = Switch(
+        pinNumber='d4',
+        status=d04_status)
+    mSwitch4.save()
+    
+    return redirect('/showAddSettings')

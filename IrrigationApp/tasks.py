@@ -4,7 +4,7 @@ import codecs
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
-from IrrigationApp.models import WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings
+from IrrigationApp.models import WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, Arduino
 from django.http import HttpResponse
 import json
 import time
@@ -121,7 +121,7 @@ def get_weather_datas():
     
     return '\n\nGETTING WEATHER DATAS........... DONE'
 
-def switchIrrigation(mSegment, status, settings):
+def switchIrrigation(mSegment, status, settings, arduino):
     
     if status == 'on' :
         mSegment.up_time = mSegment.up_time
@@ -147,7 +147,22 @@ def switchIrrigation(mSegment, status, settings):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    urlopen("http://"+settings.arduino_IP+":"+arduino_PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
+    
+    switches = Switch.objects.all()
+    pump_status = False
+    for switch in switches :
+        if switch.pinNumber != settings.pump.pinNumber :
+            if switch.status == 'on' :
+                pump_status = True
+    
+    pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
+    pump.status = pump_status
+    pump.save(update_fields=['status'])
+    settings.pump=pump
+    settings.save(update_fields=['pump'])
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
+    
     return
 
 def changeSegment(segment, up_time):    
@@ -164,11 +179,10 @@ def changeSchedule(schedule, status):
 @app.task
 def automation_control():
     
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-
-    res = urlopen('http://'+settings.arduino_IP+':'+arduino_PORT)
+    arduino = Arduino.objects.get(id=0)
+    settings = IrrigationSettings.objects.get(id=0)
+    
+    res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
@@ -235,27 +249,27 @@ def automation_control():
                 if segment.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
-                        switchIrrigation(segment, 'on',settings)
+                        switchIrrigation(segment, 'on', settings, arduino)
                 else :
                    #turn on irrigation anyway
-                    switchIrrigation(segment, 'on',settings) 
+                    switchIrrigation(segment, 'on', settings, arduino) 
                 
             elif segment.sensor.status<segment.moisture_maxLimit:
                 #turn off irrigation
-                switchIrrigation(segment, 'off',settings)
+                switchIrrigation(segment, 'off', settings, arduino)
                 changeSegment(segment, 0)
                 
             if segment.switch.status == "on" :
                 if segment.up_time+2>segment.duration_maxLimit :
                     #turn off irrigation
-                    switchIrrigation(segment, 'off',settings)
+                    switchIrrigation(segment, 'off', settings, arduino)
                     changeSegment(segment, 0)
                 else :
                     changeSegment(segment, segment.up_time+1)
         else :
             if segment.up_time+2>segment.duration_maxLimit :
                 #turn off irrigation
-                switchIrrigation(segment, 'off',settings)
+                switchIrrigation(segment, 'off', settings, arduino)
                 changeSegment(segment, 0)
             
             if segment.switch.status == "on" :
@@ -267,10 +281,8 @@ def automation_control():
 
 @app.task
 def scheduler():
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    
+    arduino = Arduino.objects.get(id=0)
+    settings = IrrigationSettings.objects.get(id=0)    
     
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%H:%M")
@@ -283,23 +295,23 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                switchIrrigation(segment, 'on',settings)
+                switchIrrigation(segment, 'on', settings, arduino)
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit):
                 simpleSchedule.delete()
-                switchIrrigation(segment, 'off',settings)
+                switchIrrigation(segment, 'off', settings, arduino)
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                switchIrrigation(segment, 'on',settings)
+                switchIrrigation(segment, 'on', settings, arduino)
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) :
                 changeSchedule(repeatableSchedule,'stopped')
-                switchIrrigation(segment, 'off',settings)
+                switchIrrigation(segment, 'off', settings, arduino)
                            
     return '\n\nSCHEDULER........... DONE'

@@ -1,0 +1,40 @@
+{% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+
+		<form class="form-horizontal" id="doAddArduino" action="{% url 'doAddArduino'%}" method="post">
+				{% csrf_token %}
+				<fieldset>
+
+			<!-- Form Name -->
+			<legend>Arduino</legend>
+			
+			<!-- Text input-->
+			<div class="control-group">
+			  <label class="control-label" for="ip_address">IP address</label>
+			  <div class="controls">
+			    <input id="ip_address" name="ip_address" type="text" placeholder="IP address" class="input-large" required="">
+			    <p class="help-block">example: 192.168.1.100</p>
+			  </div>
+			</div>
+			
+			<!-- Text input-->
+			<div class="control-group">
+			  <label class="control-label" for="port_number">Port number</label>
+			  <div class="controls">
+			    <input id="port_number" name="port_number" type="text" placeholder="Port number" class="input-small" required="">
+			    <p class="help-block">range: 0-65535</p>
+			  </div>
+			</div>
+			
+			<!-- Button -->
+				<div class="control-group">
+				  <label class="control-label" for="submit"></label>
+				  <div class="controls">
+				    <button id="submit" name="submit" class="btn btn-success">Save Arduino</button>
+				  </div>
+				</div>
+			
+		</fieldset>
+				</form>
+
+</body>
+</html>
