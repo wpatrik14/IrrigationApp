@@ -19,8 +19,8 @@
 	<tr>
 		<td>{{irrigationHistory.segment_id.name}}</td>
 		<td>{{irrigationHistory.status}}</td>
-		<td>{{irrigationHistory.start_date}}</td>
-		<td>{{irrigationHistory.end_date}}</td>
+		<td>{{irrigationHistory.start_date|date:"Y-m-d"}} {{irrigationHistory.start_date|time:"H:i"}}</td>
+		<td>{{irrigationHistory.end_date|date:"Y-m-d"}} {{irrigationHistory.end_date|time:"H:i"}}</td>
 		<td>{{irrigationHistory.duration}}</td>
 		<td>{{irrigationHistory.moisture_startValue}}</td>
 		<td>{{irrigationHistory.moisture_endValue}}</td>
