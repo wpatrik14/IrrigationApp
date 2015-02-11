@@ -324,7 +324,7 @@ def scheduler():
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
-            if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit):
+            if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit) or simpleSchedule.segment.switch.status == 'off':
                 simpleSchedule.delete()
                 switchIrrigation(simpleSchedule.segment, 'off', settings, arduino)
                 
@@ -335,7 +335,7 @@ def scheduler():
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
-            if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) :
+            if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) or repeatableSchedule.segment.switch.status == 'off':
                 switchIrrigation(repeatableSchedule.segment, 'off', settings, arduino)
                 changeSchedule(repeatableSchedule,'stopped')
                 
