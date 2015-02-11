@@ -184,8 +184,17 @@ def changeSchedule(schedule, status):
 @app.task
 def automation_control():
     
-    arduino = Arduino.objects.get(id=0)
-    settings = IrrigationSettings.objects.get(id=0)
+    arduino = Arduino.objects.all()
+    if arduino.exists() :
+        arduino = Arduino.objects.get(id=0)
+    else:
+        return redirect('/showAddArduino')
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return redirect('/showAddSettings')
     
     res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
     reader = codecs.getreader("utf-8")
@@ -288,8 +297,17 @@ def automation_control():
 
 @app.task
 def scheduler():
-    arduino = Arduino.objects.get(id=0)
-    settings = IrrigationSettings.objects.get(id=0)    
+    arduino = Arduino.objects.all()
+    if arduino.exists() :
+        arduino = Arduino.objects.get(id=0)
+    else:
+        return redirect('/showAddArduino')
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return redirect('/showAddSettings')    
     
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%H:%M")
