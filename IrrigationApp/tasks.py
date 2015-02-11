@@ -133,14 +133,15 @@ def switchIrrigation(mSegment, status, settings, arduino):
             mSegment.irrigation_history=mIrrigationHistory
             
     else :
-        mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
-        mHistory.end_date=datetime.now()
-        mHistory.duration=mSegment.up_time+1
-        mHistory.moisture_endValue=mSegment.sensor.status
-        mHistory.status='done'
-        mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-        mSegment.up_time = 0
-        mSegment.irrigation_history=None
+        if mSegment.irrigation_history is not None :
+            mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
+            mHistory.end_date=datetime.now()
+            mHistory.duration=mSegment.up_time+1
+            mHistory.moisture_endValue=mSegment.sensor.status
+            mHistory.status='done'
+            mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+            mSegment.up_time = 0
+            mSegment.irrigation_history=None
     
     mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
     mSwitch.status = status
@@ -301,23 +302,24 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                switchIrrigation(segment, 'on', settings, arduino)
+                switchIrrigation(simpleSchedule.segment, 'on', settings, arduino)
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit):
                 simpleSchedule.delete()
-                switchIrrigation(segment, 'off', settings, arduino)
+                switchIrrigation(simpleSchedule.segment, 'off', settings, arduino)
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                switchIrrigation(segment, 'on', settings, arduino)
+                switchIrrigation(repeatableSchedule.segment, 'on', settings, arduino)
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) :
+                switchIrrigation(repeatableSchedule.segment, 'off', settings, arduino)
                 changeSchedule(repeatableSchedule,'stopped')
-                switchIrrigation(segment, 'off', settings, arduino)
+                
                            
     return '\n\nSCHEDULER........... DONE'
