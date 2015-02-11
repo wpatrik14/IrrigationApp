@@ -157,13 +157,14 @@ def getSystemStatus(request):
             mIrrigationHistory.save()
             mSegment.irrigation_history=mIrrigationHistory
         else :
-            mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
-            mHistory.end_date=datetime.now()
-            mHistory.duration=mSegment.up_time+1
-            mHistory.moisture_endValue=mSegment.sensor.status
-            mHistory.status='done'
-            mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-            mSegment.up_time = 0
+            if mSegment.irrigation_history is not None:
+                mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
+                mHistory.end_date=datetime.now()
+                mHistory.duration=mSegment.up_time+1
+                mHistory.moisture_endValue=mSegment.sensor.status
+                mHistory.status='done'
+                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+                mSegment.up_time = 0
     
         mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
         mSwitch.status = status
