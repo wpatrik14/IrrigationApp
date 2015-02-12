@@ -73,8 +73,8 @@ WSGI_APPLICATION = 'IrrigationApp.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django', 
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
         'NAME': 'IrrigationApp',
         'USER': 'root',
         'PASSWORD': '',
