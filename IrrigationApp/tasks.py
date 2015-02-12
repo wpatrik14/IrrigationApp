@@ -124,7 +124,6 @@ def get_weather_datas():
 def switchIrrigation(mSegment, status, settings, arduino):
     
     if status == 'on' :
-        mSegment.up_time = mSegment.up_time
         if mSegment.irrigation_history is None :
             mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                    moisture_startValue=mSegment.sensor.status
@@ -301,13 +300,13 @@ def scheduler():
     if arduino.exists() :
         arduino = Arduino.objects.get(id=0)
     else:
-        return redirect('/showAddArduino')
+        return "Arduino was not found"
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
     else:
-        return redirect('/showAddSettings')    
+        return "Please set up settings first"
     
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%H:%M")
