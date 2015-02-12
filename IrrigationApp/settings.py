@@ -77,7 +77,7 @@ DATABASES = {
         'ENGINE': 'mysql.connector.django', 
         'NAME': 'IrrigationApp',
         'USER': 'root',
-        'PASSWORD': 'test',
+        'PASSWORD': '',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
