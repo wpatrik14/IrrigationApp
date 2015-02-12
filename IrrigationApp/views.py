@@ -181,15 +181,14 @@ def getSystemStatus(request):
                     pump_status = True
         
         pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
-        pump.status = pump_status
+        if pump_status :
+            pump.status = "on"
+        else :
+            pump.status = "off"
         pump.save(update_fields=['status'])
         settings.pump=pump
         settings.save(update_fields=['pump'])
-        if pump.status :
-            status = "on"
-        else :
-            status = "off"
-        urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+status)
+        urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
     
     segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
