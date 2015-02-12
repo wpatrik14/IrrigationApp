@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "djkombu",
     'djcelery',
     'IrrigationApp'
 )
@@ -108,6 +109,11 @@ USE_TZ = True
 
 BROKER_URL = "amqp://guest:guest@localhost:5672/"
 CELERY_RESULT_BACKEND = "amqp"
+
+
+BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+
+
 
 CELERY_IMPORTS = ('IrrigationApp.tasks')
 from celery.schedules import crontab
