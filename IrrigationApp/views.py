@@ -495,6 +495,6 @@ def showMoistureChart(request):
     
     return render(request, 'IrrigationApp/charts/moisture.html', { })
 
-def saveMoistureDatas(request):
+def saveMoistureData(request):
     
     return HttpResponse('Data:' + request.POST['datas']);
