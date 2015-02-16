@@ -34,6 +34,8 @@ urlpatterns = patterns('',
     url(r'deleteSimpleSchedule[/]?$', views.deleteSimpleSchedule, name='deleteSimpleSchedule'),
     url(r'deleteRepeatableSchedule[/]?$', views.deleteRepeatableSchedule, name='deleteRepeatableSchedule'),
     
+    url(r'showMoistureChart[/]?$', views.showMoistureChart, name='showMoistureChart'),
+    
     url(r'.*', views.showLogin, name='showLogin'),
     
     

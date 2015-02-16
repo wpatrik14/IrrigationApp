@@ -85,7 +85,8 @@ class IrrigationHistory(models.Model):
     
 class IrrigationTemplate(models.Model):
     name = models.CharField(max_length=20)
-    values = models.TextField()
+    day_number = models.IntegerField(max_length=3)
+    value = models.IntegerField(max_length=4)
     def __unicode__(self):
         return self.name + ' ' + self.values
     

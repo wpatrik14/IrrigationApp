@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highcharts Example</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<style type="text/css">
+${demo.css}
+		</style>
+		<script type="text/javascript">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            type: 'spline',
+            margin: [70, 50, 60, 80],
+            events: {
+                click: function (e) {
+                    // find the clicked values and the series
+                    var x = e.xAxis[0].value,
+                        y = e.yAxis[0].value,
+                        series = this.series[0];
+
+                    // Add it
+                    var datas = series.data;
+                    var addPoint=1;
+                    for (var i=0; i<datas.length; i++) {
+                    	if (datas[i].x >= Math.round(x)){
+                    		addPoint=0;
+                    	}
+                    }
+                    if (addPoint==1 && y>=0){
+                    	series.addPoint([Math.round(x), Math.round(y)]);
+                    }
+
+                }
+            }
+        },
+        title: {
+            text: 'Moisture datas for irrigation'
+        },
+        subtitle: {
+            text: 'Click the plot area to add a point. Click a point to remove it.'
+        },
+        xAxis: {
+            gridLineWidth: 1,
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            maxZoom: 7
+        },
+        yAxis: {
+            title: {
+                text: 'Moisture Value'
+            },
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            maxZoom: 50,
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        legend: {
+            enabled: true
+        },
+        exporting: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                lineWidth: 1,
+                point: {
+                    events: {
+                        'click': function () {
+                            if (this.series.data.length > 1) {
+                                this.remove();
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+            data: [[0, 50], [1, 50], [2, 50], [3, 50], [4, 50], [5, 50], [6, 50]]
+        }]
+    });
+});
+
+$('#post-form').on('submit', function(event){
+    event.preventDefault();
+    console.log("form submitted!")  // sanity check
+    create_post();
+});
+
+function save_datas() {
+    console.log("saving datas") // sanity check
+    $.ajax({
+        url : "{% url 'saveMoistureData'%}", // the endpoint
+        type : "POST", // http method
+        data : { datas : "Hello" }, // data sent with the post request
+
+        // handle a successful response
+        success : function(json) {
+            console.log(json); // log the returned json to the console
+            console.log("success"); // another sanity check
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+    });
+};
+
+
+		</script>
+	</head>
+	<body>
+<script src="js/highcharts.js"></script>
+<script src="js/modules/exporting.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
+
+<form action="{% url 'saveMoistureData'%}" method="POST" id="post-form">
+	
+	<div class="control-group">
+				  <label class="control-label" for="submit"></label>
+				  <div class="controls">
+				    <button id="submit" name="submit" class="btn btn-success">Save Data</button>
+				  </div>
+				</div>
+			
+	</form>
+
+	</body>
+</html>
