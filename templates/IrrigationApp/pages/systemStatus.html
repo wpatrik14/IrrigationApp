@@ -43,7 +43,7 @@
 				
 				
 			</form>
-		-->{{ csrf_token }}
+		-->
 			{% if segment.switch.status == "on" %}
 				<input id="toggle-event" type="checkbox" data-toggle="toggle">
 				<script>
@@ -68,7 +68,7 @@
 				      $.ajax({
 						    url:"{% url 'getSystemStatus'%}",
 						    type: "POST",
-						    data: {segment: '{{ segment.id }}', status: 'off'},
+						    data: {segment: '{{ segment.id }}', status: 'on', csrfmiddlewaretoken: '{{ csrf_token }}'},
 						    success:function(response){},
 						    complete:function(){},
 						    error:function (xhr, textStatus, thrownError){}
