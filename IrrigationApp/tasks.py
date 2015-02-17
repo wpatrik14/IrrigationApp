@@ -77,7 +77,7 @@ def get_weather_data_from_server():
     icon_4=js['data']['weather'][4]['weatherIconUrl'][0]['value'];
         
     mWeatherForecast_0 = WeatherForecast(
-        id=0,
+        day=0,
         forecast_date=date_0,
         precipMM=precipMM_0,
         tempMax_C=tempMaxC_0,
@@ -86,7 +86,7 @@ def get_weather_data_from_server():
     mWeatherForecast_0.save()
     
     mWeatherForecast_1 = WeatherForecast(
-        id=1,
+        day=1,
         forecast_date=date_1,
         precipMM=precipMM_1,
         tempMax_C=tempMaxC_1,
@@ -95,7 +95,7 @@ def get_weather_data_from_server():
     mWeatherForecast_1.save()
     
     mWeatherForecast_2 = WeatherForecast(
-        id=2,
+        day=2,
         forecast_date=date_2,
         precipMM=precipMM_2,
         tempMax_C=tempMaxC_2,
@@ -104,7 +104,7 @@ def get_weather_data_from_server():
     mWeatherForecast_2.save()
     
     mWeatherForecast_3 = WeatherForecast(
-        id=3,
+        day=3,
         forecast_date=date_3,
         precipMM=precipMM_3,
         tempMax_C=tempMaxC_3,
@@ -113,7 +113,7 @@ def get_weather_data_from_server():
     mWeatherForecast_3.save()
     
     mWeatherForecast_4 = WeatherForecast(
-        id=4,
+        day=4,
         forecast_date=date_4,
         precipMM=precipMM_4,
         tempMax_C=tempMaxC_4,

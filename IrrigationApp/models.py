@@ -18,7 +18,7 @@ class WeatherHistory(models.Model):
         return self.temp_C + ' ' + self.precip_MM
         
 class WeatherForecast(models.Model):
-    id = models.IntegerField(max_length=1, primary_key=True)
+    day = models.IntegerField(max_length=1, primary_key=True)
     tempMax_C = models.IntegerField(max_length=3)
     tempMin_C = models.IntegerField(max_length=3)
     precipMM=models.FloatField(max_length=4)
