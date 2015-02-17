@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 import codecs
 import json
 
-from IrrigationApp.models import IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino
+from IrrigationApp.models import IrrigationTemplate, IrrigationTemplateValues, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
