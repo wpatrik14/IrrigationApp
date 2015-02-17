@@ -356,7 +356,7 @@ def follow_irrigation_template():
     irrigationTemplates = IrrigationTemplate.objects.all()
     
     for irrigationTemplate in irrigationTemplates :
-        irrigationTemplateValues = IrrigationTemplateValues.objects.filter(id=irrigationTemplate.id)
+        irrigationTemplateValues = IrrigationTemplateValue.objects.filter(id=irrigationTemplate.id)
         for irrigationTemplateValue in irrigationTemplateValues :
             if irrigationTemplateValue.day_number == irrigationTemplate.day_counter :
                 # getting the moisture value and setting the segment
