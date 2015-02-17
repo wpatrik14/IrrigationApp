@@ -385,8 +385,8 @@ def follow_irrigation_template():
         except Exception as e :
             switchIrrigation(segment, 'off', settings, arduino)
             segment.type='Manual'
-            segment.irrigation_template=None
-            segment.save(update_fields=['type'])
+            segment.template=None
+            segment.save(update_fields=['type','template'])
             irrigationTemplate.day_counter = 0
             irrigationTemplate.save(update_fields=['day_counter'])
     

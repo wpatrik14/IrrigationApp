@@ -38,7 +38,7 @@ class Segment(models.Model):
     forecast_enabled=models.BooleanField(default=False)
     type=models.CharField(max_length=10)
     irrigation_history=models.ForeignKey('IrrigationHistory', null = True)
-    irrigation_template=models.ForeignKey('IrrigationTemplate', null = True)
+    template=models.ForeignKey('IrrigationTemplate', null = True)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
