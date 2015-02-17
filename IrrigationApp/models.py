@@ -22,7 +22,7 @@ class WeatherForecast(models.Model):
     tempMax_C = models.IntegerField(max_length=3)
     tempMin_C = models.IntegerField(max_length=3)
     precipMM=models.FloatField(max_length=4)
-    forecast_date=models.DateField(primary_key=True)
+    forecast_date=models.DateField()
     update=models.DateTimeField(default=datetime.now, blank=True)
     icon=models.TextField()
     def __unicode__(self):
