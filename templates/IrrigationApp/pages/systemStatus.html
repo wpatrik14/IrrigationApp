@@ -29,7 +29,7 @@
 		<td>{{segment.name}}</td>
 		<td>{{segment.sensor.status}}</td>
 		<td>
-			<form id="change_switch" action="getSystemStatus" method="post">
+			<form id="change_switch" name="change_switch" action="getSystemStatus" method="post">
 				{% csrf_token %}
 				{% if segment.switch.status == "on" %}
 				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
@@ -52,14 +52,30 @@
 				<script>
 				  $(function() {
 				    $('#toggle-event').change(function() {
-				      $.ajax({
-						    url:"{% url 'getSystemStatus'%}",
-						    type: "POST",
-						    data: $('form#change_switch').serialize(),
-						    success:function(response){},
-						    complete:function(){},
-						    error:function (xhr, textStatus, thrownError){}
+				      //callback handler for form submit
+						$("#change_switch").submit(function(e)
+						{
+						    var postData = $(this).serializeArray();
+						    var formURL = $(this).attr("action");
+						    $.ajax(
+						    {
+						        url : formURL,
+						        type: "POST",
+						        data : postData,
+						        success:function(data, textStatus, jqXHR) 
+						        {
+						            //data: return data from server
+						        },
+						        error: function(jqXHR, textStatus, errorThrown) 
+						        {
+						            //if fails      
+						        }
+						    });
+						    e.preventDefault(); //STOP default action
+						    e.unbind(); //unbind. to stop multiple form submit.
 						});
+						 
+						$("#ajaxform").submit(); //Submit  the FORM
 				    })
 				  })
 				</script>
@@ -68,14 +84,30 @@
 				<script>
 				  $(function() {
 				    $('#toggle-event').change(function() {
-				      $.ajax({
-						    url:"{% url 'getSystemStatus'%}",
-						    type: "POST",
-						    data: {segment: '{{ segment.id }}', status: 'on', csrfmiddlewaretoken: '{{ csrf_token }}'},
-						    success:function(response){},
-						    complete:function(){},
-						    error:function (xhr, textStatus, thrownError){}
+				      //callback handler for form submit
+						$("#change_switch").submit(function(e)
+						{
+						    var postData = $(this).serializeArray();
+						    var formURL = $(this).attr("action");
+						    $.ajax(
+						    {
+						        url : formURL,
+						        type: "POST",
+						        data : postData,
+						        success:function(data, textStatus, jqXHR) 
+						        {
+						            //data: return data from server
+						        },
+						        error: function(jqXHR, textStatus, errorThrown) 
+						        {
+						            //if fails      
+						        }
+						    });
+						    e.preventDefault(); //STOP default action
+						    e.unbind(); //unbind. to stop multiple form submit.
 						});
+						 
+						$("#ajaxform").submit(); //Submit  the FORM
 				    })
 				  })
 				</script>
