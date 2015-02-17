@@ -507,7 +507,7 @@ def doAddIrrigationTemplate(request):
     
     segment=Segment.objects.get(id=segment_id)
     irrigationTemplate = IrrigationTemplate(name=name,
-                                            segment=segment)
+                                            segment_id=segment)
     irrigationTemplate.save()
     segment.template=irrigationTemplate
     segment.save(update_fields=['template'])
