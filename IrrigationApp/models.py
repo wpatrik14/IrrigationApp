@@ -81,19 +81,19 @@ class IrrigationHistory(models.Model):
     moisture_endValue = models.IntegerField(max_length=3,default=0)
     status = models.CharField(max_length=10, default='running')
     def __unicode__(self):
-        return self.segment + ' ' + self.date
+        return self.start_date + ' ' + self.end_date
     
-class IrrigationTemplate(models.Model):
-    name = models.CharField(max_length=20)
+class IrrigationTemplateValue(models.Model):
+    template = models.ForeignKey('IrrigationTemplate')
     day_number = models.IntegerField(max_length=3)
     value = models.IntegerField(max_length=4)
     def __unicode__(self):
-        return self.name + ' ' + self.values
+        return self.day_number + ' ' + self.values
     
-class IrrigationTemplateControl(models.Model):
-    template = models.ForeignKey('IrrigationTemplate')
+class IrrigationTemplate(models.Model):
     segment = models.ForeignKey('Segment')
-    day_counter = models.IntegerField(max_length=3)
+    day_counter = models.IntegerField(max_length=3, default=0)
+    name = models.CharField(max_length=15)
     def __unicode__(self):
         return self.template + ' ' + self.segment
 

@@ -35,7 +35,10 @@ urlpatterns = patterns('',
     url(r'deleteRepeatableSchedule[/]?$', views.deleteRepeatableSchedule, name='deleteRepeatableSchedule'),
     
     url(r'showMoistureChart[/]?$', views.showMoistureChart, name='showMoistureChart'),
-    url(r'saveMoistureData[/]?$', views.saveMoistureData, name='saveMoistureData'),
+    
+    url(r'showAddIrrigationTemplate[/]?$', views.showAddIrrigationTemplate, name='showAddIrrigationTemplate'),
+    url(r'doAddIrrigationTemplate[/]?$', views.doAddIrrigationTemplate, name='doAddIrrigationTemplate'),
+    url(r'doAddIrrigationTemplateValues[/]?$', views.doAddIrrigationTemplateValues, name='doAddIrrigationTemplateValues'),
     
     url(r'.*', views.showLogin, name='showLogin'),
     

@@ -495,6 +495,38 @@ def showMoistureChart(request):
     
     return render(request, 'IrrigationApp/charts/moisture.html', { })
 
-def saveMoistureData(request):
+def showAddIrrigationTemplate(request):
+    segments = Segment.objects.all()
     
-    return HttpResponse('Data:' + request.POST['datas']);
+    return render(request, 'IrrigationApp/pages/addIrrigationTemplate.html', { 'segments':segments })
+
+def doAddIrrigationTemplate(request):
+    
+    segment_id = request.POST['segment']
+    name = request.POST['name']
+    
+    segment=Segment.objects.get(id=segment_id)
+    
+    irrigationTemplate = IrrigationTemplate(name=name,
+                                            segment=segment)
+    irrigationTemplate.save()
+    
+    return HttpResponse('IrrigationTemplate saved: (id:' + segment_id + ', name:' + name);
+
+def doAddIrrigationTemplateValues(request):
+    
+    irrigationTemplate = IrrigationTemplate.objects.get(id=0)
+    IrrigationTemplateValues(template=irrigationTemplate,
+                             day_number=0,
+                             value=500).save()
+    IrrigationTemplateValues(template=irrigationTemplate,
+                             day_number=1,
+                             value=800).save()
+    IrrigationTemplateValues(template=irrigationTemplate,
+                             day_number=2,
+                             value=400).save()
+    IrrigationTemplateValues(template=irrigationTemplate,
+                             day_number=3,
+                             value=600).save()                                                                           
+    
+    return HttpResponse('IrrigationTemplateValues saved');

@@ -132,6 +132,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'IrrigationApp.tasks.scheduler',
         'schedule': crontab(minute='*/1'),
     },
+    'follow_irrigation_template': {
+        'task': 'IrrigationApp.tasks.follow_irrigation_template',
+        'schedule': crontab(minute='*/1'),
+    },
 }
 
 CELERY_TIMEZONE = 'Europe/Budapest'

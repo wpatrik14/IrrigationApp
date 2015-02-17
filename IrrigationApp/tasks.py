@@ -340,3 +340,22 @@ def scheduler():
                 
                            
     return '\n\nSCHEDULER........... DONE'
+
+
+@app.task
+def follow_irrigation_template():
+    
+    irrigationTemplates = IrrigationTemplate.objects.all()
+    
+    for irrigationTemplate in irrigationTemplates :
+        irrigationTemplateValues = IrrigationTemplateValues.objects.filter(id=irrigationTemplate.id)
+        for irrigationTemplateValue in irrigationTemplateValues :
+            if irrigationTemplateValue.day_number == irrigationTemplate.day_counter :
+                # getting the moisture value and setting the segment
+                segment = Segment.objects.get(id=irrigationTemplate.segment.id)
+                segment.moisture_minLimit=irrigationTemplateValue.value - 100
+                segment.moisture_maxLimit=irrigationTemplateValue.value + 100
+        irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
+            
+    
+    return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
