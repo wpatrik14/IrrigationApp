@@ -511,7 +511,7 @@ def doAddIrrigationTemplate(request):
                                             segment=segment)
     irrigationTemplate.save()
     
-    return HttpResponse('IrrigationTemplate saved: (id:' + segment_id + ', name:' + name);
+    return HttpResponse('IrrigationTemplate saved');
 
 def doAddIrrigationTemplateValues(request):
     
