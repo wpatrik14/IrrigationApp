@@ -363,7 +363,8 @@ def follow_irrigation_template():
                 segment = Segment.objects.get(id=irrigationTemplate.segment.id)
                 segment.moisture_minLimit=irrigationTemplateValue.value - 100
                 segment.moisture_maxLimit=irrigationTemplateValue.value + 100
+                segment.save(update_fields=['moisture_minLimit','moisture_maxLimit'])
         irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
-            
+        irrigationTemplate.save(update_fields=['day_counter'])    
     
     return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
