@@ -1,23 +1,27 @@
 {% include "IrrigationApp/pages/frame/htmlHeader.html" %}
 
-		<form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
+		<form class="form-horizontal" id="doEditIrrigationTemplate" action="{% url 'doEditIrrigationTemplate'%}" method="post">
 				{% csrf_token %}
 				<fieldset>
 
 			<!-- Form Name -->
-			<legend>Add irrigation template</legend>
+			<legend>Edit irrigation template </legend>
 			
-			<!-- Text input-->
+			<!-- Select Basic -->
 			<div class="control-group">
-			  <label class="control-label" for="name">Name</label>
-			  <div class="controls">
-			    <input id="name" name="name" type="text" placeholder="Name" class="input-large" required="">
+				  <label class="control-label" for="irrigationTemplate">Name</label>
+				  <div class="controls">
+				    <select id="irrigationTemplate" name="irrigationTemplate" class="input-xlarge">
+			      {% for irrigationTemplate in irrigationTemplates %}
+			      <option value="{{ irrigationTemplate.id }}">{{ irrigationTemplate.name }}</option>
+			      {% endfor %}
+			    </select>
 			  </div>
 			</div>
 				
 			<!-- Select Basic -->
 			<div class="control-group">
-				  <label class="control-label" for="segment">Segment</label>
+				  <label class="control-label" for="sensor">segment</label>
 				  <div class="controls">
 				    <select id="segment" name="segment" class="input-xlarge">
 			      {% for segment in segments %}
