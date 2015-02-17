@@ -361,8 +361,8 @@ def follow_irrigation_template():
     irrigationTemplates = IrrigationTemplate.objects.all()
     
     for irrigationTemplate in irrigationTemplates :
-        irrigationTemplateValue = IrrigationTemplateValue.objects.filter(template=irrigationTemplate.id).get(day_number=irrigationTemplate.day_counter)
-        if irrigationTemplateValue.exists() :   
+        try:
+            irrigationTemplateValue = IrrigationTemplateValue.objects.filter(template=irrigationTemplate.id).get(day_number=irrigationTemplate.day_counter)
             # getting the moisture value and setting the segment
             segment = Segment.objects.get(id=irrigationTemplate.segment.id)
             if segment.type == 'Automatic' :
@@ -371,7 +371,7 @@ def follow_irrigation_template():
                 segment.save(update_fields=['moisture_minLimit','moisture_maxLimit'])
                 irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
                 irrigationTemplate.save(update_fields=['day_counter'])
-        else :
+        except Exception as e :
             irrigationTemplate.day_counter = 0
             irrigationTemplate.save(update_fields=['day_counter'])
     
