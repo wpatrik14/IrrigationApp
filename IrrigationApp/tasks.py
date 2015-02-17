@@ -10,7 +10,7 @@ import json
 import time
 from urllib.request import urlopen
 
-#app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
+app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
 #app = Celery('tasks', backend="djkombu.transport.DatabaseTransport", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
 
 def get_weather_data_from_server():
