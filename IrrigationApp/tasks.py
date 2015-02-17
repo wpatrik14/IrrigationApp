@@ -357,6 +357,17 @@ def scheduler():
 #@app.task
 @task()
 def follow_irrigation_template():
+    arduino = Arduino.objects.all()
+    if arduino.exists() :
+        arduino = Arduino.objects.get(id=0)
+    else:
+        return "Arduino was not found"
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return "Please set up settings first"
     
     irrigationTemplates = IrrigationTemplate.objects.all()
     
@@ -372,7 +383,9 @@ def follow_irrigation_template():
                 irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
                 irrigationTemplate.save(update_fields=['day_counter'])
         except Exception as e :
+            switchIrrigation(segment, 'off', settings, arduino)
             segment.type='Manual'
+            segment.irrigation_template=None
             segment.save(update_fields=['type'])
             irrigationTemplate.day_counter = 0
             irrigationTemplate.save(update_fields=['day_counter'])

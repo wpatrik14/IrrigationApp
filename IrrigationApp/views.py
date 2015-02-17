@@ -506,10 +506,11 @@ def doAddIrrigationTemplate(request):
     name = request.POST['name']
     
     segment=Segment.objects.get(id=segment_id)
-    
     irrigationTemplate = IrrigationTemplate(name=name,
                                             segment=segment)
     irrigationTemplate.save()
+    segment.irrigation_template=irrigationTemplate
+    segment.save(update_fields=['irrigation_template'])
     
     return HttpResponse('IrrigationTemplate saved');
 
