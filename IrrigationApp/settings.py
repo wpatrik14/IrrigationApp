@@ -107,8 +107,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-BROKER_URL = "amqp://guest:guest@localhost:5672/"
-CELERY_RESULT_BACKEND = "amqp"
+#BROKER_URL = "amqp://guest:guest@localhost:5672/"
+BROKER_URL = 'django://'
+#CELERY_RESULT_BACKEND = "amqp"
 
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 #BROKER_BACKEND = "django"
