@@ -52,7 +52,7 @@
 				      $.ajax({
 						    url:"{% url 'getSystemStatus'%}",
 						    type: "POST",
-						    data: {segment: '{{ segment.id }}', status: 'off', csrfmiddlewaretoken: '{{ csrf_token }}'},
+						    data: {segment: '{{ segment.id }}', status: 'off', csrftoken: '{{ csrf_token }}'},
 						    success:function(response){},
 						    complete:function(){},
 						    error:function (xhr, textStatus, thrownError){}
