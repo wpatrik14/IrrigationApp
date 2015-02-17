@@ -521,7 +521,7 @@ def showEditIrrigationTemplate(request):
 def doEditIrrigationTemplate(request):
     
     segment_id = request.POST['segment']
-    irrigationTemplate_id = request.POST['name']
+    irrigationTemplate_id = request.POST['irrigationTemplate']
     
     segment=Segment.objects.get(id=segment_id)
     irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
