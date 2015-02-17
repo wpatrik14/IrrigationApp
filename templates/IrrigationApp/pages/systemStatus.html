@@ -34,14 +34,52 @@
 				{% if segment.switch.status == "on" %}
 				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
 				<input type="hidden" name="status" value = "off"/>
-				<button id="switch" name="switch" class="btn btn-success">Turn ON</button>
+				<!--
+				<button id="switch" name="switch" class="btn btn-default">ON </button>
+				-->
 				{% else %}
 				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
 				<input type="hidden" name="status" value = "on"/>
-				<button id="switch" name="switch" class="btn btn-danger">Turn OFF</button>
+				<!--
+				<button id="switch" name="switch" class="btn btn-default">OFF</button>
+				-->
 				{% endif %}
+				
+				
 			</form>
-		
+			{% if segment.switch.status == "on" %}
+				<input id="toggle-event" checked type="checkbox" data-toggle="toggle">
+				<script>
+				  $(function() {
+				    $('#toggle-event').change(function() {
+				      $.ajax({
+						    url:"{% url 'getSystemStatus'%}",
+						    type: "POST",
+						    data: $('form#change_switch').serialize(),
+						    success:function(response){},
+						    complete:function(){},
+						    error:function (xhr, textStatus, thrownError){}
+						});
+				    })
+				  })
+				</script>
+				{% else %}
+				<input id="toggle-event" type="checkbox" data-toggle="toggle">
+				<script>
+				  $(function() {
+				    $('#toggle-event').change(function() {
+				      $.ajax({
+						    url:"{% url 'getSystemStatus'%}",
+						    type: "POST",
+						    data: {segment: '{{ segment.id }}', status: 'on', csrfmiddlewaretoken: '{{ csrf_token }}'},
+						    success:function(response){},
+						    complete:function(){},
+						    error:function (xhr, textStatus, thrownError){}
+						});
+				    })
+				  })
+				</script>
+				{% endif %}
 		</td>
 		<td>{{segment.up_time}}</td>
 		<td>{{segment.type}}</td>
