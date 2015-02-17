@@ -388,6 +388,7 @@ def follow_irrigation_template():
             segment.template=None
             segment.save(update_fields=['type','template'])
             irrigationTemplate.day_counter = 0
-            irrigationTemplate.save(update_fields=['day_counter'])
+            irrigationTemplate.segment_id = segment
+            irrigationTemplate.save(update_fields=['day_counter','segment_id'])
     
     return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
