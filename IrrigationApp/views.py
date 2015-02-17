@@ -516,16 +516,16 @@ def doAddIrrigationTemplate(request):
 def doAddIrrigationTemplateValues(request):
     
     irrigationTemplate = IrrigationTemplate.objects.all()
-    IrrigationTemplateValues(template=irrigationTemplate[0],
+    IrrigationTemplateValue(template=irrigationTemplate[0],
                              day_number=0,
                              value=500).save()
-    IrrigationTemplateValues(template=irrigationTemplate[0],
+    IrrigationTemplateValue(template=irrigationTemplate[0],
                              day_number=1,
                              value=800).save()
-    IrrigationTemplateValues(template=irrigationTemplate[0],
+    IrrigationTemplateValue(template=irrigationTemplate[0],
                              day_number=2,
                              value=400).save()
-    IrrigationTemplateValues(template=irrigationTemplate[0],
+    IrrigationTemplateValue(template=irrigationTemplate[0],
                              day_number=3,
                              value=600).save()                                                                           
     
