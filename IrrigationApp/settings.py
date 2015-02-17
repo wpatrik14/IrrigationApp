@@ -113,6 +113,8 @@ USE_TZ = True
 #BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 #BROKER_BACKEND = "django"
 
+BROKER_URL = 'django://'
+
 CELERY_IMPORTS = ('IrrigationApp.tasks')
 from celery.schedules import crontab
 
