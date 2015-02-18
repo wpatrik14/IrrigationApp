@@ -12,16 +12,6 @@
 			  <label for="name">Name</label>
 			    <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
 			</div>
-				
-			<!-- Select Basic -->
-			<div class="form-group">
-				  <label for="segment">Segment</label>
-				    <select id="segment" name="segment" class="form-control">
-			      {% for segment in segments %}
-			      <option value="{{ segment.id }}">{{ segment.name }}</option>
-			      {% endfor %}
-			    </select>
-			</div>
 			
 			<!-- Button -->
 				<div class="form-group">
@@ -31,6 +21,6 @@
 			
 		</fieldset>
 				</form>
-
+</div>
 </body>
 </html>
