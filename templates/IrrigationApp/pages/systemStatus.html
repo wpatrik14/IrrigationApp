@@ -34,7 +34,7 @@
 				{% if segment.switch.status == "on" %}
 				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
 				<input type="hidden" name="status" value = "off"/>
-				<button id="switch" name="switch" class="btn btn-success">Turn OFF</button>
+				<button id="switch" name="switch" class="btn btn-success" active>Turn OFF</button>
 				{% else %}
 				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
 				<input type="hidden" name="status" value = "on"/>
