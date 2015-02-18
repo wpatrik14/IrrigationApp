@@ -336,6 +336,8 @@ def doEditSegment(request):
         enabled = False
     else:
         enabled = True
+    
+    mSegment = Segment.objects.get(id=id)
         
     if irrigationTemplate_id=="None":
         irrigationTemplate=None
@@ -347,8 +349,7 @@ def doEditSegment(request):
     
     sensor = Sensor.objects.get(pinNumber=sensor)
     switch = Switch.objects.get(pinNumber=switch)
-    
-    mSegment = Segment.objects.get(id=id)   
+       
     mSegment.name = name
     mSegment.sensor = sensor
     mSegment.switch = switch
