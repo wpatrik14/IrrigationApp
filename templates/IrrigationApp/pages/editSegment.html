@@ -53,9 +53,10 @@
 				
 				<!-- Select Basic -->
 			<div class="control-group">
-				  <label class="control-label" for="irrigationTemplate">Name</label>
+				  <label class="control-label" for="irrigationTemplate">Template</label>
 				  <div class="controls">
 				    <select id="irrigationTemplate" name="irrigationTemplate" class="input-xlarge">
+			      <option value="None"></option>
 			      {% for irrigationTemplate in irrigationTemplates %}
 			      <option value="{{ irrigationTemplate.id }}">{{ irrigationTemplate.name }}</option>
 			      {% endfor %}

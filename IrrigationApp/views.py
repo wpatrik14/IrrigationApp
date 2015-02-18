@@ -336,28 +336,32 @@ def doEditSegment(request):
         enabled = False
     else:
         enabled = True
+        
+    if irrigationTemplate_id=="None":
+        irrigationTemplate=None
+    else:
+        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+        irrigationTemplate.day_counter=0
+        irrigationTemplate.segment_id=mSegment
+        irrigationTemplate.save(update_fields=['day_counter','segment_id'])
     
     sensor = Sensor.objects.get(pinNumber=sensor)
     switch = Switch.objects.get(pinNumber=switch)
     
-    mSegment = Segment(
-                    id = id,
-                    name = name,
-                    sensor = sensor,
-                    switch = switch,
-                    moisture_minLimit = moisture_minLimit,
-                    moisture_maxLimit = moisture_maxLimit,
-                    duration_maxLimit = duration_maxLimit,
-                    forecast_enabled = enabled,
-                    type = type
-                            )
+    mSegment = Segment.objects.get(id=id)   
+    mSegment.name = name
+    mSegment.sensor = sensor
+    mSegment.switch = switch
+    mSegment.moisture_minLimit = moisture_minLimit
+    mSegment.moisture_maxLimit = moisture_maxLimit
+    mSegment.duration_maxLimit = duration_maxLimit
+    mSegment.forecast_enabled = enabled
+    mSegment.template = irrigationTemplate
+    mSegment.type = type
     mSegment.save()
     
     
-    irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-    irrigationTemplate.day_counter=0
-    irrigationTemplate.segment_id=mSegment
-    irrigationTemplate.save(update_fields=['day_counter','segment_id'])
+    
     
     return redirect('/getSystemStatus')
 
