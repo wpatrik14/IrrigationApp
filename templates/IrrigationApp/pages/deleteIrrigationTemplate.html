@@ -1,11 +1,11 @@
 {% include "IrrigationApp/pages/frame/htmlHeader.html" %}
 
-		<form class="form-horizontal" id="doEditIrrigationTemplate" action="{% url 'doEditIrrigationTemplate'%}" method="post">
+		<form class="form-horizontal" id="doDeleteIrrigationTemplate" action="{% url 'doDeleteIrrigationTemplate'%}" method="post">
 				{% csrf_token %}
 				<fieldset>
 
 			<!-- Form Name -->
-			<legend>Edit irrigation template </legend>
+			<legend>Delete irrigation template </legend>
 			
 			<!-- Select Basic -->
 			<div class="control-group">
