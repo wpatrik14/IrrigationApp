@@ -86,35 +86,6 @@
 		        }]
 		    });
 		});
-/*		
-		$('#post-form').on('submit', function(event){
-		    event.preventDefault();
-		    console.log("form submitted!")  // sanity check
-		    create_post();
-		});
-
-function save_datas() {
-    console.log("saving datas") // sanity check
-    $.ajax({
-        url : "{% url 'saveMoistureData'%}", // the endpoint
-        type : "POST", // http method
-        data : { datas : "Hello" }, // data sent with the post request
-
-        // handle a successful response
-        success : function(json) {
-            console.log(json); // log the returned json to the console
-            console.log("success"); // another sanity check
-        },
-
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
-    });
-};
-*/
 		</script>
 	</head>
 	<body>
@@ -122,18 +93,5 @@ function save_datas() {
 <script src="/templates/IrrigationApp/charts/js/modules/exporting.js"></script>
 
 <div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
-
-<!--
-<form action="{% url 'doAddIrrigationTemplateValues'%}" method="POST" id="post-form">
-	
-	<div class="control-group">
-				  <label class="control-label" for="submit"></label>
-				  <div class="controls">
-				    <button id="submit" name="submit" class="btn btn-success">Save Data</button>
-				  </div>
-				</div>
-			
-	</form>
--->
 	</body>
 </html>
