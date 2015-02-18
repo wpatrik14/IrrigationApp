@@ -130,8 +130,10 @@ def doAddNewSegment(request):
                             )
     mSegment.save()
     
-    irrigationTemplate.segment_id=mSegment
-    irrigationTemplate.save(update_fields=['day_counter','segment_id'])
+    if irrigationTemplate is not None :
+        irrigationTemplate.segment_id=mSegment
+        irrigationTemplate.save(update_fields=['day_counter','segment_id'])
+    
     return redirect('/getSystemStatus')
 
 @login_required
