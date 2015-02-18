@@ -34,12 +34,11 @@ urlpatterns = patterns('',
     url(r'deleteSimpleSchedule[/]?$', views.deleteSimpleSchedule, name='deleteSimpleSchedule'),
     url(r'deleteRepeatableSchedule[/]?$', views.deleteRepeatableSchedule, name='deleteRepeatableSchedule'),
     
-    url(r'showMoistureChart[/]?$', views.showMoistureChart, name='showMoistureChart'),
-    
     url(r'showAddIrrigationTemplate[/]?$', views.showAddIrrigationTemplate, name='showAddIrrigationTemplate'),
     url(r'doAddIrrigationTemplate[/]?$', views.doAddIrrigationTemplate, name='doAddIrrigationTemplate'),
     url(r'showDeleteIrrigationTemplate[/]?$', views.showDeleteIrrigationTemplate, name='showDeleteIrrigationTemplate'),
     url(r'doDeleteIrrigationTemplate[/]?$', views.doDeleteIrrigationTemplate, name='doDeleteIrrigationTemplate'),
+    url(r'showAddIrrigationTemplateValues[/]?$', views.showAddIrrigationTemplateValues, name='showAddIrrigationTemplateValues'),
     url(r'doAddIrrigationTemplateValues[/]?$', views.doAddIrrigationTemplateValues, name='doAddIrrigationTemplateValues'),
     
     url(r'.*', views.showLogin, name='showLogin'),

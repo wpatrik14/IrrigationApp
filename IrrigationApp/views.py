@@ -517,11 +517,6 @@ def doAddArduino(request):
     
     return redirect('/showAddSettings')
 
-
-def showMoistureChart(request):
-    
-    return render(request, 'IrrigationApp/charts/moisture.html', { })
-
 def showAddIrrigationTemplate(request):
     
     return render(request, 'IrrigationApp/pages/addIrrigationTemplate.html', { })
@@ -549,20 +544,37 @@ def doDeleteIrrigationTemplate(request):
     
     return HttpResponse('IrrigationTemplate deleted');
 
+def showAddIrrigationTemplateValues(request):
+    
+    irrigationTemplates = IrrigationTemplate.objects.all()                                                                
+    
+    return render(request, 'IrrigationApp/charts/moisture.html', { 'irrigationTemplates':irrigationTemplates })
+
+
 def doAddIrrigationTemplateValues(request):
     
-    irrigationTemplate = IrrigationTemplate.objects.all()
-    IrrigationTemplateValue(template=irrigationTemplate[0],
+    irrigationTemplate_id = request.POST['irrigationTemplate']
+    day_1 = request.POST['day_1']
+    day_2 = request.POST['day_2']
+    day_3 = request.POST['day_3']
+    day_4 = request.POST['day_4']
+    day_5 = request.POST['day_5']
+    
+    irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+    IrrigationTemplateValue(template=irrigationTemplate,
                              day_number=0,
-                             value=500).save()
-    IrrigationTemplateValue(template=irrigationTemplate[0],
+                             value=day_1).save()
+    IrrigationTemplateValue(template=irrigationTemplate,
                              day_number=1,
-                             value=800).save()
-    IrrigationTemplateValue(template=irrigationTemplate[0],
+                             value=day_2).save()
+    IrrigationTemplateValue(template=irrigationTemplate,
                              day_number=2,
-                             value=400).save()
-    IrrigationTemplateValue(template=irrigationTemplate[0],
+                             value=day_3).save()
+    IrrigationTemplateValue(template=irrigationTemplate,
                              day_number=3,
-                             value=600).save()                                                                           
+                             value=day_4).save()
+    IrrigationTemplateValue(template=irrigationTemplate,
+                             day_number=4,
+                             value=day_5).save()                                                                           
     
     return HttpResponse('IrrigationTemplateValues saved');

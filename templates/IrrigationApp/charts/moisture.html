@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Highcharts Example</title>
+		<title>Moisture Values for template</title>
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 		<style type="text/css">
@@ -93,5 +93,81 @@
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
 <div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
+
+<form class="form-horizontal" id="doAddIrrigationTemplateValues" action="{% url 'doAddIrrigationTemplateValues'%}" method="post">
+				{% csrf_token %}
+				<fieldset>
+				
+				<!-- Form Name -->
+				<legend>Add moisture values for irrigation template</legend>	
+	<!-- Select Basic -->
+			<div class="control-group">
+				  <label class="control-label" for="irrigationTemplate">Template</label>
+				  <div class="controls">
+				    <select id="irrigationTemplate" name="irrigationTemplate" class="input-xlarge">
+			      <option value="None"></option>
+			      {% for irrigationTemplate in irrigationTemplates %}
+			      <option value="{{ irrigationTemplate.id }}">{{ irrigationTemplate.name }}</option>
+			      {% endfor %}
+			    </select>
+			  </div>
+			</div>
+			
+			<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="day_1">1. day</label>
+				  <div class="controls">
+				    <input id="day_1" name="day_1" type="text" placeholder="Day" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+			
+			<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="day_2">2. day</label>
+				  <div class="controls">
+				    <input id="day_2" name="day_2" type="text" placeholder="Day" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+			<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="day_3">3. day</label>
+				  <div class="controls">
+				    <input id="day_3" name="day_3" type="text" placeholder="Day" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+			<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="day_4">4. day</label>
+				  <div class="controls">
+				    <input id="day_4" name="day_4" type="text" placeholder="Day" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+				
+			<!-- Text input-->
+				<div class="control-group">
+				  <label class="control-label" for="day_5">5. day</label>
+				  <div class="controls">
+				    <input id="day_5" name="day_5" type="text" placeholder="Day" class="input-large" required autofocus>
+				    
+				  </div>
+				</div>
+			
+			<!-- Button -->
+				<div class="control-group">
+				  <label class="control-label" for="submit"></label>
+				  <div class="controls">
+				    <button id="submit" name="submit" class="btn btn-success">Save template values</button>
+				  </div>
+				</div>
+				
+				</fieldset>
+				</form>
+	
 	</body>
 </html>
