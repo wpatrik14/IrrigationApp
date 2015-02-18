@@ -549,9 +549,11 @@ def showDeleteIrrigationTemplate(request):
     return render(request, 'IrrigationApp/pages/deleteIrrigationTemplate.html', { 'irrigationTemplates':irrigationTemplates })
 
 def doDeleteIrrigationTemplate(request):
-    id = request.POST['id']
+    id = request.POST['irrigationTemplate']
     
-    IrrigationTemplate.objects.get(id=id).delete()
+    irrigationTemplate = IrrigationTemplate.objects.get(id=id)
+    IrrigationTemplateValue.objects.filter(template=irrigationTemplate).delete()
+    irrigationTemplate.delete()
     
     return HttpResponse('IrrigationTemplate deleted');
 
