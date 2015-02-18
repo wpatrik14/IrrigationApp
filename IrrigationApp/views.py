@@ -310,8 +310,9 @@ def showEditSegment(request):
     
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
+    irrigationTemplates = IrrigationTemplate.objects.all()
         
-    return render(request, 'IrrigationApp/pages/editSegment.html', { 'username':user.username, 'settings':settings, 'segment':segment, 'sensors':sensors, 'switches':switches })
+    return render(request, 'IrrigationApp/pages/editSegment.html', { 'username':user.username, 'settings':settings, 'segment':segment, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates })
 
 @login_required
 def doEditSegment(request):
@@ -326,6 +327,7 @@ def doEditSegment(request):
     name = request.POST['name']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
+    irrigationTemplate_id = request.POST['irrigationTemplate']
     moisture_minLimit = request.POST['moisture_minLimit']
     moisture_maxLimit = request.POST['moisture_maxLimit']
     duration_maxLimit = request.POST['duration_maxLimit']
@@ -350,6 +352,13 @@ def doEditSegment(request):
                     type = type
                             )
     mSegment.save()
+    
+    
+    irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+    irrigationTemplate.day_counter=0
+    irrigationTemplate.segment_id=mSegment
+    irrigationTemplate.save(update_fields=['day_counter','segment_id'])
+    
     return redirect('/getSystemStatus')
 
 @login_required
