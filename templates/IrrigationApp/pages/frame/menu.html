@@ -1,15 +1,19 @@
-<fieldset>
+<body>
 
-	<!-- Form Name -->
-	<legend>Menu</legend>
-	
-	<a href="{% url 'getSystemStatus'%}">System status</a> - 
-	<a href="{% url 'showAddIrrigationTemplate'%}">Add Irrigation Template</a> -
-	<a href="{% url 'showDeleteIrrigationTemplate'%}">Delete Irrigation Template</a> -
-	<a href="{% url 'showAddIrrigationTemplateValues'%}">Add Irrigation Template Values</a> - 
-	<a href="{% url 'showWeatherStatus'%}">Weather status</a> - 
-	<a href="{% url 'showIrrigationHistory'%}">Irrigation History</a> - 
-	<a href="{% url 'showAddArduino'%}">Arduino</a> -
-	<a href="{% url 'showAddSettings'%}">Settings</a> -
-	<a href="{% url 'doLogout'%}">Logout</a>
-	</fieldset>
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation"><a href="{% url 'getSystemStatus'%}">System status</a></li>
+            <li role="presentation"><a href="{% url 'showAddIrrigationTemplate'%}">Add Irrigation Template</a></li>
+            <li role="presentation"><a href="{% url 'showDeleteIrrigationTemplate'%}">Delete Irrigation Template</a></li>
+            <li role="presentation"><a href="{% url 'showAddIrrigationTemplateValues'%}">Add Irrigation Template Values</a></li>
+            <li role="presentation"><a href="{% url 'showWeatherStatus'%}">Weather status</a></li>
+            <li role="presentation"><a href="{% url 'showIrrigationHistory'%}">Irrigation History</a></li>
+            <li role="presentation"><a href="{% url 'showAddArduino'%}">Arduino</a></li>
+            <li role="presentation"><a href="{% url 'showAddSettings'%}">Settings</a></li>
+            <li role="presentation"><a href="{% url 'doLogout'%}">Logout</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">IrrigationApp</h3>
+      </div>
