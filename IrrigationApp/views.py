@@ -81,8 +81,9 @@ def showAddNewSegment(request):
     settings = IrrigationSettings.objects.get(id=0)
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
+    irrigationTemplates = IrrigationTemplate.objects.all()
     
-    return render(request, 'IrrigationApp/pages/addNewSegment.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches})
+    return render(request, 'IrrigationApp/pages/addNewSegment.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates})
     
 @login_required
 def doAddNewSegment(request):
@@ -100,11 +101,18 @@ def doAddNewSegment(request):
     moisture_minLimit = request.POST['moisture_minLimit']
     moisture_maxLimit = request.POST['moisture_maxLimit']
     duration_maxLimit = request.POST['duration_maxLimit']
+    irrigationTemplate_id = request.POST['irrigationTemplate']
     type = request.POST['type']
     if 'checkboxes' not in request.POST:
         enabled = False
     else:
         enabled = True
+        
+    if irrigationTemplate_id=="None":
+        irrigationTemplate=None
+    else:
+        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+        irrigationTemplate.day_counter=0
     
     sensor = Sensor.objects.get(pinNumber=sensor)
     switch = Switch.objects.get(pinNumber=switch)
@@ -117,9 +125,13 @@ def doAddNewSegment(request):
                     moisture_maxLimit = moisture_maxLimit,
                     duration_maxLimit = duration_maxLimit,
                     forecast_enabled = enabled,
-                    type = type
+                    type = type,
+                    template = irrigationTemplate
                             )
     mSegment.save()
+    
+    irrigationTemplate.segment_id=mSegment
+    irrigationTemplate.save(update_fields=['day_counter','segment_id'])
     return redirect('/getSystemStatus')
 
 @login_required
