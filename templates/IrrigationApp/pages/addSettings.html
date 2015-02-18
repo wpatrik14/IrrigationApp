@@ -8,23 +8,19 @@
 			<legend>Settings</legend>
 
 			<!-- Select Basic -->
-				<div class="control-group">
-				  <label class="control-label" for="switch">Pump</label>
-				  <div class="controls">
-				    <select id="switch" name="switch" class="input-xlarge">
+				<div class="form-group">
+				  <label for="switch">Pump</label>
+				    <select id="switch" name="switch" class="form-control">
 				      {% for switch in switches %}
 				      <option>{{ switch.pinNumber }}</option>
 				      {% endfor %}
 				    </select>
-				  </div>
 				</div>
 				
 				<!-- Button -->
 				<div class="control-group">
-				  <label class="control-label" for="submit"></label>
-				  <div class="controls">
+				  <label for="submit"></label>
 				    <button id="submit" name="submit" class="btn btn-success">Save Settings</button>
-				  </div>
 				</div>
 			
 		</fieldset>

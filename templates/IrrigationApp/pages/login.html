@@ -1,43 +1,19 @@
 {% include "IrrigationApp/pages/frame/htmlHeader_no_menu.html" %}
-		<form class="form-horizontal" id="login" action="{% url 'doLogin'%}" method="post">
-				{% csrf_token %}
-				<fieldset>
-				
-				<!-- Form Name -->
-				<legend>Login</legend>
-				
-				<!-- Text input-->
-				<div class="control-group">
-				  <label class="control-label" for="username">Username:</label>
-				  <div class="controls">
-				    <input id="username" name="username" type="text" placeholder="Username" class="input-large" required autofocus>
-				    
-				  </div>
-				</div>
-				
-				<!-- Password input-->
-				<div class="control-group">
-				  <label class="control-label" for="password">Password</label>
-				  <div class="controls">
-				    <input id="password" name="password" type="password" placeholder="Password" class="input-large" required>
-				    
-				  </div>
-				</div>
-				{% if redirect %}
-					<input type="hidden" name="redirect" value = "{{redirect}}"/>
-				{% endif%}
-				<!-- Button -->
-				<div class="control-group">
-				  <label class="control-label" for="submit"></label>
-				  <div class="controls">
-				    <button id="submit" name="submit" class="btn btn-success">Login</button>
-				  </div>
-				</div>
-				
-				</fieldset>
-				</form>
-				<br/>
-				<a href="{% url 'showRegistration'%}">Register</a>
+		
+		
+		
+		<form class="form-signin" id="login" action="{% url 'doLogin'%}" method="post">
+			{% csrf_token %}
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="username" class="sr-only">Username</label>
+        <input type="text" id="username" class="form-control" placeholder="Username" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    
+	<a href="{% url 'showRegistration'%}">Register</a>
 	</body>
 </html>
 

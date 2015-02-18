@@ -8,23 +8,19 @@
 			<legend>Delete irrigation template </legend>
 			
 			<!-- Select Basic -->
-			<div class="control-group">
-				  <label class="control-label" for="irrigationTemplate">Name</label>
-				  <div class="controls">
-				    <select id="irrigationTemplate" name="irrigationTemplate" class="input-xlarge">
+			<div class="form-group">
+				  <label for="irrigationTemplate">Name</label>
+				    <select id="irrigationTemplate" name="irrigationTemplate" class="form-control">
 			      {% for irrigationTemplate in irrigationTemplates %}
 			      <option value="{{ irrigationTemplate.id }}">{{ irrigationTemplate.name }}</option>
 			      {% endfor %}
 			    </select>
-			  </div>
 			</div>
 			
 			<!-- Button -->
-				<div class="control-group">
-				  <label class="control-label" for="submit"></label>
-				  <div class="controls">
+				<div class="form-group">
+				  <label for="submit"></label>
 				    <button id="submit" name="submit" class="btn btn-success">Delete Template</button>
-				  </div>
 				</div>
 			
 		</fieldset>
