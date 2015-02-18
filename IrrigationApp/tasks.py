@@ -197,13 +197,13 @@ def automation_control():
     if arduino.exists() :
         arduino = Arduino.objects.get(id=0)
     else:
-        return redirect('/showAddArduino')
+        return 'Arduino was not found'
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
     else:
-        return redirect('/showAddSettings')
+        return 'Settings not found'
     
     res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
     reader = codecs.getreader("utf-8")
