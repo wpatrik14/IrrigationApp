@@ -38,8 +38,8 @@ urlpatterns = patterns('',
     
     url(r'showAddIrrigationTemplate[/]?$', views.showAddIrrigationTemplate, name='showAddIrrigationTemplate'),
     url(r'doAddIrrigationTemplate[/]?$', views.doAddIrrigationTemplate, name='doAddIrrigationTemplate'),
-    url(r'showEditIrrigationTemplate[/]?$', views.showEditIrrigationTemplate, name='showEditIrrigationTemplate'),
-    url(r'doEditIrrigationTemplate[/]?$', views.doEditIrrigationTemplate, name='doEditIrrigationTemplate'),
+    url(r'showDeleteIrrigationTemplate[/]?$', views.showDeleteIrrigationTemplate, name='showDeleteIrrigationTemplate'),
+    url(r'doDeleteIrrigationTemplate[/]?$', views.doDeleteIrrigationTemplate, name='doDeleteIrrigationTemplate'),
     url(r'doAddIrrigationTemplateValues[/]?$', views.doAddIrrigationTemplateValues, name='doAddIrrigationTemplateValues'),
     
     url(r'.*', views.showLogin, name='showLogin'),

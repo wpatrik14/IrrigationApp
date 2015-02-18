@@ -528,25 +528,18 @@ def doAddIrrigationTemplate(request):
     
     return HttpResponse('IrrigationTemplate saved');
 
-def showEditIrrigationTemplate(request):
-    segments = Segment.objects.all()
+def showDeleteIrrigationTemplate(request):
+    
     irrigationTemplates = IrrigationTemplate.objects.all()
-    return render(request, 'IrrigationApp/pages/editIrrigationTemplate.html', { 'segments':segments, 'irrigationTemplates':irrigationTemplates })
+    
+    return render(request, 'IrrigationApp/pages/deleteIrrigationTemplate.html', { 'irrigationTemplates':irrigationTemplates })
 
-def doEditIrrigationTemplate(request):
+def doDeleteIrrigationTemplate(request):
+    id = request.POST['id']
     
-    segment_id = request.POST['segment']
-    irrigationTemplate_id = request.POST['irrigationTemplate']
+    IrrigationTemplate.objects.get(id=id).delete()
     
-    segment=Segment.objects.get(id=segment_id)
-    irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-    irrigationTemplate = IrrigationTemplate(id=irrigationTemplate.id,
-                                            name=irrigationTemplate.name,
-                                            segment=segment,
-                                            day_counter=0)
-    irrigationTemplate.save()
-    
-    return HttpResponse('IrrigationTemplate saved');
+    return HttpResponse('IrrigationTemplate deleted');
 
 def doAddIrrigationTemplateValues(request):
     
