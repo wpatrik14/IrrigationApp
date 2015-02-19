@@ -554,6 +554,7 @@ def showAddIrrigationTemplateValues(request):
 def doAddIrrigationTemplateValues(request):
     
     irrigationTemplate_id = request.POST['irrigationTemplate']
+    series = request.POST['series']
     day_1 = request.POST['day_1']
     day_2 = request.POST['day_2']
     day_3 = request.POST['day_3']
@@ -577,4 +578,5 @@ def doAddIrrigationTemplateValues(request):
                              day_number=4,
                              value=day_5).save()                                                                           
     
-    return redirect('/getSystemStatus')
+    return HttpResponse('Series: ' + series)   
+    #return redirect('/getSystemStatus')
