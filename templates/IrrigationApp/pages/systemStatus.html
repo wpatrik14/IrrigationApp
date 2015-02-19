@@ -11,23 +11,23 @@
 
 <table class="table table-striped table-condensed">
 	<thead>
-		<th>Segment name</th>
-		<th>Sensor status</th>
-		<th>Switch status</th>
+		<th>Name</th>
+		<th>Moisture</th>
+		<th>Valve</th>
 		<th>UP-time</th>
 		<th>Type</th>
-		<th>Template's name</th>
-		<th>Day counter</th>
-		<th>Moisture min. limit</th>
-		<th>Moisture max. limit</th>
-		<th>Duration max. limit</th>
-		<th>Forecast enabled</th>
+		<th>Plant</th>
+		<th>Days</th>
+		<th>Min. moisture</th>
+		<th>Max. moisture</th>
+		<th>Max. duration</th>
+		<th>Forecast</th>
 		<th>Edit</th>
 	</thead>
 	{% for segment in segments %}
 	<tr>
 		<td>{{segment.name}}</td>
-		<td>{{segment.sensor.status}}</td>
+		<td>{{segment.sensor.status}}%</td>
 		<td>
 			<form id="change_switch" action="getSystemStatus" method="post">
 				{% csrf_token %}
