@@ -32,7 +32,12 @@
 		                    if (addPoint==1 && y>=0){
 		                    	series.addPoint([Math.round(x), Math.round(y)]);
 		                    }
-		                    document.getElementById('series').value = JSON.stringify(series.data);		
+		                    var result="{";
+		                    for (var i=0; i<datas.length; i++) {
+		                    	result+=datas[i].x+":"+datas[i].y+","
+		                    }
+		                    result+="}"
+		                    document.getElementById('series').value = result;		
 		                }
 		            }
 		        },
