@@ -269,7 +269,7 @@ def automation_control():
     
     for segment in segments :
         if segment.type == "Automatic" :
-            if segment.sensor.status>segment.moisture_minLimit :
+            if segment.sensor.status<segment.moisture_minLimit :
                 if segment.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
@@ -280,7 +280,7 @@ def automation_control():
                    #turn on irrigation anyway
                     switchIrrigation(segment, 'on', settings, arduino) 
                 
-            elif segment.sensor.status<segment.moisture_maxLimit:
+            elif segment.sensor.status>segment.moisture_maxLimit:
                 #turn off irrigation
                 switchIrrigation(segment, 'off', settings, arduino)
                 changeSegment(segment, 0)
@@ -379,8 +379,8 @@ def follow_irrigation_template():
                 irrigationTemplateValue = IrrigationTemplateValue.objects.filter(template=irrigationTemplate).get(day_number=irrigationTemplate.day_counter)
                 # getting the moisture value and setting the segment
                 if segment.type == 'Automatic' :
-                    segment.moisture_minLimit=irrigationTemplateValue.value - 100
-                    segment.moisture_maxLimit=irrigationTemplateValue.value + 100
+                    segment.moisture_minLimit=irrigationTemplateValue.value - 10
+                    segment.moisture_maxLimit=irrigationTemplateValue.value + 10
                     segment.save(update_fields=['moisture_minLimit','moisture_maxLimit'])
                     irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
                     irrigationTemplate.save(update_fields=['day_counter'])
