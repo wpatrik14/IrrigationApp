@@ -33,10 +33,10 @@
 		                    	series.addPoint([Math.round(x), Math.round(y)]);
 		                    }
 		                    var result="{";
-		                    for (var i=0; i<datas.length; i++) {
-		                    	result+=datas[i].x+":"+datas[i].y+","
+		                    for (var i=0; i<datas.length-1; i++) {
+		                    	result+="\""+datas[i].x+"\":\""+datas[i].y+"\","
 		                    }
-		                    result+="}"
+		                    result+="\""+datas[i].x+"\":\""+datas[i].y+"\"}"
 		                    document.getElementById('series').value = result;		
 		                }
 		            }
