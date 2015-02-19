@@ -32,7 +32,7 @@
 		                    if (addPoint==1 && y>=0){
 		                    	series.addPoint([Math.round(x), Math.round(y)]);
 		                    }
-		                    var result="{\"data\":{";
+		                    var result="{\"data\":";
 		                    for (var i=0; i<datas.length-1; i++) {
 		                    	result+="[{\""+datas[i].x+"\":\""+datas[i].y+"\"}],";
 		                    }
