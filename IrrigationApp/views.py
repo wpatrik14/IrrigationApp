@@ -527,7 +527,7 @@ def doAddIrrigationTemplate(request):
     irrigationTemplate = IrrigationTemplate(name=name)
     irrigationTemplate.save()
     
-    return HttpResponse('IrrigationTemplate saved');
+    return redirect('/getSystemStatus')
 
 def showDeleteIrrigationTemplate(request):
     
@@ -542,7 +542,7 @@ def doDeleteIrrigationTemplate(request):
     IrrigationTemplateValue.objects.filter(template=irrigationTemplate).delete()
     irrigationTemplate.delete()
     
-    return HttpResponse('IrrigationTemplate deleted');
+    return redirect('/getSystemStatus')
 
 def showAddIrrigationTemplateValues(request):
     
@@ -577,4 +577,4 @@ def doAddIrrigationTemplateValues(request):
                              day_number=4,
                              value=day_5).save()                                                                           
     
-    return HttpResponse('IrrigationTemplateValues saved');
+    return redirect('/getSystemStatus')
