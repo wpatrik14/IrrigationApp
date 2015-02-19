@@ -79,65 +79,6 @@
   {% endfor %}
 </div>
 
-
-
-
-
-
-
-<table class="table table-striped table-condensed">
-	<thead>
-		<th>Segment name</th>
-		<th>Sensor status</th>
-		<th>Switch status</th>
-		<th>UP-time</th>
-		<th>Type</th>
-		<th>Template's name</th>
-		<th>Day counter</th>
-		<th>Moisure min. limit</th>
-		<th>Moisure max. limit</th>
-		<th>Duration max. limit</th>
-		<th>Forecast enabled</th>
-		<th>Edit</th>
-	</thead>
-	{% for segment in segments %}
-	<tr>
-		<td>{{segment.name}}</td>
-		<td>{{segment.sensor.status}}</td>
-		<td>
-			<form id="change_switch" action="getSystemStatus" method="post">
-				{% csrf_token %}
-				{% if segment.switch.status == "on" %}
-				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
-				<input type="hidden" name="status" value = "off"/>
-				<button id="switch" name="switch" class="btn btn-success">Turn OFF</button>
-				{% else %}
-				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
-				<input type="hidden" name="status" value = "on"/>
-				<button id="switch" name="switch" class="btn btn-danger">Turn ON</button>
-				{% endif %}
-								
-			</form>
-		</td>
-		<td>{{segment.up_time}}</td>
-		<td>{{segment.type}}</td>
-		<td>{{segment.template.name}}</td>
-		<td>{{segment.template.day_counter}}</td>
-		<td>{{segment.moisture_minLimit}}</td>
-		<td>{{segment.moisture_maxLimit}}</td>
-		<td>{{segment.duration_maxLimit}}</td>
-		<td>{{segment.forecast_enabled}}</td>
-		<td>
-		<form id="showEditSegment" action="showEditSegment" method="post">
-				{% csrf_token %}
-				<input type="hidden" name="editSegment" value = "{{ segment.id }}"/>
-				<button id="delete" name="delete" class="btn btn-default">EDIT</button>
-			</form>		
-		</td>
-	</tr>
-	{% endfor %}
-</table>
-
 </fieldset>
 
 <fieldset>
