@@ -34,7 +34,7 @@
 		                    }
 		                    var result="{\"data\":[";
 		                    for (var i=0; i<datas.length-1; i++) {
-		                    	result+="{\""+datas[i].x+"\":\""+datas[i].y+"\"},";
+		                    	result+="{\"x\":\""+datas[i].x+"\,\"y\":\""+datas[i].y+"\"},";
 		                    }
 		                    result+="{\""+datas[i].x+"\":\""+datas[i].y+"\"}]}";
 		                    document.getElementById('series').value = result;		
