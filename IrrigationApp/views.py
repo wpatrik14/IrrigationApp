@@ -557,7 +557,7 @@ def doAddIrrigationTemplateValues(request):
     series = request.POST['series']
     
     reader = codecs.getreader("utf-8")
-    js = json.load(series)
+    js = json.loads(series)
     
     point1_x=js['data'][0]['x'];
     point1_y=js['data'][0]['y'];
