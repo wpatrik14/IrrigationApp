@@ -555,35 +555,13 @@ def doAddIrrigationTemplateValues(request):
     
     irrigationTemplate_id = request.POST['irrigationTemplate']
     series = request.POST['series']
-    
-    reader = codecs.getreader("utf-8")
     js = json.loads(series)
     
-    point1_x=js['data'][0]['x'];
-    point1_y=js['data'][0]['y'];
-    
-    day_1 = request.POST['day_1']
-    day_2 = request.POST['day_2']
-    day_3 = request.POST['day_3']
-    day_4 = request.POST['day_4']
-    day_5 = request.POST['day_5']
-    
     irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-    IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=0,
-                             value=day_1).save()
-    IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=1,
-                             value=day_2).save()
-    IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=2,
-                             value=day_3).save()
-    IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=3,
-                             value=day_4).save()
-    IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=4,
-                             value=day_5).save()                                                                           
+    for point in js['data'] :
+        IrrigationTemplateValue(template=irrigationTemplate,
+                             day_number=point['x'],
+                             value=point['y']).save()                                                                    
     
     return HttpResponse('X: ' + point1_x+' ,Y: '+point1_y)   
     #return redirect('/getSystemStatus')
