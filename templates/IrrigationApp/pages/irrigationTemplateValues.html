@@ -1,0 +1,10 @@
+{% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+
+		<p>Template: {{ irrigationTemplate.name}}</p>
+		{% for irrigationTemplateValue in irrigationTemplateValues %}
+		<p>Day: {{ irrigationTemplateValue.day_number}}</p>
+		<p>Moisture: {{ irrigationTemplateValue.value}}%</p>
+		{% endfor %}
+</div>
+</body>
+</html>

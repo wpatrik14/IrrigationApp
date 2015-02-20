@@ -563,5 +563,6 @@ def doAddIrrigationTemplateValues(request):
                              day_number=point['x'],
                              value=point['y']).save()                                                                    
     
-    return HttpResponse('X: ' + point1_x+' ,Y: '+point1_y)   
+    irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
+    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues }) 
     #return redirect('/getSystemStatus')
