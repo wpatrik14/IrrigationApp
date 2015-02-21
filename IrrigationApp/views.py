@@ -536,7 +536,7 @@ def doAddIrrigationTemplate(request):
                              value=point['y']).save()                                                   
     
     irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
-    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues })
+    return redirect('/getSystemStatus')
 
 def showDeleteIrrigationTemplate(request):
     
