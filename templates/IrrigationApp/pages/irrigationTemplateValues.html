@@ -55,7 +55,7 @@
 		        },
 		        yAxis: {
 		            title: {
-		                text: 'Moisture Value'
+		                text: 'Moisture Value (%)'
 		            },
 		            minPadding: 0.2,
 		            maxPadding: 0.2,
@@ -78,9 +78,7 @@
 		                point: {
 		                    events: {
 		                        'click': function () {
-		                            if (this.series.data.length > 1) {
-		                                this.remove();
-		                            }
+		                            
 		                        }
 		                    }
 		                }
