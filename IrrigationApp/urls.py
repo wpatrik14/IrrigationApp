@@ -39,6 +39,8 @@ urlpatterns = patterns('',
     url(r'showDeleteIrrigationTemplate[/]?$', views.showDeleteIrrigationTemplate, name='showDeleteIrrigationTemplate'),
     url(r'doDeleteIrrigationTemplate[/]?$', views.doDeleteIrrigationTemplate, name='doDeleteIrrigationTemplate'),
     
+    url(r'showIrrigationTemplateValues[/]?$', views.showIrrigationTemplateValues, name='showIrrigationTemplateValues'),
+    
     url(r'.*', views.showLogin, name='showLogin'),
     
     

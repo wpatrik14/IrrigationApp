@@ -552,3 +552,10 @@ def doDeleteIrrigationTemplate(request):
     irrigationTemplate.delete()
     
     return redirect('/getSystemStatus')
+
+def showIrrigationTemplateValues(request):
+    id = request.GET['template']
+    irrigationTemplate = IrrigationTemplate.objects.get(id=id)
+    irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
+    
+    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplateValues':irrigationTemplateValues })
