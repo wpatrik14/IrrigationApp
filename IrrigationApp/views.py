@@ -524,11 +524,19 @@ def showAddIrrigationTemplate(request):
 def doAddIrrigationTemplate(request):
     
     name = request.POST['name']
+    series = request.POST['series']
+    js = json.loads(series)
     irrigationTemplate = IrrigationTemplate(name=name,
                                             day_counter=0)
     irrigationTemplate.save()
     
-    return redirect('/getSystemStatus')
+    for point in js['data'] :    
+        IrrigationTemplateValue(template=irrigationTemplate,
+                             day_number=point['x'],
+                             value=point['y']).save()                                                   
+    
+    irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
+    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues })
 
 def showDeleteIrrigationTemplate(request):
     
@@ -544,26 +552,3 @@ def doDeleteIrrigationTemplate(request):
     irrigationTemplate.delete()
     
     return redirect('/getSystemStatus')
-
-def showAddIrrigationTemplateValues(request):
-    
-    irrigationTemplates = IrrigationTemplate.objects.all()                                                                
-    
-    return render(request, 'IrrigationApp/charts/moisture.html', { 'irrigationTemplates':irrigationTemplates })
-
-
-def doAddIrrigationTemplateValues(request):
-    
-    irrigationTemplate_id = request.POST['irrigationTemplate']
-    series = request.POST['series']
-    js = json.loads(series)
-    
-    irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-    for point in js['data'] :    
-        IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=point['x'],
-                             value=point['y']).save()                                                   
-    
-    irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
-    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues }) 
-    #return redirect('/getSystemStatus')

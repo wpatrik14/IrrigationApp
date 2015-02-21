@@ -1,4 +1,106 @@
 {% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<style type="text/css">
+		${demo.css}
+				</style>
+	<script type="text/javascript">
+		$(function () {
+		    $('#container').highcharts({
+		        chart: {
+		            type: 'spline',
+		            margin: [70, 50, 60, 80],
+		            events: {
+		                click: function (e) {
+		                    // find the clicked values and the series
+		                    var x = e.xAxis[0].value,
+		                        y = e.yAxis[0].value,
+		                        series = this.series[0];
+		
+		                    // Add it
+		                    var datas = series.data;
+		                    var addPoint=1;
+		                    for (var i=0; i<datas.length; i++) {
+		                    	if (datas[i].x >= Math.round(x)){
+		                    		addPoint=0;
+		                    	}
+		                    }
+		                    if (addPoint==1 && y>=0){
+		                    
+		                    	var prev_point=datas[datas.length-1]
+		                    	var diff_x=x-prev_point.x
+		                    	var diff_y=y-prev_point.y
+		                    	if (diff_x > 1) {
+		                    		for (var i=1; i<diff_x; i++){
+		                    			series.addPoint([Math.round(prev_point.x+i), Math.round(prev_point.y+(diff_y)*i/diff_x)]);
+		                    		}
+		                    	}
+		                    	else if (diff_x <= 1){
+		                    		series.addPoint([Math.round(x), Math.round(y)]);
+		                    	}
+		                    }
+		                    var result="{\"data\":[";
+		                    for (var i=0; i<datas.length-1; i++) {
+		                    	result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"},";
+		                    }
+		                    result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"}]}";
+		                    document.getElementById('series').value = result;		
+		                }
+		            }
+		        },
+		        title: {
+		            text: 'Moisture datas for irrigation'
+		        },
+		        subtitle: {
+		            text: 'Click the plot area to add a point. Click a point to remove it.'
+		        },
+		        xAxis: {
+		            gridLineWidth: 1,
+		            minPadding: 0.2,
+		            maxPadding: 0.2,
+		            maxZoom: 7
+		        },
+		        yAxis: {
+		            title: {
+		                text: 'Moisture Value'
+		            },
+		            minPadding: 0.2,
+		            maxPadding: 0.2,
+		            maxZoom: 50,
+		            plotLines: [{
+		                value: 0,
+		                width: 1,
+		                color: '#808080'
+		            }]
+		        },
+		        legend: {
+		            enabled: true
+		        },
+		        exporting: {
+		            enabled: false
+		        },
+		        plotOptions: {
+		            series: {
+		                lineWidth: 1,
+		                point: {
+		                    events: {
+		                        'click': function () {
+		                            if (this.series.data.length > 1) {
+		                                this.remove();
+		                            }
+		                        }
+		                    }
+		                }
+		            }
+		        },
+		        series: [{
+		            data: [[0, 50]]
+		        }]
+		    });
+		});
+		</script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
 
 		<form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
 				{% csrf_token %}
@@ -12,6 +114,8 @@
 			  <label for="name">Name</label>
 			    <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
 			</div>
+			
+			<input type="hidden" id="series" name="series" value="" />
 			
 			<!-- Button -->
 				<div class="form-group">
