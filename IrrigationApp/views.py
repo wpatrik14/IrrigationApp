@@ -558,4 +558,4 @@ def showIrrigationTemplateValues(request):
     irrigationTemplate = IrrigationTemplate.objects.get(id=id)
     irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
     
-    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplateValues':irrigationTemplateValues })
+    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplate':irrigationTemplate,irrigationTemplateValues':irrigationTemplateValues })
