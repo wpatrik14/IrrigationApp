@@ -559,7 +559,8 @@ def doAddIrrigationTemplateValues(request):
     js = json.loads(series)
     
     irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-    IrrigationTemplateValue(template=irrigationTemplate,
+    for point in js['data'] :    
+        IrrigationTemplateValue(template=irrigationTemplate,
                              day_number=point['x'],
                              value=point['y']).save()                                                   
     
