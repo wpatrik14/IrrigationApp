@@ -37,39 +37,7 @@
 		            margin: [70, 50, 60, 80],
 		            events: {
 		                click: function (e) {
-		                    // find the clicked values and the series
-		                    var x = e.xAxis[0].value,
-		                        y = e.yAxis[0].value,
-		                        series = this.series[0];
-		
-		                    // Add it
-		                    var datas = series.data;
-		                    var addPoint=1;
-		                    for (var i=0; i<datas.length; i++) {
-		                    	if (datas[i].x >= Math.round(x)){
-		                    		addPoint=0;
-		                    	}
-		                    }
-		                    if (addPoint==1 && y>=0){
 		                    
-		                    	var prev_point=datas[datas.length-1]
-		                    	var diff_x=x-prev_point.x
-		                    	var diff_y=y-prev_point.y
-		                    	if (diff_x > 1) {
-		                    		for (var i=1; i<diff_x; i++){
-		                    			series.addPoint([Math.round(prev_point.x+i), Math.round(prev_point.y+(diff_y)*i/diff_x)]);
-		                    		}
-		                    	}
-		                    	else if (diff_x <= 1){
-		                    		series.addPoint([Math.round(x), Math.round(y)]);
-		                    	}
-		                    }
-		                    var result="{\"data\":[";
-		                    for (var i=0; i<datas.length-1; i++) {
-		                    	result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"},";
-		                    }
-		                    result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"}]}";
-		                    document.getElementById('series').value = result;		
 		                }
 		            }
 		        },
@@ -77,7 +45,7 @@
 		            text: 'Moisture datas for: {{irrigationTemplate.name}}'
 		        },
 		        subtitle: {
-		            text: 'Click the plot area to add a point. Click a point to remove it.'
+		            text: ''
 		        },
 		        xAxis: {
 		            gridLineWidth: 1,
