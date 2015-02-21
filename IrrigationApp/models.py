@@ -87,13 +87,13 @@ class IrrigationHistory(models.Model):
     
 class IrrigationTemplateValue(models.Model):
     template = models.ForeignKey('IrrigationTemplate')
-    day_number = models.IntegerField(max_length=3)
+    day_number = models.IntegerField(max_length=3, primary_key=True)
     value = models.IntegerField(max_length=4)
     def __unicode__(self):
         return self.day_number + ' ' + self.values
     
 class IrrigationTemplate(models.Model):
-    day_counter = models.IntegerField(max_length=3, primary_key=True)
+    day_counter = models.IntegerField(max_length=3)
     name = models.CharField(max_length=15)
     def __unicode__(self):
         return self.template + ' ' + self.segment
