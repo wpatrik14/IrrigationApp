@@ -1,4 +1,9 @@
-{% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+{% include "IrrigationApp/pages/frame/chartHeader.html" %}
+		<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
+		
 		<form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
 				{% csrf_token %}
 				<fieldset>
