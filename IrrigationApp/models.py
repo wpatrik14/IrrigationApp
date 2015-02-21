@@ -93,7 +93,7 @@ class IrrigationTemplateValue(models.Model):
         return self.day_number + ' ' + self.values
     
 class IrrigationTemplate(models.Model):
-    day_counter = models.IntegerField(max_length=3, default=0)
+    day_counter = models.IntegerField(max_length=3, primary_key=True)
     name = models.CharField(max_length=15)
     def __unicode__(self):
         return self.template + ' ' + self.segment

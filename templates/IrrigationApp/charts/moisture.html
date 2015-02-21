@@ -30,6 +30,19 @@
 		                    	}
 		                    }
 		                    if (addPoint==1 && y>=0){
+		                    
+		                    	var prev_point=datas[datas.length-1]
+		                    	var diff_x=x-prev_point.x
+		                    	var diff_y=y-prev_point.y
+		                    	if (diff_x > 1) {
+		                    		for (var i=1; i<diff_x; i++){
+		                    			series.addPoint([Math.round(prev_point.x+i), Math.round(prev_point.y+(diff_y)*i/diff_x)]);
+		                    		}
+		                    	}
+		                    	else if (diff_x <= 1){
+		                    		series.addPoint([Math.round(x), Math.round(y)]);
+		                    	}                 	
+		                    	
 		                    	series.addPoint([Math.round(x), Math.round(y)]);
 		                    }
 		                    var result="{\"data\":[";
@@ -117,51 +130,6 @@
 			    </select>
 			  </div>
 			</div>
-			
-			<!-- Text input-->
-				<div class="control-group">
-				  <label class="control-label" for="day_1">1. day</label>
-				  <div class="controls">
-				    <input id="day_1" name="day_1" type="text" placeholder="Day" class="input-large" required autofocus>
-				    
-				  </div>
-				</div>
-			
-			<!-- Text input-->
-				<div class="control-group">
-				  <label class="control-label" for="day_2">2. day</label>
-				  <div class="controls">
-				    <input id="day_2" name="day_2" type="text" placeholder="Day" class="input-large" required autofocus>
-				    
-				  </div>
-				</div>
-				
-			<!-- Text input-->
-				<div class="control-group">
-				  <label class="control-label" for="day_3">3. day</label>
-				  <div class="controls">
-				    <input id="day_3" name="day_3" type="text" placeholder="Day" class="input-large" required autofocus>
-				    
-				  </div>
-				</div>
-				
-			<!-- Text input-->
-				<div class="control-group">
-				  <label class="control-label" for="day_4">4. day</label>
-				  <div class="controls">
-				    <input id="day_4" name="day_4" type="text" placeholder="Day" class="input-large" required autofocus>
-				    
-				  </div>
-				</div>
-				
-			<!-- Text input-->
-				<div class="control-group">
-				  <label class="control-label" for="day_5">5. day</label>
-				  <div class="controls">
-				    <input id="day_5" name="day_5" type="text" placeholder="Day" class="input-large" required autofocus>
-				    
-				  </div>
-				</div>
 				
 				<input type="hidden" id="series" name="series" value="" />
 			
