@@ -524,7 +524,8 @@ def showAddIrrigationTemplate(request):
 def doAddIrrigationTemplate(request):
     
     name = request.POST['name']
-    irrigationTemplate = IrrigationTemplate(name=name)
+    irrigationTemplate = IrrigationTemplate(name=name,
+                                            day_counter=0)
     irrigationTemplate.save()
     
     return redirect('/getSystemStatus')
