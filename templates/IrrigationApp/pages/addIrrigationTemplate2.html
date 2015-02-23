@@ -2,6 +2,7 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <script src="https://rawgithub.com/highslide-software/draggable-points/master/draggable-points.js"></script>
+
 <form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
 				{% csrf_token %}
 				<fieldset>
@@ -18,11 +19,7 @@
 			<input type="hidden" id="series" name="series" value="" />
 			
 			<div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
-			<div class="form-group">
-				  <label for="button"></label>
-				    <button id="button" name="button" class="btn btn-default">Add point</button>
-				</div>
-				
+
 			<!-- Button -->
 				<div class="form-group">
 				  <label for="submit"></label>
@@ -31,6 +28,12 @@
 			
 		</fieldset>
 				</form>
+				
+		<div class="form-group">
+				  <label for="button"></label>
+				    <button id="button" name="button" class="btn btn-default">Add point</button>
+				</div>
+		<div id="drop"></div>
 
 
 <script type="text/javascript">
@@ -66,6 +69,11 @@
                         }
                     },
                     drop: function () {
+                    	var datas0 = chart.series[0].data;
+                    	var datas0 = chart.series[1].data;
+                    	$('#drop').html(
+                            'datas0: '+datas0 +'</br>datas1: '+datas1);
+                    	
                     	chart.yAxis[0].setExtremes(0, 100);
                     }
                 }
