@@ -138,10 +138,10 @@
 	    var day = parseInt(document.getElementById('day').value);
 	    var value = parseInt(document.getElementById('value').value);
 	    var diff_x = day - datas[datas.length-1].x;
-	    var diff_y = value - datas[datas.length-1].y;
+	    var diff_y = (value - datas[datas.length-1].y)/diff_x;
 	    if (diff_x > 1){
 	    	for (var i=1; i<=diff_x; i++) {
-		    	series.addPoint(datas[datas.length-1].y+diff_y*i/diff_x);
+		    	series.addPoint(datas[datas.length-1].y+diff_y*i);
 			}
 	    } 
 	     $('#info').html('diff_y: '+diff_y+' diff: '+diff_y/diff_x);
