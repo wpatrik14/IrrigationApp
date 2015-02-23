@@ -84,7 +84,29 @@
     series: [{
         data: [10, 10, 20, 30, 40, 50, 60, 70, 70, 70, 30, 30],
         draggableY: true
-    }]
+    }, {
+            name: 'Range',
+            data: [
+            [0, 0, 20],
+            [1, 0, 20],
+            [2, 10, 30],
+            [3, 20, 40],
+            [4, 30, 50],
+            [5, 40, 60],
+            [6, 50, 70],
+            [7, 60, 80],
+            [8, 60, 80],
+            [9, 60, 80],
+            [10, 20, 40],
+            [11, 20, 40]
+        ],
+            type: 'arearange',
+            lineWidth: 0,
+            linkedTo: ':previous',
+            color: Highcharts.getOptions().colors[0],
+            fillOpacity: 0.3,
+            zIndex: 0
+        }]
 
 });
 </script>
