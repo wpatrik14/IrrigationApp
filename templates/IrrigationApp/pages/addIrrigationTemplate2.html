@@ -136,12 +136,12 @@
 	    var series = chart.series[0];
 	    var datas = series.data;
 	    var day = parseInt(document.getElementById('day').value);
-	    var value = parseFloat(document.getElementById('value').value);
+	    var value = parseInt(document.getElementById('value').value);
 	    var diff_x = day - datas[datas.length-1].x;
 	    var diff_y = value - datas[datas.length-1].y;
 	    if (diff_x > 1){
 	    	for (var i=1; i<=diff_x; i++) {
-		    	series.addPoint(datas[datas.length-1].x+i, datas[datas.length-1].y+(diff_y)*i/diff_x);
+		    	series.addPoint(datas[datas.length-1].x+i, datas[datas.length-1].y+(diff_y).numFixed(3)*i/diff_x);
 			}
 	    } 
 	});
