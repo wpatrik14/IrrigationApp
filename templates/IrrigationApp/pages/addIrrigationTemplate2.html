@@ -68,14 +68,12 @@
                             return false;
                         }
                         var datas0 = chart.series[0].data;
-                    	//datas0[this.category].low=e.newY-10;
-                    	//datas0[this.category].high=e.newY+10;
+                    	
                     },
                     drop: function () {
-                    	var datas0 = chart.series[0].data;
-                    	datas0[this.category].low=this.y-10;
-                    	datas0[this.category].high=this.y+10;
-                    	
+                    	var series = chart.series[0];
+                    	var array = [this.category,this.y-10,this.y+10]
+                    	series.addPoint(array);                   	
                     	chart.yAxis[0].setExtremes(0, 100);
                     }
                 }
@@ -134,7 +132,7 @@
 	});
 	$('#button').click(function() {
 	    var chart = $('#container').highcharts();
-	    var series = chart.series[0];
+	    var series = chart.series[1];
 	    series.addPoint(50);
 	});
 	$(document).ready ( function(){
