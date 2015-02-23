@@ -4,9 +4,7 @@
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <script src="https://rawgithub.com/highslide-software/draggable-points/master/draggable-points.js"></script>
 <div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
-<div id="drag"></div>
-<div id="drop"></div>
-<button id="button" name="submit">Add point</button>
+<button id="button" style="auto">Add point</button>
 
 <script type="text/javascript">
 	var chart = new Highcharts.Chart({
@@ -39,14 +37,9 @@
                         	this.y = 0;
                             return false;
                         }
-                        
-                        $('#drag').html(
-                            'Dragging <b>' + this.series.name + '</b>, <b>' + this.category + '</b> to <b>' + Highcharts.numberFormat(e.newY, 2) + '</b>');
                     },
                     drop: function () {
                     	chart.yAxis[0].setExtremes(0, 100);
-                        $('#drop').html(
-                            'In <b>' + this.series.name + '</b>, <b>' + this.category + '</b> was set to <b>' + Highcharts.numberFormat(this.y, 2) + '</b>');
                     }
                 }
             },
