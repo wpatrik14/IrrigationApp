@@ -136,7 +136,7 @@
 	    var series = chart.series[0];
 	    var datas = series.data;
 	    var day = parseInt(document.getElementById('day').value);
-	    var value = parseInt(document.getElementById('value').value);
+	    var value = parseFloat(document.getElementById('value').value);
 	    var diff_x = day - datas[datas.length-1].x;
 	    var diff_y = value - datas[datas.length-1].y;
 	    if (diff_x > 1){
