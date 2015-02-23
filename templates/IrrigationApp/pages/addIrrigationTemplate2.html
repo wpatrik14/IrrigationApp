@@ -31,13 +31,13 @@
 		
 		<!-- Text input-->
 			<div class="form-group">
-			  <label for="name">Day</label>
-			    <input id="day" name="day" type="text" placeholder="Day" class="form-control">
+			  <label for="day">Day</label>
+			    <input id="day" name="day" type="number" placeholder="Day" class="form-control">
 			</div>
 		<!-- Text input-->
 			<div class="form-group">
-			  <label for="name">Value</label>
-			    <input id="value" name="value" type="text" placeholder="Value" class="form-control">
+			  <label for="value">Value</label>
+			    <input id="value" name="value" type="number" placeholder="Value" class="form-control">
 			</div>		
 		<div class="form-group">
 				  <label for="button"></label>
@@ -134,8 +134,8 @@
 	$('#button').click(function() {
 	    var chart = $('#container').highcharts();
 	    var series = chart.series[0];
-	    var day = document.getElementById('day').value;
-	    var value = document.getElementById('value').value;
+	    var day = int(document.getElementById('day').value);
+	    var value = int(document.getElementById('value').value);
 	    series.addPoint(day,value);
 	});
 	$(document).ready ( function(){
