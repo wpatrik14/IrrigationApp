@@ -6,6 +6,7 @@
 <div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
 <div id="drag"></div>
 <div id="drop"></div>
+<button id="button" name="submit">Add point</button>
 
 <script type="text/javascript">
 	var chart = new Highcharts.Chart({
@@ -64,6 +65,13 @@
         data: [10, 10, 20, 30, 40, 50, 60, 70, 70, 70, 30, 30],
         draggableY: true
     }]
+    
+    // the button action
+	$('#button').click(function() {
+	    var chart = $('#container').highcharts();
+	    var series = chart.series[0];
+	    series.addPoint(12, 100);
+	});
 
 });
 </script>
