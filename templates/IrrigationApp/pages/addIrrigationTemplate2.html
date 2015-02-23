@@ -3,7 +3,31 @@
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <script src="https://rawgithub.com/highslide-software/draggable-points/master/draggable-points.js"></script>
 
+<form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
+				{% csrf_token %}
+				<fieldset>
 
+			<!-- Form Name -->
+			<legend>Add irrigation template</legend>
+			
+			<!-- Text input-->
+			<div class="form-group">
+			  <label for="name">Name</label>
+			    <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
+			</div>
+			
+			<input type="hidden" id="series" name="series" value="" />
+
+			<!-- Button -->
+				<div class="form-group">
+				  <label for="submit"></label>
+				    <button id="submit" name="submit" class="btn btn-success">Save Template</button>
+				</div>
+			
+		</fieldset>
+				</form>
+				
+				<div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
 		
 		<!-- Text input-->
 			<div class="form-group">
@@ -19,31 +43,6 @@
 				  <label for="button"></label>
 				    <button id="button" name="button" class="btn btn-default">Add point</button>
 				</div>
-		<form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
-				{% csrf_token %}
-				<fieldset>
-
-			<!-- Form Name -->
-			<legend>Add irrigation template</legend>
-			
-			<!-- Text input-->
-			<div class="form-group">
-			  <label for="name">Name</label>
-			    <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
-			</div>
-			
-			<input type="hidden" id="series" name="series" value="" />
-			
-			<div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
-
-			<!-- Button -->
-				<div class="form-group">
-				  <label for="submit"></label>
-				    <button id="submit" name="submit" class="btn btn-success">Save Template</button>
-				</div>
-			
-		</fieldset>
-				</form>
 
 
 <script type="text/javascript">
