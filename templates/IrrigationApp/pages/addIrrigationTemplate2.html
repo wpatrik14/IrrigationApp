@@ -12,44 +12,7 @@
 
     chart: {
         renderTo: 'container',
-        animation: false,
-        events: {
-		                click: function (e) {
-		                    // find the clicked values and the series
-		                    var x = e.xAxis[0].value,
-		                        y = e.yAxis[0].value,
-		                        series = this.series[0];
-		
-		                    // Add it
-		                    var datas = series.data;
-		                    var addPoint=1;
-		                    for (var i=0; i<datas.length; i++) {
-		                    	if (datas[i].x >= Math.round(x)){
-		                    		addPoint=0;
-		                    	}
-		                    }
-		                    if (addPoint==1 && y>=0 && y<=100){
-		                    
-		                    	var prev_point=datas[datas.length-1]
-		                    	var diff_x=x-prev_point.x
-		                    	var diff_y=y-prev_point.y
-		                    	if (diff_x > 1) {
-		                    		for (var i=1; i<diff_x; i++){
-		                    			series.addPoint([Math.round(prev_point.x+i), Math.round(prev_point.y+(diff_y)*i/diff_x)]);
-		                    		}
-		                    	}
-		                    	else if (diff_x <= 1){
-		                    		series.addPoint([Math.round(x), Math.round(y)]);
-		                    	}
-		                    }
-		                    var result="{\"data\":[";
-		                    for (var i=0; i<datas.length-1; i++) {
-		                    	result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"},";
-		                    }
-		                    result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"}]}";
-		                    document.getElementById('series').value = result;		
-		                }
-		            }
+        animation: false
     },
     
     title: {
@@ -57,7 +20,7 @@
     },
 
     xAxis: {
-        //categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        categories: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     },
 
     plotOptions: {
@@ -95,7 +58,7 @@
     },
 
     series: [{
-        data: [0, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+        data: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
         draggableY: true
     }]
 
