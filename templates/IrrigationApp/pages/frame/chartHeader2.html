@@ -19,3 +19,41 @@
 		</style>
 
 </head>	
+
+<body>
+	
+	<div class="container">
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">IrrigationApp</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'getSystemStatus'%}">Status</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Templates<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url 'showAddIrrigationTemplate'%}">Add Irrigation Template</a></li>
+            	<li><a href="{% url 'showDeleteIrrigationTemplate'%}">Delete Irrigation Template</a></li>
+              </ul>
+            </li>
+            <li><a href="{% url 'showWeatherStatus'%}">Weather</a></li>
+            <li><a href="{% url 'showIrrigationHistory'%}">History</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url 'showAddArduino'%}">Arduino</a></li>
+            	<li><a href="{% url 'showAddSettings'%}">Irrigation</a></li>
+              </ul>
+            </li>
+            <li><a href="{% url 'doLogout'%}">Logout</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+
+	
