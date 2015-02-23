@@ -559,3 +559,8 @@ def showIrrigationTemplateValues(request):
     irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
     
     return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues })
+
+
+def showAddIrrigationTemplate2(request):
+    
+    return render(request, 'IrrigationApp/pages/addIrrigationTemplate2.html', { })

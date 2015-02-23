@@ -1,0 +1,34 @@
+{% include "IrrigationApp/pages/frame/chartHeader2.html" %}
+		<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://rawgithub.com/highslide-software/draggable-points/master/draggable-points.js"></script>
+<div id="container" style="height: 400px"></div>
+<div id="drag"></div>
+<div id="drop"></div>
+		
+		<form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
+				{% csrf_token %}
+				<fieldset>
+
+			<!-- Form Name -->
+			<legend>Add irrigation template</legend>
+			
+			<!-- Text input-->
+			<div class="form-group">
+			  <label for="name">Name</label>
+			    <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
+			</div>
+			
+			<input type="hidden" id="series" name="series" value="" />
+			
+			<!-- Button -->
+				<div class="form-group">
+				  <label for="submit"></label>
+				    <button id="submit" name="submit" class="btn btn-success">Save Template</button>
+				</div>
+			
+		</fieldset>
+				</form>
+</div>
+</body>
+</html>
