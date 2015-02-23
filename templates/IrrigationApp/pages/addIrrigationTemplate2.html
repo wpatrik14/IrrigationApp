@@ -71,9 +71,10 @@
                     	
                     },
                     drop: function () {
-                    	var series = chart.series[0];
-                    	var array1 = [this.category-1,this.y-10,this.y+10]
-                    	var array2 = [this.category,this.y-10,this.y+10]
+                    	var series0 = chart.series[0];
+                    	var datas1 = chart.series[1].data;
+                    	var array1 = [this.category-1,data[this.category].y-10,data[this.category].y+10]
+                    	var array2 = [this.category,this.y+10,this.y-10]
                     	series.addPoint(array1); 
                     	series.addPoint(array2);                  	
                     	chart.yAxis[0].setExtremes(0, 100);
