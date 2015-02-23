@@ -70,8 +70,8 @@
                     },
                     drop: function () {
                     	var datas0 = chart.series[0].data;
-                    	$('#drop').html(
-                            'datas0.x: '+datas0[0].low +'</br>datas0.y: '+datas0[0].high +'</br>datas0.z: '+datas0[0] +'</br>');
+                    	datas0[this.category].low=e.newY-10;
+                    	datas0[this.category].high=e.newY+10;
                     	
                     	chart.yAxis[0].setExtremes(0, 100);
                     }
