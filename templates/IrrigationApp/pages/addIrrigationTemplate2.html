@@ -136,7 +136,7 @@
 	    var series = chart.series[0];
 	    var day = document.getElementById('day').value;
 	    var value = document.getElementById('value').value;
-	    series.addPoint(day,value);
+	    series.addPoint(parseInt(day),parseInt(value));
 	});
 	$(document).ready ( function(){
 	   chart.yAxis[0].setExtremes(0, 100);
