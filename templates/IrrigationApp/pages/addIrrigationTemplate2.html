@@ -43,7 +43,7 @@
 				  <label for="button"></label>
 				    <button id="button" name="button" class="btn btn-default">Add point</button>
 				</div>
-		<div id="drop"></div>
+		<div id="info"></div>
 
 
 <script type="text/javascript">
@@ -144,7 +144,7 @@
 		    	series.addPoint(datas[datas.length-1].x+i, datas[datas.length-1].y+diff_y.toFixed(3)*i/diff_x);
 			}
 	    } 
-	     $('#drag').html('diff_y: '+diff_y+' asd: '+datas[datas.length-1].y+diff_y.toFixed(3)*i/diff_x);
+	     $('#info').html('diff_y: '+diff_y+' asd: '+datas[datas.length-1].y+diff_y.toFixed(3)*i/diff_x);
 	});
 	$(document).ready ( function(){
 	   chart.yAxis[0].setExtremes(0, 100);
