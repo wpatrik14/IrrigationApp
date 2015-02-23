@@ -141,7 +141,7 @@
 	    var diff_y = value - datas[datas.length-1].y;
 	    if (diff_x > 1){
 	    	for (var i=1; i<=diff_x; i++) {
-		    	series.addPoint(datas[datas.length-1].x+i, datas[datas.length-1].y+(diff_y/diff_x)*i);
+		    	series.addPoint(datas[datas.length-1].y+(diff_y/diff_x)*i);
 			}
 	    } 
 	     $('#info').html('diff_y: '+diff_y+' diff: '+diff_y/diff_x);
