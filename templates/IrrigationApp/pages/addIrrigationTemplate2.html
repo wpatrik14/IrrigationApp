@@ -30,13 +30,15 @@
                 events: {
 
                     drag: function (e) {
-                        // Returning false stops the drag and drops. Example:
-                        /*
-                        if (e.newY > 300) {
-                            this.y = 300;
+                        
+                        if (e.newY > 100) {
+                            this.y = 100;
+                            return false;
+                        } else if (e.newY < 0) {
+                        	this.y = 0;
                             return false;
                         }
-                        */
+                        
                         $('#drag').html(
                             'Dragging <b>' + this.series.name + '</b>, <b>' + this.category + '</b> to <b>' + Highcharts.numberFormat(e.newY, 2) + '</b>');
                     },
@@ -58,7 +60,7 @@
     },
 
     series: [{
-        data: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+        data: [10, 10, 20, 30, 40, 50, 60, 70, 70, 70, 30, 30],
         draggableY: true
     }]
 
