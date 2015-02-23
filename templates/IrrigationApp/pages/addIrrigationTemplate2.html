@@ -2,8 +2,32 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/highcharts-more.js"></script>
 <script src="https://rawgithub.com/highslide-software/draggable-points/master/draggable-points.js"></script>
+<form class="form-horizontal" id="doAddIrrigationTemplate" action="{% url 'doAddIrrigationTemplate'%}" method="post">
+				{% csrf_token %}
+				<fieldset>
+
+			<!-- Form Name -->
+			<legend>Add irrigation template</legend>
+			
+			<!-- Text input-->
+			<div class="form-group">
+			  <label for="name">Name</label>
+			    <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
+			</div>
+			
+			<button id="button" style="auto">Add point</button>
+			
+			<input type="hidden" id="series" name="series" value="" />
+			
+			<!-- Button -->
+				<div class="form-group">
+				  <label for="submit"></label>
+				    <button id="submit" name="submit" class="btn btn-success">Save Template</button>
+				</div>
+			
+		</fieldset>
+				</form>
 <div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
-<button id="button" style="auto">Add point</button>
 
 <script type="text/javascript">
 	var chart = new Highcharts.Chart({
@@ -62,6 +86,16 @@
 </script>
 <script type="text/javascript">
 	// the button action
+	$('#submit').click(function() {
+	    var chart = $('#container').highcharts();
+	    var datas = chart.series[0].data;
+	    var result="{\"data\":[";
+		                    for (var i=0; i<datas.length-1; i++) {
+		                    	result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"},";
+		                    }
+		                    result+="{\"x\":\""+datas[i].x+"\",\"y\":\""+datas[i].y+"\"}]}";
+		                    document.getElementById('series').value = result;
+	});
 	$('#button').click(function() {
 	    var chart = $('#container').highcharts();
 	    var series = chart.series[0];
