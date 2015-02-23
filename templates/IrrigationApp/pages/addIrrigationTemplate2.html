@@ -69,6 +69,7 @@
                         }
                     },
                     drop: function () {
+                    	var chart = $('#container').highcharts();
                     	var datas0 = chart.series[0].data;
                     	var datas1 = chart.series[1].data;
                     	$('#drop').html(
