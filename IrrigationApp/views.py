@@ -163,7 +163,7 @@ def getSystemStatus(request):
         segment = request.POST['segment']
         status = request.POST['status']
         mSegment = Segment.objects.get(id=segment)
-        if status == 'on' :
+        if status == 1 :
             mSegment.up_time = mSegment.up_time
             mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                    moisture_startValue=mSegment.sensor.status
@@ -188,20 +188,23 @@ def getSystemStatus(request):
         urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
         switches = Switch.objects.all()
+        running_segments=0;
         pump_status = False
         for switch in switches :
             if switch.pinNumber != settings.pump.pinNumber :
-                if switch.status == 'on' :
+                if switch.status == 1 :
+                    running_segments=running_segments+1
                     pump_status = True
         
         pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
         if pump_status :
-            pump.status = "on"
+            pump.status = 1
         else :
-            pump.status = "off"
+            pump.status = 0
         pump.save(update_fields=['status'])
         settings.pump=pump
-        settings.save(update_fields=['pump'])
+        settings.running_segments=running_segments
+        settings.save(update_fields=['pump','running_segments'])
         urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
     
     segments = Segment.objects.all()
@@ -465,55 +468,14 @@ def doAddArduino(request):
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
-    d01_status=js['digital']['D1'];
-    d02_status=js['digital']['D2'];
-    d03_status=js['digital']['D3'];
-    d04_status=js['digital']['D4'];
+    for digital in js['digitals'] :
+        Switch(pinNumber=digital['pinNumber'],status=digital['status']).save()
     
-    a01_status=js['analog']['A1'];
-    a02_status=js['analog']['A2'];
-    a03_status=js['analog']['A3'];
-    a04_status=js['analog']['A4'];
+    for node in js['nodes'] :
+        Sensor(node=node['name'],value=node['value']).save()
     
-    mSensor1 = Sensor(
-        pinNumber='a1',
-        status=a01_status)
-    mSensor1.save()
-    
-    mSensor2 = Sensor(
-        pinNumber='a2',
-        status=a02_status)
-    mSensor2.save()
-    
-    mSensor3 = Sensor(
-        pinNumber='a3',
-        status=a03_status)
-    mSensor3.save()
-    
-    mSensor4 = Sensor(
-        pinNumber='a4',
-        status=a04_status)
-    mSensor4.save()
-    
-    mSwitch1 = Switch(
-        pinNumber='d1',
-        status=d01_status)
-    mSwitch1.save()
-    
-    mSwitch2 = Switch(
-        pinNumber='d2',
-        status=d02_status)
-    mSwitch2.save()
-    
-    mSwitch3 = Switch(
-        pinNumber='d3',
-        status=d03_status)
-    mSwitch3.save()
-    
-    mSwitch4 = Switch(
-        pinNumber='d4',
-        status=d04_status)
-    mSwitch4.save()
+    settings.flow_meter=js['flow_meter']
+    settings.save(update_fields=['flow_meter'])
     
     return redirect('/showAddSettings')
 

@@ -36,22 +36,26 @@ class Segment(models.Model):
     moisture_minLimit=models.IntegerField(max_length=5)
     moisture_maxLimit=models.IntegerField(max_length=5)
     duration_maxLimit=models.IntegerField(max_length=3)
+    duration_today=models.IntegerField(default=0)
     forecast_enabled=models.BooleanField(default=False)
     type=models.CharField(max_length=10)
     irrigation_history=models.ForeignKey('IrrigationHistory', null = True)
     template=models.ForeignKey('IrrigationTemplate', null = True)
+    size_m2=models.IntegerField(default=0)
+    soil_type=models.ForeignKey('SoilType')
+    water_quantity=models.FloatField(default=0)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
 class Sensor(models.Model):
-    pinNumber = models.CharField(max_length=3, primary_key=True)
-    status = models.IntegerField(max_length=3)
+    node = models.CharField(max_length=3, primary_key=True)
+    value = models.IntegerField(max_length=3)
     def __unicode__(self):
         return self.pinNumber + ' ' + self.status 
     
 class Switch(models.Model):
     pinNumber = models.CharField(max_length=3, primary_key=True)
-    status = models.CharField(max_length=3)
+    status = models.IntegerField(default=0)
     def __unicode__(self):
         return self.pinNumber + ' ' + self.status 
     
@@ -108,5 +112,12 @@ class Arduino(models.Model):
 class IrrigationSettings(models.Model):
     id = models.IntegerField(max_length=1, primary_key=True)
     pump = models.ForeignKey('Switch')
+    flow_meter = models.IntegerField(default=0)
+    running_segments = models.IntegerField(default=0)
+    evapotranspiracy = models.FloatField(default=0)
     def __unicode__(self):
         return self.pump
+
+class SoilType(models.Model):
+    name = models.CharField(max_length=20)
+    value = models.FloatField(default=0)

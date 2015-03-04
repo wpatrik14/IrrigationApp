@@ -133,7 +133,7 @@ def get_weather_datas():
 
 def switchIrrigation(mSegment, status, settings, arduino):
     
-    if status == 'on' :
+    if status == 1 :
         if mSegment.irrigation_history is None :
             mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                    moisture_startValue=mSegment.sensor.status
@@ -160,20 +160,23 @@ def switchIrrigation(mSegment, status, settings, arduino):
     urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
     
     switches = Switch.objects.all()
+    running_segments=0;
     pump_status = False
     for switch in switches :
         if switch.pinNumber != settings.pump.pinNumber :
-            if switch.status == 'on' :
+            if switch.status == 1 :
+                running_segments=running_segments+1
                 pump_status = True
     
     pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
     if pump_status :
-        pump.status = "on"
+        pump.status = 1
     else :
-        pump.status = "off"
+        pump.status = 0
     pump.save(update_fields=['status'])
     settings.pump=pump
-    settings.save(update_fields=['pump'])
+    settings.running_segments=running_segments
+    settings.save(update_fields=['pump','running_segments'])
     urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
     
     return
@@ -209,55 +212,14 @@ def automation_control():
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
-    d01_status=js['digital']['D1'];
-    d02_status=js['digital']['D2'];
-    d03_status=js['digital']['D3'];
-    d04_status=js['digital']['D4'];
+    for digital in js['digitals'] :
+        Switch(pinNumber=digital['pinNumber'],status=digital['status']).save()
     
-    a01_status=js['analog']['A1'];
-    a02_status=js['analog']['A2'];
-    a03_status=js['analog']['A3'];
-    a04_status=js['analog']['A4'];
+    for node in js['nodes'] :
+        Sensor(node=node['name'],value=node['value']).save()
     
-    mSensor1 = Sensor(
-        pinNumber='a1',
-        status=a01_status)
-    mSensor1.save()
-    
-    mSensor2 = Sensor(
-        pinNumber='a2',
-        status=a02_status)
-    mSensor2.save()
-    
-    mSensor3 = Sensor(
-        pinNumber='a3',
-        status=a03_status)
-    mSensor3.save()
-    
-    mSensor4 = Sensor(
-        pinNumber='a4',
-        status=a04_status)
-    mSensor4.save()
-    
-    mSwitch1 = Switch(
-        pinNumber='d1',
-        status=d01_status)
-    mSwitch1.save()
-    
-    mSwitch2 = Switch(
-        pinNumber='d2',
-        status=d02_status)
-    mSwitch2.save()
-    
-    mSwitch3 = Switch(
-        pinNumber='d3',
-        status=d03_status)
-    mSwitch3.save()
-    
-    mSwitch4 = Switch(
-        pinNumber='d4',
-        status=d04_status)
-    mSwitch4.save()
+    settings.flow_meter=js['flow_meter']
+    settings.save(update_fields=['flow_meter'])
     
     segments = Segment.objects.all()
     
@@ -273,32 +235,32 @@ def automation_control():
                 if segment.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
-                        switchIrrigation(segment, 'on', settings, arduino)
+                        switchIrrigation(segment, 1, settings, arduino)
                     else :
-                        switchIrrigation(segment, 'off', settings, arduino)
+                        switchIrrigation(segment, 0, settings, arduino)
                 else :
                    #turn on irrigation anyway
-                    switchIrrigation(segment, 'on', settings, arduino) 
+                    switchIrrigation(segment, 1, settings, arduino) 
                 
             elif segment.sensor.status>segment.moisture_maxLimit:
                 #turn off irrigation
-                switchIrrigation(segment, 'off', settings, arduino)
+                switchIrrigation(segment, 0, settings, arduino)
                 changeSegment(segment, 0)
                 
-            if segment.switch.status == "on" :
+            if segment.switch.status == 1 :
                 if segment.up_time+2>segment.duration_maxLimit :
                     #turn off irrigation
-                    switchIrrigation(segment, 'off', settings, arduino)
+                    switchIrrigation(segment, 0, settings, arduino)
                     changeSegment(segment, 0)
                 else :
                     changeSegment(segment, segment.up_time+1)
         else :
             if segment.up_time+2>segment.duration_maxLimit :
                 #turn off irrigation
-                switchIrrigation(segment, 'off', settings, arduino)
+                switchIrrigation(segment, 0, settings, arduino)
                 changeSegment(segment, 0)
             
-            if segment.switch.status == "on" :
+            if segment.switch.status == 1 :
                 changeSegment(segment, segment.up_time+1)
             else :
                 changeSegment(segment, 0)
@@ -331,23 +293,23 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                switchIrrigation(simpleSchedule.segment, 'on', settings, arduino)
+                switchIrrigation(simpleSchedule.segment, 1, settings, arduino)
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit) or simpleSchedule.segment.switch.status == 'off':
                 simpleSchedule.delete()
-                switchIrrigation(simpleSchedule.segment, 'off', settings, arduino)
+                switchIrrigation(simpleSchedule.segment, 0, settings, arduino)
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                switchIrrigation(repeatableSchedule.segment, 'on', settings, arduino)
+                switchIrrigation(repeatableSchedule.segment, 1, settings, arduino)
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) or repeatableSchedule.segment.switch.status == 'off':
-                switchIrrigation(repeatableSchedule.segment, 'off', settings, arduino)
+                switchIrrigation(repeatableSchedule.segment, 0, settings, arduino)
                 changeSchedule(repeatableSchedule,'stopped')
                 
                            
@@ -385,7 +347,7 @@ def follow_irrigation_template():
                     irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
                     irrigationTemplate.save(update_fields=['day_counter'])
             except Exception as e :
-                switchIrrigation(segment, 'off', settings, arduino)
+                switchIrrigation(segment, 0, settings, arduino)
                 segment.type='Manual'
                 segment.template=None
                 segment.save(update_fields=['type','template'])
