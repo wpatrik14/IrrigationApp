@@ -231,7 +231,7 @@ def automation_control():
     
     for segment in segments :
         if segment.type == "Automatic" :
-            if segment.sensor.status<segment.moisture_minLimit :
+            if segment.sensor.value<segment.moisture_minLimit :
                 if segment.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
@@ -242,7 +242,7 @@ def automation_control():
                    #turn on irrigation anyway
                     switchIrrigation(segment, 1, settings, arduino) 
                 
-            elif segment.sensor.status>segment.moisture_maxLimit:
+            elif segment.sensor.value>segment.moisture_maxLimit:
                 #turn off irrigation
                 switchIrrigation(segment, 0, settings, arduino)
                 segment.up_time=0
