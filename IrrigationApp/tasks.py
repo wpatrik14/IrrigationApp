@@ -278,6 +278,11 @@ def automation_control():
             else :
                 segment.up_time=0
                 segment.save(update_fields=['up_time'])
+    
+    settings = IrrigationSettings.objects.get(id=0)
+    settings.water = settings.water + settings.flow_meter
+    settings.total_cost=settings.total_cost+settings.cost*settings.flow_meter
+    settings.save(update_fields=['water','total_cost'])
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 

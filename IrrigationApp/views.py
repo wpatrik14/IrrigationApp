@@ -437,11 +437,13 @@ def doAddSettings(request):
     
     switch = request.POST['switch']
     evapotranspiracy = request.POST['evapotranspiracy']
+    cost = request.POST['cost']
     
     switch = Switch.objects.get(pinNumber=switch)
     settings = IrrigationSettings(id=0,
                                   pump=switch,
-                                  evapotranspiracy=evapotranspiracy)
+                                  evapotranspiracy=evapotranspiracy,
+                                  cost_perLiter=cost)
     
     settings.save()
     

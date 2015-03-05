@@ -115,6 +115,9 @@ class IrrigationSettings(models.Model):
     flow_meter = models.IntegerField(default=0)
     running_segments = models.IntegerField(default=0)
     evapotranspiracy = models.FloatField(default=0)
+    cost_perLiter = models.FloatField(default=0)
+    total_cost = models.FloatField(default=0)
+    water = models.FloatField(default=0)
     def __unicode__(self):
         return self.pump
 

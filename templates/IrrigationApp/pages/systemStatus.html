@@ -76,9 +76,11 @@
 
 	<!-- Form Name -->
 	<legend>Irrigation status</legend>
-	Pump is: {{ settings.pump.status }} (pin-number: {{ settings.pump.pinNumber }})</br></br>
-	Count of running segments: {{ settings.running_segments }}</br></br>
-	Flow meter: {{ settings.flow_meter }} (Liter/Hour)</br></br>
+	Pump is: {{ settings.pump.status }} (pin-number: {{ settings.pump.pinNumber }})</br>
+	Count of running segments: {{ settings.running_segments }}</br>
+	Flow meter: {{ settings.flow_meter }} liter/minute</br>
+	Water quantity: {{ settings.water }} liter</br>
+	Total cost: {{ settings.total_cost }} Ft</br>
 </fieldset>
 
 <fieldset>
