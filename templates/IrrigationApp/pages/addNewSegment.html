@@ -15,6 +15,22 @@
 				
 				<!-- Select Basic -->
 				<div class="form-group">
+				  <label for="sensor">Soil type</label>
+				    <select id="soil_type" name="soil_type" class="form-control">
+				      {% for soilType in soilTypes %}
+				      <option value="{{ soilType.id }}">{{ soilType.name }}</option>
+				      {% endfor %}
+				    </select>
+				</div>
+				
+				<!-- Text input-->
+				<div class="form-group">
+				  <label for="size">Size of area (m2)</label>
+				    <input id="size" name="size" type="text" placeholder="Size of area" class="form-control" required autofocus>
+				</div>
+				
+				<!-- Select Basic -->
+				<div class="form-group">
 				  <label for="sensor">Sensor</label>
 				    <select id="sensor" name="sensor" class="form-control">
 				      {% for sensor in sensors %}

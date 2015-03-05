@@ -1,0 +1,32 @@
+{% include "IrrigationApp/pages/frame/htmlHeader.html" %}
+
+		<form class="form-horizontal" id="doAddArduino" action="{% url 'doAddArduino'%}" method="post">
+				{% csrf_token %}
+				<fieldset>
+
+			<!-- Form Name -->
+			<legend>Soil type</legend>
+			
+			<!-- Text input-->
+			<div class="form-group">
+			  <label for="name">Name</label>
+			  <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
+			</div>
+			
+			<!-- Text input-->
+			<div class="form-group">
+			  <label for="value">Value</label>
+			  <input id="value" name="value" type="text" placeholder="Value" class="form-control" required="">
+			</div>
+			
+			<!-- Button -->
+				<div class="form-group">
+				  <label for="submit"></label>
+				  <button id="submit" name="submit" class="btn btn-success">Save Arduino</button>
+				</div>
+			
+		</fieldset>
+				</form>
+</div>
+</body>
+</html>

@@ -82,8 +82,9 @@ def showAddNewSegment(request):
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
     irrigationTemplates = IrrigationTemplate.objects.all()
+    soilTypes = SoilType.objects.all()
     
-    return render(request, 'IrrigationApp/pages/addNewSegment.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates})
+    return render(request, 'IrrigationApp/pages/addNewSegment.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
     
 @login_required
 def doAddNewSegment(request):
@@ -96,12 +97,14 @@ def doAddNewSegment(request):
     settings = IrrigationSettings.objects.get(id=0)
     
     name = request.POST['name']
+    size = request.POST['size']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
     moisture_minLimit = request.POST['moisture_minLimit']
     moisture_maxLimit = request.POST['moisture_maxLimit']
     duration_maxLimit = request.POST['duration_maxLimit']
     irrigationTemplate_id = request.POST['irrigationTemplate']
+    soil_type = request.POST['soil_type']
     type = request.POST['type']
     if 'checkboxes' not in request.POST:
         enabled = False
@@ -116,6 +119,7 @@ def doAddNewSegment(request):
     
     sensor = Sensor.objects.get(pinNumber=sensor)
     switch = Switch.objects.get(pinNumber=switch)
+    soil = SoilType.objects.get(id=soil_type)
     
     mSegment = Segment(
                     name = name,
@@ -126,7 +130,9 @@ def doAddNewSegment(request):
                     duration_maxLimit = duration_maxLimit,
                     forecast_enabled = enabled,
                     type = type,
-                    template = irrigationTemplate
+                    template = irrigationTemplate,
+                    soil_type=soil,
+                    size_m2=size
                             )
     mSegment.save()
     
@@ -430,10 +436,12 @@ def doAddSettings(request):
         return redirect('/showLogin')
     
     switch = request.POST['switch']
+    evapotranspiracy = request.POST['evapotranspiracy']
     
     switch = Switch.objects.get(pinNumber=switch)
     settings = IrrigationSettings(id=0,
-                                  pump=switch)
+                                  pump=switch,
+                                  evapotranspiracy=evapotranspiracy)
     
     settings.save()
     
@@ -477,6 +485,31 @@ def doAddArduino(request):
     
     
     return redirect('/showAddSettings')
+
+@login_required
+def showAddSoilType(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+        
+    return render(request, 'IrrigationApp/pages/addSoilType.html', { 'username':user.username })
+
+@login_required
+def doAddSoilType(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+
+    name = request.POST['name']
+    value = request.POST['value']
+
+    SoilType(name=name,value=value).save();
+    
+    return redirect('/getSystemStatus')
 
 def showAddIrrigationTemplate(request):
     
