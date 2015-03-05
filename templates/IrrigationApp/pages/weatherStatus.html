@@ -27,13 +27,13 @@
 		<td><img src="{{ currentWeather.icon }}"></td>
 		<td>{{currentWeather.place}}</td>
 		<td>{{currentWeather.observation_time|date:"Y-m-d"}} {{currentWeather.observation_time|time:"H:i"}}</td>
-		<td>{{currentWeather.temp_C}}</td>
-		<td>{{currentWeather.precipMM}}</td>
-		<td>{{currentWeather.pressure}}</td>
-		<td>{{currentWeather.cloudcover}}</td>
-		<td>{{currentWeather.humidity}}</td>
-		<td>{{currentWeather.windspeedKmph}}</td>
-		<td>{{currentWeather.winddirDegree}}</td>
+		<td>{{currentWeather.temp_C}}°C</td>
+		<td>{{currentWeather.precipMM}}mm</td>
+		<td>{{currentWeather.pressure}}hPa</td>
+		<td>{{currentWeather.cloudcover}}%</td>
+		<td>{{currentWeather.humidity}}%</td>
+		<td>{{currentWeather.windspeedKmph}} kmph</td>
+		<td>{{currentWeather.winddirDegree}}°</td>
 	</tr>
 	{% endfor %}
 </table>
@@ -60,9 +60,9 @@
 	<tr>
 		<td><img src="{{ weatherForecast.icon }}"></td>
 		<td>{{weatherForecast.forecast_date|date:"Y-m-d"}}</td>
-		<td>{{weatherForecast.tempMin_C}}</td>
-		<td>{{weatherForecast.tempMax_C}}</td>
-		<td>{{weatherForecast.precipMM}}</td>
+		<td>{{weatherForecast.tempMin_C}}°C</td>
+		<td>{{weatherForecast.tempMax_C}}°C</td>
+		<td>{{weatherForecast.precipMM}}mm</td>
 		<td>{{weatherForecast.update|date:"Y-m-d"}} {{weatherForecast.update|time:"H:i"}}</td>
 	</tr>
 </table>
