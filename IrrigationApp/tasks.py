@@ -281,7 +281,7 @@ def automation_control():
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water = settings.water + settings.flow_meter
-    settings.total_cost=settings.total_cost+settings.cost*settings.flow_meter
+    settings.total_cost=settings.total_cost+settings.cost_perLiter*settings.flow_meter
     settings.save(update_fields=['water','total_cost'])
             
     return '\n\nAUTOMATION CONTROL........... DONE'
