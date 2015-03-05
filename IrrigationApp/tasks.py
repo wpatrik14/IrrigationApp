@@ -205,8 +205,6 @@ def automation_control():
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
-        settings.flow_meter=js['flow_meter']
-        settings.save(update_fields=['flow_meter'])
     else:
         return 'Settings not found'
     
@@ -220,7 +218,8 @@ def automation_control():
     for node in js['nodes'] :
         Sensor(node=node['nodeId'],value=node['value']).save()
     
-    
+    settings.flow_meter=js['flow_meter']
+    settings.save(update_fields=['flow_meter'])
     
     segments = Segment.objects.all()
     
