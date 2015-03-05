@@ -255,9 +255,10 @@ def automation_control():
                     segment.up_time=0
                     segment.save(update_fields=['up_time'])
                 else :
+                    settings = IrrigationSettings.objects.get(id=0)
                     segment.up_time=segment.up_time+1
                     segment.duration_today=segment.duration_today+1
-                    segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments
+                    segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments*10
                     segment.save(update_fields=['up_time','duration_today'])
                     
         else :
@@ -268,9 +269,10 @@ def automation_control():
                 segment.save(update_fields=['up_time'])
             
             if segment.switch.status == 1 :
+                settings = IrrigationSettings.objects.get(id=0)
                 segment.up_time=segment.up_time+1
                 segment.duration_today=segment.duration_today+1
-                segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments
+                segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments*10
                 segment.save(update_fields=['up_time','duration_today'])
                 
             else :
