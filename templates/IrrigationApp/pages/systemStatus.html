@@ -50,7 +50,7 @@
 			</form>
 		</td>
 		<td>{{segment.up_time}} min</td>
-		<td>{{segment.water_quantity}} mm</td>
+		<td>{{segment.water_quantity|floatformat:-2}} mm</td>
 		<td>{{segment.type}}</td>
 		<td><a href="/showIrrigationTemplateValues/?template={{segment.template.id}}">{{segment.template.name}}</a></td>
 		<td>{{segment.template.day_counter}}</td>
