@@ -172,7 +172,7 @@ def getSystemStatus(request):
         if status == '1' :
             mSegment.up_time = mSegment.up_time
             mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
-                                                   moisture_startValue=mSegment.sensor.status
+                                                   moisture_startValue=mSegment.sensor.value
                                                    )
             mIrrigationHistory.save()
             mSegment.irrigation_history=mIrrigationHistory
@@ -181,7 +181,7 @@ def getSystemStatus(request):
                 mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
                 mHistory.end_date=datetime.now()
                 mHistory.duration=mSegment.up_time+1
-                mHistory.moisture_endValue=mSegment.sensor.status
+                mHistory.moisture_endValue=mSegment.sensor.value
                 mHistory.status='done'
                 mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
                 mSegment.up_time = 0
