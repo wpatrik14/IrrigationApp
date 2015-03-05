@@ -1,6 +1,6 @@
 {% include "IrrigationApp/pages/frame/htmlHeader.html" %}
 
-		<form class="form-horizontal" id="doAddArduino" action="{% url 'doAddArduino'%}" method="post">
+		<form class="form-horizontal" id="doAddSoilType" action="{% url 'doAddSoilType'%}" method="post">
 				{% csrf_token %}
 				<fieldset>
 
@@ -22,7 +22,7 @@
 			<!-- Button -->
 				<div class="form-group">
 				  <label for="submit"></label>
-				  <button id="submit" name="submit" class="btn btn-success">Save Arduino</button>
+				  <button id="submit" name="submit" class="btn btn-success">Save</button>
 				</div>
 			
 		</fieldset>
