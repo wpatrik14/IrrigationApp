@@ -257,7 +257,7 @@ def automation_control():
                 else :
                     segment.up_time=segment.up_time+1
                     segment.duration_today=segment.duration_today+1
-                    segment.water_quantity=5.5/float(segment.size_m2)
+                    segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)
                     segment.save(update_fields=['up_time','duration_today'])
                     
         else :
@@ -270,7 +270,7 @@ def automation_control():
             if segment.switch.status == 1 :
                 segment.up_time=segment.up_time+1
                 segment.duration_today=segment.duration_today+1
-                segment.water_quantity=5.5/float(segment.size_m2)
+                segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)
                 segment.save(update_fields=['up_time','duration_today'])
                 
             else :
