@@ -157,7 +157,7 @@ def switchIrrigation(mSegment, status, settings, arduino):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+mSwitch.status)
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+str(mSwitch.status))
     
     switches = Switch.objects.all()
     running_segments=0;
@@ -177,7 +177,7 @@ def switchIrrigation(mSegment, status, settings, arduino):
     settings.pump=pump
     settings.running_segments=running_segments
     settings.save(update_fields=['pump','running_segments'])
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+pump.status)
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+str(pump.status))
     
     return
 
