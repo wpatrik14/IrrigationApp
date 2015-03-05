@@ -195,7 +195,7 @@ def doEditSegment(request):
         irrigationTemplate.day_counter=0
         irrigationTemplate.save(update_fields=['day_counter'])
     
-    sensor = Sensor.objects.get(pinNumber=sensor)
+    sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
     soil = SoilType.objects.get(id=soil_type)
        
