@@ -355,9 +355,8 @@ def follow_irrigation_template():
     
     for segment in segments :
         segment.duration_today=0
-        segment.up_time=0
         segment.water_quantity=0
-        segment.save(update_fields=['duration_today','up_time','water_quantity'])
+        segment.save(update_fields=['duration_today','water_quantity'])
         if segment.template is not None :
             try:
                 irrigationTemplate = segment.template
