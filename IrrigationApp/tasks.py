@@ -216,7 +216,7 @@ def automation_control():
         Switch(pinNumber=digital['pinNumber'],status=digital['status']).save()
     
     for node in js['nodes'] :
-        Sensor(node=node['name'],value=node['value']).save()
+        Sensor(node=node['nodeId'],value=node['value']).save()
     
     settings.flow_meter=js['flow_meter']
     settings.save(update_fields=['flow_meter'])
