@@ -117,7 +117,7 @@ def doAddNewSegment(request):
         irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
         irrigationTemplate.day_counter=0
     
-    sensor = Sensor.objects.get(nodeId=sensor)
+    sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
     soil = SoilType.objects.get(id=soil_type)
     
