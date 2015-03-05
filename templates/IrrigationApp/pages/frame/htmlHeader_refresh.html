@@ -23,6 +23,19 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	
+	<script type="text/javascript"> 
+	function display_c(){
+	var refresh=1000; // Refresh rate in milli seconds
+	mytime=setTimeout('display_ct()',refresh)
+	}
+	
+	function display_ct() {
+	var strcount
+	var x = new Date()
+	document.getElementById('ct').innerHTML = x;
+	tt=display_c();
+	}
+	</script>
   </head>
   
 {% include "IrrigationApp/pages/frame/menu.html" %}  	
