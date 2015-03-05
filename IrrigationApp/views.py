@@ -434,6 +434,11 @@ def doAddSettings(request):
     switch = Switch.objects.get(pinNumber=switch)
     settings = IrrigationSettings(id=0,
                                   pump=switch)
+    
+    res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
+    reader = codecs.getreader("utf-8")
+    js = json.load(reader(res))
+    settings.flow_meter=js['flow_meter']
     settings.save()
     
     return redirect('/getSystemStatus')
@@ -474,8 +479,6 @@ def doAddArduino(request):
     for node in js['nodes'] :
         Sensor(node=node['nodeId'],value=node['value']).save()
     
-    settings.flow_meter=js['flow_meter']
-    settings.save(update_fields=['flow_meter'])
     
     return redirect('/showAddSettings')
 
