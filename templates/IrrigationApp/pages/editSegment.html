@@ -18,7 +18,7 @@
 				  <label for="sensor">Sensor</label>
 				    <select id="sensor" name="sensor" class="form-control">
 				      {% for sensor in sensors %}
-				      <option>{{ sensor.pinNumber }}</option>
+				      <option>{{ sensor.node }}</option>
 				      {% endfor %}
 				    </select>
 				</div>

@@ -27,7 +27,7 @@
 	{% for segment in segments %}
 	<tr>
 		<td>{{segment.name}}</td>
-		<td>{{segment.sensor.status}}%</td>
+		<td>{{segment.sensor.value}}%</td>
 		<td>
 			<form id="change_switch" action="getSystemStatus" method="post">
 				{% csrf_token %}
