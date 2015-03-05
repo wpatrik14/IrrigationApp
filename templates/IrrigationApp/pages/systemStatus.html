@@ -31,13 +31,13 @@
 		<td>
 			<form id="change_switch" action="getSystemStatus" method="post">
 				{% csrf_token %}
-				{% if segment.switch.status == "on" %}
+				{% if segment.switch.status == 1 %}
 				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
-				<input type="hidden" name="status" value = "off"/>
+				<input type="hidden" name="status" value = "0"/>
 				<button id="switch" name="switch" class="btn btn-success">Turn OFF</button>
 				{% else %}
 				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
-				<input type="hidden" name="status" value = "on"/>
+				<input type="hidden" name="status" value = "1"/>
 				<button id="switch" name="switch" class="btn btn-danger">Turn ON</button>
 				{% endif %}
 								
