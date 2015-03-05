@@ -169,7 +169,7 @@ def getSystemStatus(request):
         segment = request.POST['segment']
         status = request.POST['status']
         mSegment = Segment.objects.get(id=segment)
-        if status == 1 :
+        if status == '1' :
             mSegment.up_time = mSegment.up_time
             mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                    moisture_startValue=mSegment.sensor.status
