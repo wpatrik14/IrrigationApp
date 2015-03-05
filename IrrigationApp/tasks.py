@@ -181,7 +181,7 @@ def switchIrrigation(mSegment, status, settings, arduino):
     
     return
 
-def changeSegment(segment, up_time):    
+def changeSegment(segment):    
     mSegment = Segment.objects.get(id=segment.id)
     mSegment.up_time=up_time
     mSegment.save(update_fields=['up_time'])
@@ -245,25 +245,37 @@ def automation_control():
             elif segment.sensor.status>segment.moisture_maxLimit:
                 #turn off irrigation
                 switchIrrigation(segment, 0, settings, arduino)
-                changeSegment(segment, 0)
+                segment.up_time=0
+                segment.save(update_fields=['up_time'])
                 
             if segment.switch.status == 1 :
-                if segment.up_time+2>segment.duration_maxLimit :
+                if segment.duration_today+2>segment.duration_maxLimit :
                     #turn off irrigation
                     switchIrrigation(segment, 0, settings, arduino)
-                    changeSegment(segment, 0)
+                    segment.up_time=0
+                    segment.save(update_fields=['up_time'])
                 else :
-                    changeSegment(segment, segment.up_time+1)
+                    segment.up_time=segment.up_time+1
+                    segment.duration_today=segment.duration_today+1
+                    segment.water_quantity=float(js['flow_meter'])/float(segment.size_m2)
+                    segment.save(update_fields=['up_time','duration_today'])
+                    
         else :
-            if segment.up_time+2>segment.duration_maxLimit :
+            if segment.duration_today+2>segment.duration_maxLimit :
                 #turn off irrigation
                 switchIrrigation(segment, 0, settings, arduino)
-                changeSegment(segment, 0)
+                segment.up_time=0
+                segment.save(update_fields=['up_time'])
             
             if segment.switch.status == 1 :
-                changeSegment(segment, segment.up_time+1)
+                segment.up_time=segment.up_time+1
+                segment.duration_today=segment.duration_today+1
+                segment.water_quantity=float(js['flow_meter'])/float(segment.size_m2)
+                segment.save(update_fields=['up_time','duration_today'])
+                
             else :
-                changeSegment(segment, 0)
+                segment.up_time=0
+                segment.save(update_fields=['up_time'])
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 
