@@ -23,19 +23,29 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	
-	<script type="text/javascript"> 
-	function display_c(){
-	var refresh=1000; // Refresh rate in milli seconds
-	mytime=setTimeout('display_ct()',refresh)
-	}
-	
-	function display_ct() {
-	var strcount
-	var x = new Date()
-	document.getElementById('ct').innerHTML = x;
-	tt=display_c();
-	}
-	</script>
+	<script type="text/javascript">
+    function updateTime() {
+        var currentTime = new Date();
+        var hours = currentTime.getHours();
+        var minutes = currentTime.getMinutes();
+        var seconds = currentTime.getSeconds();
+        if (minutes < 10){
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10){
+            seconds = "0" + seconds;
+        }
+        var v = hours + ":" + minutes + ":" + seconds + " ";
+        if(hours > 11){
+            v+="PM";
+        } else {
+            v+="AM"
+        }
+        setTimeout("updateTime()",1000);
+        document.getElementById('time').innerHTML=v;
+    }
+    updateTime();
+</script>
   </head>
   
 {% include "IrrigationApp/pages/frame/menu.html" %}  	
