@@ -146,7 +146,7 @@ def switchIrrigation(mSegment, status, settings, arduino):
             mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
             mHistory.end_date=datetime.now()
             mHistory.duration=mSegment.up_time+1
-            mHistory.moisture_endValue=mSegment.sensor.status
+            mHistory.moisture_endValue=mSegment.sensor.value
             mHistory.status='done'
             mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
             mSegment.up_time = 0
