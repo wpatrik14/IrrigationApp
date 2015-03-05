@@ -143,6 +143,78 @@ def doAddNewSegment(request):
     return redirect('/getSystemStatus')
 
 @login_required
+def showEditSegment(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    settings = IrrigationSettings.objects.get(id=0)
+    id = request.POST['editSegment']
+    segment = Segment.objects.get(id=id)
+    
+    sensors = Sensor.objects.all()
+    switches = Switch.objects.all()
+    irrigationTemplates = IrrigationTemplate.objects.all()
+    soilTypes = SoilType.objects.all()
+        
+    return render(request, 'IrrigationApp/pages/editSegment.html', { 'username':user.username, 'settings':settings, 'segment':segment, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
+
+@login_required
+def doEditSegment(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    settings = IrrigationSettings.objects.get(id=0)
+    id = request.POST['segment_id']
+    name = request.POST['name']
+    size = request.POST['size']
+    sensor = request.POST['sensor']
+    switch = request.POST['switch']
+    moisture_minLimit = request.POST['moisture_minLimit']
+    moisture_maxLimit = request.POST['moisture_maxLimit']
+    duration_maxLimit = request.POST['duration_maxLimit']
+    irrigationTemplate_id = request.POST['irrigationTemplate']
+    soil_type = request.POST['soil_type']
+    type = request.POST['type']
+    if 'checkboxes' not in request.POST:
+        enabled = False
+    else:
+        enabled = True
+    
+    mSegment = Segment.objects.get(id=id)
+        
+    if irrigationTemplate_id=="None":
+        irrigationTemplate=None
+    else:
+        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+        irrigationTemplate.day_counter=0
+        irrigationTemplate.save(update_fields=['day_counter'])
+    
+    sensor = Sensor.objects.get(pinNumber=sensor)
+    switch = Switch.objects.get(pinNumber=switch)
+    soil = SoilType.objects.get(id=soil_type)
+       
+    mSegment.name = name
+    mSegment.sensor = sensor
+    mSegment.switch = switch
+    mSegment.moisture_minLimit = moisture_minLimit
+    mSegment.moisture_maxLimit = moisture_maxLimit
+    mSegment.duration_maxLimit = duration_maxLimit
+    mSegment.forecast_enabled = enabled
+    mSegment.template = irrigationTemplate
+    mSegment.type = type
+    mSegment.soil_type=soil
+    mSegment.size_m2=size
+    mSegment.save()
+    
+    return redirect('/getSystemStatus')
+
+@login_required
 def getSystemStatus(request):
     if request.session.get('username') :
         username = request.session.get('username')
@@ -319,74 +391,7 @@ def deleteRepeatableSchedule(request):
         
     return redirect('/getSystemStatus')
 
-@login_required
-def showEditSegment(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
-    id = request.POST['editSegment']
-    segment = Segment.objects.get(id=id)
-    
-    sensors = Sensor.objects.all()
-    switches = Switch.objects.all()
-    irrigationTemplates = IrrigationTemplate.objects.all()
-        
-    return render(request, 'IrrigationApp/pages/editSegment.html', { 'username':user.username, 'settings':settings, 'segment':segment, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates })
 
-@login_required
-def doEditSegment(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
-    id = request.POST['segment_id']
-    name = request.POST['name']
-    sensor = request.POST['sensor']
-    switch = request.POST['switch']
-    irrigationTemplate_id = request.POST['irrigationTemplate']
-    moisture_minLimit = request.POST['moisture_minLimit']
-    moisture_maxLimit = request.POST['moisture_maxLimit']
-    duration_maxLimit = request.POST['duration_maxLimit']
-    type = request.POST['type']
-    if 'checkboxes' not in request.POST:
-        enabled = False
-    else:
-        enabled = True
-    
-    mSegment = Segment.objects.get(id=id)
-        
-    if irrigationTemplate_id=="None":
-        irrigationTemplate=None
-    else:
-        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-        irrigationTemplate.day_counter=0
-        irrigationTemplate.save(update_fields=['day_counter'])
-    
-    sensor = Sensor.objects.get(pinNumber=sensor)
-    switch = Switch.objects.get(pinNumber=switch)
-       
-    mSegment.name = name
-    mSegment.sensor = sensor
-    mSegment.switch = switch
-    mSegment.moisture_minLimit = moisture_minLimit
-    mSegment.moisture_maxLimit = moisture_maxLimit
-    mSegment.duration_maxLimit = duration_maxLimit
-    mSegment.forecast_enabled = enabled
-    mSegment.template = irrigationTemplate
-    mSegment.type = type
-    mSegment.save()
-    
-    
-    
-    
-    return redirect('/getSystemStatus')
 
 @login_required
 def showWeatherStatus(request):
