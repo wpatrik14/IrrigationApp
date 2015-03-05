@@ -258,8 +258,8 @@ def automation_control():
                     settings = IrrigationSettings.objects.get(id=0)
                     segment.up_time=segment.up_time+1
                     segment.duration_today=segment.duration_today+1
-                    segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments*10
-                    segment.save(update_fields=['up_time','duration_today'])
+                    segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments
+                    segment.save(update_fields=['up_time','duration_today','water_quantity'])
                     
         else :
             if segment.duration_today+2>segment.duration_maxLimit :
@@ -272,8 +272,8 @@ def automation_control():
                 settings = IrrigationSettings.objects.get(id=0)
                 segment.up_time=segment.up_time+1
                 segment.duration_today=segment.duration_today+1
-                segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments*10
-                segment.save(update_fields=['up_time','duration_today'])
+                segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments
+                segment.save(update_fields=['up_time','duration_today','water_quantity'])
                 
             else :
                 segment.up_time=0
