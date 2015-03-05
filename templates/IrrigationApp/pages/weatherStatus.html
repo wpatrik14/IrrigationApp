@@ -45,7 +45,6 @@
 	<!-- Form Name -->
 	<legend>Weather forecast</legend>
 
-{% for weatherForecast in weatherForecasts %}
 <table class="table table-striped table-condensed">
 	
 	<thead>
@@ -56,7 +55,7 @@
 		<th>Precipitation (mm)</th>
 		<th>Last update</th>
 	</thead>
-	
+{% for weatherForecast in weatherForecasts %}
 	<tr>
 		<td><img src="{{ weatherForecast.icon }}"></td>
 		<td>{{weatherForecast.forecast_date|date:"Y-m-d"}}</td>
@@ -65,8 +64,9 @@
 		<td>{{weatherForecast.precipMM}}mm</td>
 		<td>{{weatherForecast.update|date:"Y-m-d"}} {{weatherForecast.update|time:"H:i"}}</td>
 	</tr>
+		{% endfor %}
 </table>
-	{% endfor %}
+
 </fieldset>
 </div>
 </body>
