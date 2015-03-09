@@ -312,11 +312,12 @@ def automation_control():
                 segment.save(update_fields=['up_time'])
     
     tasks = TaskQueue.objects.all()
-    if len(tasks) > 0 :
-        task = TaskQueue.objects.get(seq_number=1)
-        segment=task.segment_id
-        if segment.switch.status == 0 :
-            switchIrrigation(segment, 1, settings, arduino)
+    if len(tasks) > settings.runnable_segments_number-1 :
+        for i in range(settings.runnable_segments_number) :
+            task = TaskQueue.objects.get(seq_number=i+1)
+            segment=task.segment_id
+            if segment.switch.status == 0 :
+                switchIrrigation(segment, 1, settings, arduino)
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water = settings.water + 5.5
