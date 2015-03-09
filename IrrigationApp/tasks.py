@@ -174,7 +174,7 @@ def switchIrrigation(mSegment, status, settings, arduino):
                         seq_number=1).save()
                 if mSegment.irrigation_history is None :
                     mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
-                                                               moisture_startValue=mSegment.sensor.status
+                                                               moisture_startValue=mSegment.sensor.value
                                                                )
                     mIrrigationHistory.save()
                     mSegment.irrigation_history=mIrrigationHistory
