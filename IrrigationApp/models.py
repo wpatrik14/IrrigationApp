@@ -118,9 +118,15 @@ class IrrigationSettings(models.Model):
     cost_perLiter = models.FloatField(default=0)
     total_cost = models.FloatField(default=0)
     water = models.FloatField(default=0)
+    runnable_segments_number=models.IntegerField(default=1)
     def __unicode__(self):
         return self.pump
 
 class SoilType(models.Model):
     name = models.CharField(max_length=20)
     value = models.FloatField(default=0)
+    
+class TaskQueue(models.Model):
+    segment_id=models.ForeignKey('Segment')
+    seq_number=models.IntegerField(default=0)
+    

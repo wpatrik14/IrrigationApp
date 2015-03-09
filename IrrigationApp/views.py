@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 import codecs
 import json
 
-from IrrigationApp.models import IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino, SoilType
+from IrrigationApp.models import IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino, SoilType, TaskQueue
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -214,6 +214,76 @@ def doEditSegment(request):
     
     return redirect('/getSystemStatus')
 
+def setIrrigation(mSegment, status, settings, arduino):
+    mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
+    mSwitch.status = status
+    mSwitch.save(update_fields=['status'])
+    mSegment.switch=mSwitch
+    mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+str(mSwitch.status))
+        
+    switches = Switch.objects.all()
+    running_segments=0;
+    pump_status = False
+    for switch in switches :
+        if switch.pinNumber != settings.pump.pinNumber :
+            if switch.status == 1 :
+                running_segments=running_segments+1
+                pump_status = True
+        
+    pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
+    if pump_status :
+        pump.status = 1
+    else :
+        pump.status = 0
+    pump.save(update_fields=['status'])
+    settings.pump=pump
+    settings.running_segments=running_segments
+    settings.save(update_fields=['pump','running_segments'])
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+str(pump.status))
+
+def switchIrrigation(mSegment, status, settings, arduino):
+    
+    tasks = TaskQueue.objects.all().order_by('seq_number')
+    
+    if status == 1 :
+        if mSegment.switch.status == 0:
+            if tasks.len() > 0 :
+                TaskQueue(segment_id=mSegment,
+                          seq_number=tasks.len()+1).save()
+            else:
+                TaskQueue(segment_id=mSegment,
+                        seq_number=1).save()
+                if mSegment.irrigation_history is None :
+                    mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
+                                                               moisture_startValue=mSegment.sensor.status
+                                                               )
+                    mIrrigationHistory.save()
+                    mSegment.irrigation_history=mIrrigationHistory
+                setIrrigation(mSegment, status, settings, arduino)
+                
+    else :                
+        if mSegment.switch.status == 1:
+            deleted_task=TaskQueue.objects.get(segment_id=mSegment)
+            seq_number=task.seq_number
+            deleted_task.delete()
+            tasks = TaskQueue.objects.all().order_by('seq_number')
+            if tasks is not None:
+                for task in tasks :
+                    if task.seq_number>seq_number:
+                        task.seq_number=task.seq_number-1
+                        task.save()
+            if mSegment.irrigation_history is not None:
+                mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
+                mHistory.end_date=datetime.now()
+                mHistory.duration=mSegment.up_time+1
+                mHistory.moisture_endValue=mSegment.sensor.value
+                mHistory.status='done'
+                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+                mSegment.up_time = 0
+                mSegment.irrigation_history=None
+            setIrrigation(mSegment, status, settings, arduino)
+        
 @login_required
 def getSystemStatus(request):
     if request.session.get('username') :
@@ -239,51 +309,9 @@ def getSystemStatus(request):
     
     if 'segment' in request.POST :
         segment = request.POST['segment']
-        status = request.POST['status']
+        status = int(request.POST['status'])
         mSegment = Segment.objects.get(id=segment)
-        if status == '1' :
-            mSegment.up_time = mSegment.up_time
-            mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
-                                                   moisture_startValue=mSegment.sensor.value
-                                                   )
-            mIrrigationHistory.save()
-            mSegment.irrigation_history=mIrrigationHistory
-        else :
-            if mSegment.irrigation_history is not None:
-                mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
-                mHistory.end_date=datetime.now()
-                mHistory.duration=mSegment.up_time+1
-                mHistory.moisture_endValue=mSegment.sensor.value
-                mHistory.status='done'
-                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-                mSegment.up_time = 0
-    
-        mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
-        mSwitch.status = status
-        mSwitch.save(update_fields=['status'])
-        mSegment.switch=mSwitch
-        mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-        urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+str(mSwitch.status))
-    
-        switches = Switch.objects.all()
-        running_segments=0;
-        pump_status = False
-        for switch in switches :
-            if switch.pinNumber != settings.pump.pinNumber :
-                if switch.status == 1 :
-                    running_segments=running_segments+1
-                    pump_status = True
-        
-        pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
-        if pump_status :
-            pump.status = 1
-        else :
-            pump.status = 0
-        pump.save(update_fields=['status'])
-        settings.pump=pump
-        settings.running_segments=running_segments
-        settings.save(update_fields=['pump','running_segments'])
-        urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+str(pump.status))
+        switchIrrigation(mSegment, status, settings, arduino)
     
     segments = Segment.objects.all()
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
