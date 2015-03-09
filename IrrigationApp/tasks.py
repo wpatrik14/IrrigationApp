@@ -270,7 +270,7 @@ def automation_control():
         task = TaskQueue.objects.get(seq_number=1)
         segment=task.segment_id
         if segment.switch.status == 0 :
-            switchIrrigation(segment, settings, arduino)
+            switchIrrigation(segment, 1, settings, arduino)
     
     for segment in segments :
         if segment.type == "Automatic" :
