@@ -254,22 +254,22 @@ def addTaskToQueue(mSegment, settings, arduino):
         switchIrrigation(mSegment,1,settings,arduino)
         
 def deleteTaskFromQueue(mSegment, settings, arduino):
-    tasks = TaskQueue.objects.all().order_by('seq_number')
-    
-    if len(tasks) > 0 :
-        deleted_task=TaskQueue.objects.get(segment_id=mSegment)
-        seq_number=deleted_task.seq_number
-        deleted_task.delete()
-        switchIrrigation(mSegment, 0, settings, arduino)
+    if mSegment.switch.status == 1:
         tasks = TaskQueue.objects.all().order_by('seq_number')
-        if tasks is not None:
-            for task in tasks :
-                if task.seq_number>seq_number:
-                    temp=TaskQueue.objects.get(segment_id=task.segment_id)
-                    temp.seq_number=temp.seq_number-1
-                    temp.save()
-    else :
-        switchIrrigation(mSegment, 0, settings, arduino)
+        if len(tasks) > 0 :
+            deleted_task=TaskQueue.objects.get(segment_id=mSegment)
+            seq_number=deleted_task.seq_number
+            deleted_task.delete()
+            switchIrrigation(mSegment, 0, settings, arduino)
+            tasks = TaskQueue.objects.all().order_by('seq_number')
+            if tasks is not None:
+                for task in tasks :
+                    if task.seq_number>seq_number:
+                        temp=TaskQueue.objects.get(segment_id=task.segment_id)
+                        temp.seq_number=temp.seq_number-1
+                        temp.save()
+        else :
+            switchIrrigation(mSegment, 0, settings, arduino)
     
 def switchIrrigation(mSegment, status, settings, arduino):
     
