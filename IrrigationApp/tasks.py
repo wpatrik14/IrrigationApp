@@ -184,8 +184,9 @@ def deleteTaskFromQueue(mSegment, settings, arduino):
         if tasks is not None:
             for task in tasks :
                 if task.seq_number>seq_number:
-                    task.seq_number=task.seq_number-1
-                    task.save()
+                    temp=TaskQueue.objects.get(segment_id=task.segment_id)
+                    temp.seq_number=temp.seq_number-1
+                    temp.save()
     else :
         switchIrrigation(mSegment, 0, settings, arduino)
     return
