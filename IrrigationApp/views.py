@@ -274,7 +274,7 @@ def deleteTaskFromQueue(mSegment, settings, arduino):
 def switchIrrigation(mSegment, status, settings, arduino):
     
     if status == 1 :
-        if mSegment.switch.status == 0:
+        if mSegment.switch.status == 0 & mSegment.duration_today<mSegment.duration_maxLimit :
             if mSegment.irrigation_history is None :
                 mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
                                                                    moisture_startValue=mSegment.sensor.value
