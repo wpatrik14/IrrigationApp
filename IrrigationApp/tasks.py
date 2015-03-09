@@ -160,7 +160,7 @@ def setIrrigation(mSegment, status, settings, arduino):
     urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+str(pump.status))
     return
 
-def addTaskToQueue(mSegment, status, settings, arduino):
+def addTaskToQueue(mSegment, settings, arduino):
     tasks = TaskQueue.objects.all().order_by('seq_number')
     
     if len(tasks) > 0 :
@@ -170,6 +170,24 @@ def addTaskToQueue(mSegment, status, settings, arduino):
         TaskQueue(segment_id=mSegment,
                         seq_number=1).save()
         switchIrrigation(mSegment,1,settings,arduino)
+    return
+
+def deleteTaskFromQueue(mSegment, settings, arduino):
+    tasks = TaskQueue.objects.all().order_by('seq_number')
+    
+    if len(tasks) > 0 :
+        deleted_task=TaskQueue.objects.get(segment_id=mSegment)
+        seq_number=deleted_task.seq_number
+        deleted_task.delete()
+        switchIrrigation(mSegment, 0, settings, arduino)
+        tasks = TaskQueue.objects.all().order_by('seq_number')
+        if tasks is not None:
+            for task in tasks :
+                if task.seq_number>seq_number:
+                    task.seq_number=task.seq_number-1
+                    task.save()
+    else :
+        switchIrrigation(mSegment, 0, settings, arduino)
     return
     
 def switchIrrigation(mSegment, status, settings, arduino):
@@ -260,7 +278,7 @@ def automation_control():
         task = TaskQueue.objects.get(seq_number=1)
         segment=task.segment_id
         if segment.switch.status == 0 :
-            switchIrrigation(segment, 1, settings, arduino)
+            switchIrrigation(segment, settings, arduino)
     
     for segment in segments :
         if segment.type == "Automatic" :
@@ -268,23 +286,23 @@ def automation_control():
                 if segment.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
-                        addTaskToQueue(segment, 1, settings, arduino)
+                        addTaskToQueue(segment, settings, arduino)
                     else :
-                        switchIrrigation(segment, 0, settings, arduino)
+                        deleteTaskFromQueue(segment, settings, arduino)
                 else :
                    #turn on irrigation anyway
-                    addTaskToQueue(segment, 1, settings, arduino) 
+                    addTaskToQueue(segment, settings, arduino) 
                 
             elif segment.sensor.value>segment.moisture_maxLimit:
                 #turn off irrigation
-                switchIrrigation(segment, 0, settings, arduino)
+                deleteTaskFromQueue(segment, settings, arduino)
                 segment.up_time=0
                 segment.save(update_fields=['up_time'])
                 
             if segment.switch.status == 1 :
                 if segment.duration_today+2>segment.duration_maxLimit :
                     #turn off irrigation
-                    switchIrrigation(segment, 0, settings, arduino)
+                    deleteTaskFromQueue(segment, settings, arduino)
                     segment.up_time=0
                     segment.save(update_fields=['up_time'])
                 else :
@@ -297,7 +315,7 @@ def automation_control():
         else :
             if segment.duration_today+2>segment.duration_maxLimit :
                 #turn off irrigation
-                switchIrrigation(segment, 0, settings, arduino)
+                deleteTaskFromQueue(segment,settings, arduino)
                 segment.up_time=0
                 segment.save(update_fields=['up_time'])
             

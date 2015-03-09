@@ -242,7 +242,7 @@ def setIrrigation(mSegment, status, settings, arduino):
     settings.save(update_fields=['pump','running_segments'])
     urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+str(pump.status))
 
-def addTaskToQueue(mSegment, status, settings, arduino):
+def addTaskToQueue(mSegment, settings, arduino):
     tasks = TaskQueue.objects.all().order_by('seq_number')
     
     if len(tasks) > 0 :
@@ -252,6 +252,23 @@ def addTaskToQueue(mSegment, status, settings, arduino):
         TaskQueue(segment_id=mSegment,
                         seq_number=1).save()
         switchIrrigation(mSegment,1,settings,arduino)
+        
+def deleteTaskFromQueue(mSegment, settings, arduino):
+    tasks = TaskQueue.objects.all().order_by('seq_number')
+    
+    if len(tasks) > 0 :
+        deleted_task=TaskQueue.objects.get(segment_id=mSegment)
+        seq_number=deleted_task.seq_number
+        deleted_task.delete()
+        switchIrrigation(mSegment, 0, settings, arduino)
+        tasks = TaskQueue.objects.all().order_by('seq_number')
+        if tasks is not None:
+            for task in tasks :
+                if task.seq_number>seq_number:
+                    task.seq_number=task.seq_number-1
+                    task.save()
+    else :
+        switchIrrigation(mSegment, 0, settings, arduino)
     
 def switchIrrigation(mSegment, status, settings, arduino):
     
@@ -315,9 +332,9 @@ def getSystemStatus(request):
         status = request.POST['status']
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
-            addTaskToQueue(mSegment, 1, settings, arduino)
+            addTaskToQueue(mSegment, settings, arduino)
         else :
-            switchIrrigation(mSegment,0,settings, arduino)
+            deleteTaskFromQueue(mSegment,settings, arduino)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
