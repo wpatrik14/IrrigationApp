@@ -220,7 +220,7 @@ def setIrrigation(mSegment, status, settings, arduino):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+mSwitch.pinNumber+"&status="+str(mSwitch.status))
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
         
     switches = Switch.objects.all()
     running_segments=0;
@@ -240,7 +240,7 @@ def setIrrigation(mSegment, status, settings, arduino):
     settings.pump=pump
     settings.running_segments=running_segments
     settings.save(update_fields=['pump','running_segments'])
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/?pinNumber="+pump.pinNumber+"&status="+str(pump.status))
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.pinNumber+"/status/"+str(pump.status))
 
 def addTaskToQueue(mSegment, settings, arduino):
     tasks = TaskQueue.objects.all().order_by('seq_number')
