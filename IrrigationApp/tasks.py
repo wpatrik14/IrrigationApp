@@ -258,7 +258,7 @@ def automation_control():
         js = json.load(reader(res))
         Sensor(node=int(js['nodeId']),value=int(js['value'])).save()
     
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+str(i+1))
+    res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/flowMeter')
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     settings.flow_meter=js['flow_meter']
