@@ -252,7 +252,7 @@ def automation_control():
     weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
     
     tasks = TaskQueue.objects.all()
-    if tasks.len() > 0 :
+    if len(tasks) > 0 :
         task = TaskQueue.objects.get(seq_number=1)
         segment=task.segment_id
         if segment.switch.status == 0 :
