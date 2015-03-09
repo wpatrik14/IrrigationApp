@@ -44,6 +44,8 @@ urlpatterns = patterns('',
     url(r'showIrrigationTemplateValues[/]?$', views.showIrrigationTemplateValues, name='showIrrigationTemplateValues'),
     url(r'showAddIrrigationTemplate2[/]?$', views.showAddIrrigationTemplate2, name='showAddIrrigationTemplate2'),
     
+    url(r'deleteTask[/]?$', views.deleteTask, name='deleteTask'),
+    
     url(r'.*', views.showLogin, name='showLogin'),
     
     

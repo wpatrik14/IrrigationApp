@@ -265,8 +265,9 @@ def deleteTaskFromQueue(mSegment, settings, arduino):
         if tasks is not None:
             for task in tasks :
                 if task.seq_number>seq_number:
-                    task.seq_number=task.seq_number-1
-                    task.save()
+                    temp=TaskQueue.objects.get(segment_id=task.segment_id)
+                    temp.seq_number=temp.seq_number-1
+                    temp.save()
     else :
         switchIrrigation(mSegment, 0, settings, arduino)
     
@@ -440,6 +441,20 @@ def deleteRepeatableSchedule(request):
     
     id = request.POST['repeatableSchedule']
     RepeatableSchedule.objects.get(id=id).delete()
+        
+    return redirect('/getSystemStatus')
+
+
+@login_required
+def deleteTask(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    id = request.POST['task']
+    TaskQueue.objects.get(id=id).delete()
         
     return redirect('/getSystemStatus')
 

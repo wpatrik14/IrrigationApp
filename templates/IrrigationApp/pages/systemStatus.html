@@ -92,11 +92,19 @@
 	<thead>
 		<th>Segment</th>
 		<th>Seq number</th>
+		<th>Delete</th>
 	</thead>
 	{% for task in tasks %}
 	<tr>
 		<td>{{task.segment_id.name}}</td>
 		<td>{{task.seq_number}}</td>
+		<td>
+		<form id="deleteTask" action="deleteTask" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="task" value = "{{ task.id }}"/>
+				<button id="delete" name="delete" class="btn btn-default">DELETE</button>
+			</form>
+		</td>
 	</tr>
 	{% endfor %}
 </table>
