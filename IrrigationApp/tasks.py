@@ -162,13 +162,9 @@ def setIrrigation(mSegment, status, settings, arduino):
 
 def addTaskToQueue(mSegment, settings, arduino):
     tasks = TaskQueue.objects.all().order_by('seq_number')
-    
-    if len(tasks) > 0 :
-        TaskQueue(segment_id=mSegment,
+    TaskQueue(segment_id=mSegment,
                           seq_number=len(tasks)+1).save()
-    else:
-        TaskQueue(segment_id=mSegment,
-                        seq_number=1).save()
+    if len(tasks) < settings.runnable_segments_number :
         switchIrrigation(mSegment,1,settings,arduino)
     return
 

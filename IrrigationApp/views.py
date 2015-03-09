@@ -244,13 +244,9 @@ def setIrrigation(mSegment, status, settings, arduino):
 
 def addTaskToQueue(mSegment, settings, arduino):
     tasks = TaskQueue.objects.all().order_by('seq_number')
-    
-    if len(tasks) > 0 :
-        TaskQueue(segment_id=mSegment,
+    TaskQueue(segment_id=mSegment,
                           seq_number=len(tasks)+1).save()
-    else:
-        TaskQueue(segment_id=mSegment,
-                        seq_number=1).save()
+    if len(tasks) < settings.runnable_segments_number :
         switchIrrigation(mSegment,1,settings,arduino)
         
 def deleteTaskFromQueue(mSegment, settings, arduino):
@@ -501,12 +497,15 @@ def doAddSettings(request):
     switch = request.POST['switch']
     evapotranspiracy = request.POST['evapotranspiracy']
     cost = request.POST['cost']
+    number_of_runnable_segments = request.POST['number_of_runnable_segments']
+    
     
     switch = Switch.objects.get(pinNumber=switch)
     settings = IrrigationSettings(id=0,
                                   pump=switch,
                                   evapotranspiracy=evapotranspiracy,
-                                  cost_perLiter=cost)
+                                  cost_perLiter=cost,
+                                  runnable_segments_number=number_of_runnable_segments)
     
     settings.save()
     
