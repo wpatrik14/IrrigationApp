@@ -168,7 +168,7 @@ def switchIrrigation(mSegment, status, settings, arduino):
         if mSegment.switch.status == 0:
             if len(tasks) > 0 :
                 TaskQueue(segment_id=mSegment,
-                          seq_number=tasks.len()+1).save()
+                          seq_number=len(tasks)+1).save()
             else:
                 TaskQueue(segment_id=mSegment,
                         seq_number=1).save()
