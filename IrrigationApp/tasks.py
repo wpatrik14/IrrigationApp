@@ -243,20 +243,20 @@ def automation_control():
     res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/datas')
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
-    digital_pins=js['digital_pins']
-    node_counts=js['node_counts']
+    digital_pins=int(js['digital_pins'])
+    node_counts=int(js['node_counts'])
     
     for i in range(digital_pins) :
         res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/pinNumber/'+i+1)
         reader = codecs.getreader("utf-8")
         js = json.load(reader(res))
-        Switch(pinNumber=js['pinNumber'],status=js['status']).save()
+        Switch(pinNumber=int(js['pinNumber']),status=int(js['status'])).save()
     
     for i in range(node_counts) :
         res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+i+1)
         reader = codecs.getreader("utf-8")
         js = json.load(reader(res))
-        Sensor(node=js['nodeId'],value=js['value']).save()
+        Sensor(node=int(js['nodeId']),value=int(js['value'])).save()
     
     settings.flow_meter=js['flow_meter']
     settings.save(update_fields=['flow_meter'])
