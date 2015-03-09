@@ -265,13 +265,6 @@ def automation_control():
     
     weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
     
-    tasks = TaskQueue.objects.all()
-    if len(tasks) > 0 :
-        task = TaskQueue.objects.get(seq_number=1)
-        segment=task.segment_id
-        if segment.switch.status == 0 :
-            switchIrrigation(segment, 1, settings, arduino)
-    
     for segment in segments :
         if segment.type == "Automatic" :
             if segment.sensor.value<segment.moisture_minLimit :
@@ -321,6 +314,13 @@ def automation_control():
             else :
                 segment.up_time=0
                 segment.save(update_fields=['up_time'])
+    
+    tasks = TaskQueue.objects.all()
+    if len(tasks) > 0 :
+        task = TaskQueue.objects.get(seq_number=1)
+        segment=task.segment_id
+        if segment.switch.status == 0 :
+            switchIrrigation(segment, 1, settings, arduino)
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water = settings.water + 5.5
