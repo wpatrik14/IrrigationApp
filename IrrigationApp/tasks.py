@@ -240,15 +240,23 @@ def automation_control():
     else:
         return 'Settings not found'
     
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
+    res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/datas')
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
+    digital_pins=js['digital_pins']
+    node_counts=js['node_counts']
     
-    for digital in js['digitals'] :
-        Switch(pinNumber=digital['pinNumber'],status=digital['status']).save()
+    for i in range(digital_pins) :
+        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/pinNumber/'+i+1)
+        reader = codecs.getreader("utf-8")
+        js = json.load(reader(res))
+        Switch(pinNumber=js['pinNumber'],status=js['status']).save()
     
-    for node in js['nodes'] :
-        Sensor(node=node['nodeId'],value=node['value']).save()
+    for i in range(node_counts) :
+        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+i+1)
+        reader = codecs.getreader("utf-8")
+        js = json.load(reader(res))
+        Sensor(node=js['nodeId'],value=js['value']).save()
     
     settings.flow_meter=js['flow_meter']
     settings.save(update_fields=['flow_meter'])
