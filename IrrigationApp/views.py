@@ -314,7 +314,8 @@ def getSystemStatus(request):
         switchIrrigation(mSegment, status, settings, arduino)
     
     segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
+    tasks = TaskQueue.objects.all().order_by('seq_number')
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
 @login_required

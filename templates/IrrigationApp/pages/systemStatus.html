@@ -86,17 +86,37 @@
 <fieldset>
 
 	<!-- Form Name -->
+	<legend>Task queue</legend>
+	
+	<table class="table table-striped table-condensed">
+	<thead>
+		<th>Segment</th>
+		<th>Seq number</th>
+	</thead>
+	{% for task in tasks %}
+	<tr>
+		<td>{{task.segment_id.name}}</td>
+		<td>{{task.seq_number}}</td>
+	</tr>
+	{% endfor %}
+</table>
+	
+</fieldset>
+
+<fieldset>
+
+	<!-- Form Name -->
 	<legend>Simple schedules</legend>
 	<a href="/showSimpleSchedule">New Simple Schedule</a>
 
 <table class="table table-striped table-condensed">
 	<thead>
-		<td>Status</td>
-		<td>Date</td>
-		<td>Time</td>
-		<td>Duration</td>
-		<td>Segments</td>
-		<td>Delete</td>
+		<th>Status</th>
+		<th>Date</th>
+		<th>Time</th>
+		<th>Duration</th>
+		<th>Segments</th>
+		<th>Delete</th>
 	</thead>
 	{% for simpleSchedule in simpleSchedules %}
 	<tr>
@@ -126,13 +146,13 @@
 
 <table class="table table-striped table-condensed">
 	<thead>
-		<td>Schedule name</td>
-		<td>Status</td>
-		<td>Day</td>
-		<td>Time</td>
-		<td>Duration</td>
-		<td>Segments</td>
-		<td>Delete</td>
+		<th>Schedule name</th>
+		<th>Status</th>
+		<th>Day</th>
+		<th>Time</th>
+		<th>Duration</th>
+		<th>Segments</th>
+		<th>Delete</th>
 	</thead>
 	{% for repeatableSchedule in repeatableSchedules %}
 	<tr>
