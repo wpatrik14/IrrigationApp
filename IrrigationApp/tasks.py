@@ -247,13 +247,13 @@ def automation_control():
     node_counts=int(js['node_counts'])
     
     for i in range(digital_pins) :
-        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/pinNumber/'+i+1)
+        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/pinNumber/'+str(i+1))
         reader = codecs.getreader("utf-8")
         js = json.load(reader(res))
         Switch(pinNumber=int(js['pinNumber']),status=int(js['status'])).save()
     
     for i in range(node_counts) :
-        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+i+1)
+        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+str(i+1))
         reader = codecs.getreader("utf-8")
         js = json.load(reader(res))
         Sensor(node=int(js['nodeId']),value=int(js['value'])).save()
