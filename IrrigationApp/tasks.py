@@ -204,15 +204,6 @@ def switchIrrigation(mSegment, status, settings, arduino):
                 
     else :                
         if mSegment.switch.status == 1:
-            deleted_task=TaskQueue.objects.get(segment_id=mSegment)
-            seq_number=task.seq_number
-            deleted_task.delete()
-            tasks = TaskQueue.objects.all().order_by('seq_number')
-            if tasks is not None:
-                for task in tasks :
-                    if task.seq_number>seq_number:
-                        task.seq_number=task.seq_number-1
-                        task.save()
             if mSegment.irrigation_history is not None:
                 mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
                 mHistory.end_date=datetime.now()
