@@ -15,6 +15,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from urllib.request import urlopen
 
+import subprocess
+
 def showMenu(request):
     return render(request, 'IrrigationApp/pages/menu.html')
 
@@ -326,7 +328,9 @@ def getSystemStatus(request):
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
+    
+    result = subprocess.call(['/home/pi/tmp/test'], shell=True)
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'result':result, 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
 @login_required
