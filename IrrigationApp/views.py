@@ -329,7 +329,8 @@ def getSystemStatus(request):
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
     
-    result = subprocess.check_output(['/home/pi/tmp/test'])
+    pipe = subprocess.Popen(['/home/pi/tmp/test'], stdout=subprocess.PIPE)
+    result = pipe.stdout.read()
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'result':result, 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
