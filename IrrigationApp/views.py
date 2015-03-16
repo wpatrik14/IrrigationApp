@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 import codecs
 import json
 
-from IrrigationApp.models import IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino, SoilType, TaskQueue
+from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino, SoilType, TaskQueue
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -216,7 +216,18 @@ def doEditSegment(request):
     
     return redirect('/getSystemStatus')
 
-def setIrrigation(mSegment, status, settings, arduino):
+def setIrrigation(mSegment, status):
+    arduino = Arduino.objects.all()
+    if arduino.exists() :
+        arduino = Arduino.objects.get(id=0)
+    else:
+        return redirect('/showAddArduino')
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return redirect('/showAddSettings')
+    
     mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
@@ -227,38 +238,38 @@ def setIrrigation(mSegment, status, settings, arduino):
     switches = Switch.objects.all()
     running_segments=0;
     pump_status = False
+    pump=Pump.objects.get(id=0)
+    
     for switch in switches :
-        if switch.pinNumber != settings.pump.pinNumber :
+        if switch.pinNumber != pump.switch.pinNumber :
             if switch.status == 1 :
                 running_segments=running_segments+1
                 pump_status = True
         
-    pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
     if pump_status :
-        pump.status = 1
+        pump.switch.status = 1
     else :
-        pump.status = 0
-    pump.save(update_fields=['status'])
-    settings.pump=pump
+        pump.switch.status = 0
+    pump.save(update_fields=['switch'])
     settings.running_segments=running_segments
-    settings.save(update_fields=['pump','running_segments'])
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.pinNumber+"/status/"+str(pump.status))
-
-def addTaskToQueue(mSegment, settings, arduino):
+    settings.save(update_fields=['running_segments'])
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
+    
+def addTaskToQueue(mSegment):
     tasks = TaskQueue.objects.all().order_by('seq_number')
     TaskQueue(segment_id=mSegment,
                           seq_number=len(tasks)+1).save()
     if len(tasks) < settings.runnable_segments_number :
-        switchIrrigation(mSegment,1,settings,arduino)
+        switchIrrigation(mSegment,1)
         
-def deleteTaskFromQueue(mSegment, settings, arduino):
+def deleteTaskFromQueue(mSegment):
     if mSegment.switch.status == 1:
         tasks = TaskQueue.objects.all().order_by('seq_number')
         if len(tasks) > 0 :
             deleted_task=TaskQueue.objects.get(segment_id=mSegment)
             seq_number=deleted_task.seq_number
             deleted_task.delete()
-            switchIrrigation(mSegment, 0, settings, arduino)
+            switchIrrigation(mSegment, 0)
             tasks = TaskQueue.objects.all().order_by('seq_number')
             if tasks is not None:
                 for task in tasks :
@@ -267,32 +278,50 @@ def deleteTaskFromQueue(mSegment, settings, arduino):
                         temp.seq_number=temp.seq_number-1
                         temp.save()
         else :
-            switchIrrigation(mSegment, 0, settings, arduino)
+            switchIrrigation(mSegment, 0)
     
-def switchIrrigation(mSegment, status, settings, arduino):
+def switchIrrigation(mSegment, status):
+    arduino = Arduino.objects.all()
+    if arduino.exists() :
+        arduino = Arduino.objects.get(id=0)
+    else:
+        return redirect('/showAddArduino')
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return redirect('/showAddSettings')
+    
+    pump=Pump.objects.get(id=0)
     
     if status == 1 :
-        if mSegment.switch.status == 0 and mSegment.duration_today<mSegment.duration_maxLimit :
-            if mSegment.irrigation_history is None :
-                mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
-                                                                   moisture_startValue=mSegment.sensor.value
-                                                                   )
-                mIrrigationHistory.save()
-                mSegment.irrigation_history=mIrrigationHistory
-            setIrrigation(mSegment, 1, settings, arduino)
+        if pump.switch.status == 1 or pump.down_time >= pump.stop_limit :
+            if mSegment.switch.status == 0 and mSegment.duration_today<mSegment.duration_maxLimit :
+                if mSegment.irrigation_history is None :
+                    mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
+                                                                       moisture_startValue=mSegment.sensor.value
+                                                                       )
+                    mIrrigationHistory.save()
+                    mSegment.irrigation_history=mIrrigationHistory
+                setIrrigation(mSegment, 1)
+        else :
+            return 'Waiting for pump'
                 
-    else :                
-        if mSegment.switch.status == 1:
-            if mSegment.irrigation_history is not None:
-                mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
-                mHistory.end_date=datetime.now()
-                mHistory.duration=mSegment.up_time+1
-                mHistory.moisture_endValue=mSegment.sensor.value
-                mHistory.status='done'
-                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-                mSegment.up_time = 0
-                mSegment.irrigation_history=None
-            setIrrigation(mSegment, 0, settings, arduino)
+    else :  
+        if pump.switch.status == 0 or pump.up_time >= pump.run_limit:              
+            if mSegment.switch.status == 1:
+                if mSegment.irrigation_history is not None:
+                    mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
+                    mHistory.end_date=datetime.now()
+                    mHistory.duration=mSegment.up_time+1
+                    mHistory.moisture_endValue=mSegment.sensor.value
+                    mHistory.status='done'
+                    mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+                    mSegment.up_time = 0
+                    mSegment.irrigation_history=None
+                setIrrigation(mSegment, 0)
+        else :
+            return 'Waiting for pump'
         
 @login_required
 def getSystemStatus(request):
@@ -322,16 +351,17 @@ def getSystemStatus(request):
         status = request.POST['status']
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
-            addTaskToQueue(mSegment, settings, arduino)
+            addTaskToQueue(mSegment)
         else :
-            deleteTaskFromQueue(mSegment,settings, arduino)
+            deleteTaskFromQueue(mSegment)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
+    pump = Pump.objects.get(id=0)
     
     pipe = subprocess.Popen(['/home/pi/tmp/test', 'param1', '2', 'param3'], stdout=subprocess.PIPE)
     result = pipe.stdout.read()
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'result':result, 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'result':result, 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
 @login_required
@@ -503,16 +533,19 @@ def doAddSettings(request):
     evapotranspiracy = request.POST['evapotranspiracy']
     cost = request.POST['cost']
     number_of_runnable_segments = request.POST['number_of_runnable_segments']
-    
+    run_limit = request.POST['run_limit']
+    stop_limit = request.POST['stop_limit']
     
     switch = Switch.objects.get(pinNumber=switch)
     settings = IrrigationSettings(id=0,
-                                  pump=switch,
                                   evapotranspiracy=evapotranspiracy,
                                   cost_perLiter=cost,
                                   runnable_segments_number=number_of_runnable_segments)
-    
     settings.save()
+    pump = Pump(id=0,
+                switch=switch,
+                run_limit=run_limit,
+                stop_limit=stop_limit)
     
     return redirect('/getSystemStatus')
 

@@ -4,7 +4,7 @@ import codecs
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
-from IrrigationApp.models import IrrigationTemplate, IrrigationTemplateValue, WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, Arduino, TaskQueue, SoilType
+from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, Arduino, TaskQueue, SoilType
 from django.http import HttpResponse
 import json
 import time
@@ -131,7 +131,19 @@ def get_weather_datas():
     
     return '\n\nGETTING WEATHER DATAS........... DONE'
 
-def setIrrigation(mSegment, status, settings, arduino):
+def setIrrigation(mSegment, status):
+    arduino = Arduino.objects.all()
+    if arduino.exists() :
+        arduino = Arduino.objects.get(id=0)
+    else:
+        return 'Arduino was not found'
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return 'Settings not found'
+    
     mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
@@ -142,40 +154,42 @@ def setIrrigation(mSegment, status, settings, arduino):
     switches = Switch.objects.all()
     running_segments=0;
     pump_status = False
+    
+    pump=Pump.objects.get(id=0)
+    
     for switch in switches :
-        if switch.pinNumber != settings.pump.pinNumber :
+        if switch.pinNumber != pump.switch.pinNumber :
             if switch.status == 1 :
                 running_segments=running_segments+1
                 pump_status = True
         
-    pump= Switch.objects.get(pinNumber=settings.pump.pinNumber)
     if pump_status :
-        pump.status = 1
+        pump.switch.status = 1
     else :
-        pump.status = 0
-    pump.save(update_fields=['status'])
-    settings.pump=pump
+        pump.switch.status = 0
+    pump.save(update_fields=['switch'])
     settings.running_segments=running_segments
-    settings.save(update_fields=['pump','running_segments'])
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.pinNumber+"/status/"+str(pump.status))
+    settings.save(update_fields=['running_segments'])
+    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
     return
 
-def addTaskToQueue(mSegment, settings, arduino):
+def addTaskToQueue(mSegment):
+    
     tasks = TaskQueue.objects.all().order_by('seq_number')
     TaskQueue(segment_id=mSegment,
                           seq_number=len(tasks)+1).save()
     if len(tasks) < settings.runnable_segments_number :
-        switchIrrigation(mSegment,1,settings,arduino)
+        switchIrrigation(mSegment,1)
     return
 
-def deleteTaskFromQueue(mSegment, settings, arduino):
+def deleteTaskFromQueue(mSegment):    
     if mSegment.switch.status == 1:
         tasks = TaskQueue.objects.all().order_by('seq_number')
         if len(tasks) > 0 :
             deleted_task=TaskQueue.objects.get(segment_id=mSegment)
             seq_number=deleted_task.seq_number
             deleted_task.delete()
-            switchIrrigation(mSegment, 0, settings, arduino)
+            switchIrrigation(mSegment, 0)
             tasks = TaskQueue.objects.all().order_by('seq_number')
             if tasks is not None:
                 for task in tasks :
@@ -184,34 +198,52 @@ def deleteTaskFromQueue(mSegment, settings, arduino):
                         temp.seq_number=temp.seq_number-1
                         temp.save()
         else :
-            switchIrrigation(mSegment, 0, settings, arduino)
+            switchIrrigation(mSegment, 0)
     return
     
-def switchIrrigation(mSegment, status, settings, arduino):
+def switchIrrigation(mSegment, status):
+    arduino = Arduino.objects.all()
+    if arduino.exists() :
+        arduino = Arduino.objects.get(id=0)
+    else:
+        return 'Arduino was not found'
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return 'Settings not found'
+    
+    pump=Pump.objects.get(id=0)
     
     if status == 1 :
-        if mSegment.switch.status == 0 and mSegment.duration_today<mSegment.duration_maxLimit :
-            if mSegment.irrigation_history is None :
-                mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
-                                                                   moisture_startValue=mSegment.sensor.value
-                                                                   )
-                mIrrigationHistory.save()
-                mSegment.irrigation_history=mIrrigationHistory
-            setIrrigation(mSegment, 1, settings, arduino)
+        if pump.switch.status == 1 or pump.down_time >= pump.stop_limit :
+            if mSegment.switch.status == 0 and mSegment.duration_today<mSegment.duration_maxLimit :
+                if mSegment.irrigation_history is None :
+                    mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
+                                                                       moisture_startValue=mSegment.sensor.value
+                                                                       )
+                    mIrrigationHistory.save()
+                    mSegment.irrigation_history=mIrrigationHistory
+                setIrrigation(mSegment, 1)
+        else :
+            return 'Waiting for pump'
                 
-    else :                
-        if mSegment.switch.status == 1:
-            if mSegment.irrigation_history is not None:
-                mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
-                mHistory.end_date=datetime.now()
-                mHistory.duration=mSegment.up_time+1
-                mHistory.moisture_endValue=mSegment.sensor.value
-                mHistory.status='done'
-                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-                mSegment.up_time = 0
-                mSegment.irrigation_history=None
-            setIrrigation(mSegment, 0, settings, arduino)
-    return
+    else :  
+        if pump.switch.status == 0 or pump.up_time >= pump.run_limit:              
+            if mSegment.switch.status == 1:
+                if mSegment.irrigation_history is not None:
+                    mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
+                    mHistory.end_date=datetime.now()
+                    mHistory.duration=mSegment.up_time+1
+                    mHistory.moisture_endValue=mSegment.sensor.value
+                    mHistory.status='done'
+                    mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+                    mSegment.up_time = 0
+                    mSegment.irrigation_history=None
+                setIrrigation(mSegment, 0)
+        else :
+            return 'Waiting for pump'
 
 def changeSegment(segment):    
     mSegment = Segment.objects.get(id=segment.id)
@@ -278,23 +310,23 @@ def automation_control():
                 if segment.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
-                        addTaskToQueue(segment, settings, arduino)
+                        addTaskToQueue(segment)
                     else :
-                        deleteTaskFromQueue(segment, settings, arduino)
+                        deleteTaskFromQueue(segment)
                 else :
                    #turn on irrigation anyway
-                    addTaskToQueue(segment, settings, arduino) 
+                    addTaskToQueue(segment) 
                 
             elif segment.sensor.value>segment.moisture_maxLimit:
                 #turn off irrigation
-                deleteTaskFromQueue(segment, settings, arduino)
+                deleteTaskFromQueue(segment)
                 segment.up_time=0
                 segment.save(update_fields=['up_time'])
                 
             if segment.switch.status == 1 :
                 if segment.duration_today+2>segment.duration_maxLimit :
                     #turn off irrigation
-                    deleteTaskFromQueue(segment, settings, arduino)
+                    deleteTaskFromQueue(segment)
                     segment.up_time=0
                     segment.save(update_fields=['up_time'])
                 else :
@@ -307,7 +339,7 @@ def automation_control():
         else :
             if segment.duration_today+1>segment.duration_maxLimit :
                 #turn off irrigation
-                deleteTaskFromQueue(segment,settings, arduino)
+                deleteTaskFromQueue(segment)
                 segment.up_time=0
                 segment.save(update_fields=['up_time'])
             
@@ -328,12 +360,20 @@ def automation_control():
             task = TaskQueue.objects.get(seq_number=i+1)
             segment=task.segment_id
             if segment.switch.status == 0 :
-                switchIrrigation(segment, 1, settings, arduino)
+                switchIrrigation(segment, 1)
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water = settings.water + 5.5
     settings.total_cost=settings.total_cost+settings.cost_perLiter*5.5
     settings.save(update_fields=['water','total_cost'])
+    
+    pump = Pump.objects.get(id=0)
+    if pump.switch.status == 1:
+        pump.up_time = pump.up_time + 1
+    else :
+        pump.down_time = pump.down_time + 1
+    
+    pump.save(update_fields=['up_time','down_time'])
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 
@@ -363,23 +403,23 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                switchIrrigation(simpleSchedule.segment, 1, settings, arduino)
+                switchIrrigation(simpleSchedule.segment, 1)
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit) or simpleSchedule.segment.switch.status == 'off':
                 simpleSchedule.delete()
-                switchIrrigation(simpleSchedule.segment, 0, settings, arduino)
+                switchIrrigation(simpleSchedule.segment, 0)
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                switchIrrigation(repeatableSchedule.segment, 1, settings, arduino)
+                switchIrrigation(repeatableSchedule.segment, 1)
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) or repeatableSchedule.segment.switch.status == 'off':
-                switchIrrigation(repeatableSchedule.segment, 0, settings, arduino)
+                switchIrrigation(repeatableSchedule.segment, 0)
                 changeSchedule(repeatableSchedule,'stopped')
                 
                            
@@ -420,7 +460,7 @@ def follow_irrigation_template():
                     irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
                     irrigationTemplate.save(update_fields=['day_counter'])
             except Exception as e :
-                switchIrrigation(segment, 0, settings, arduino)
+                switchIrrigation(segment, 0)
                 segment.type='Manual'
                 segment.template=None
                 segment.save(update_fields=['type','template'])

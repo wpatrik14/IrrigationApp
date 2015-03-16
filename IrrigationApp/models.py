@@ -111,7 +111,6 @@ class Arduino(models.Model):
    
 class IrrigationSettings(models.Model):
     id = models.IntegerField(max_length=1, primary_key=True)
-    pump = models.ForeignKey('Switch')
     flow_meter = models.IntegerField(default=0)
     running_segments = models.IntegerField(default=0)
     evapotranspiracy = models.FloatField(default=0)
@@ -121,6 +120,14 @@ class IrrigationSettings(models.Model):
     runnable_segments_number=models.IntegerField(default=1)
     def __unicode__(self):
         return self.pump
+    
+class Pump(models.Model):
+    id = models.IntegerField(max_length=1, primary_key=True)
+    switch = models.ForeignKey('Switch')
+    up_time = models.IntegerField(default=0)
+    run_limit = models.IntegerField(deafult=1)
+    down_time = models.IntegerField(default=0)
+    stop_limit = models.IntegerField(default=1)
 
 class SoilType(models.Model):
     name = models.CharField(max_length=20)
