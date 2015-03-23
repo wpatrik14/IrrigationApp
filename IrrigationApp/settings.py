@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import djcelery
+
+from kombu.serialization import register
+from .myjson import my_dumps, my_loads
+
 #import celery
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -140,8 +144,7 @@ CELERYBEAT_SCHEDULE = {
 }
 
 CELERY_TIMEZONE = 'Europe/Budapest'
-from kombu.serialization import register
-from .myjson import my_dumps, my_loads
+
 
 register('myjson', my_dumps, my_loads, 
     content_type='application/x-myjson',
