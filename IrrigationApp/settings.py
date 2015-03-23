@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 import djcelery
 
-from kombu.serialization import register
 from .myjson import my_dumps, my_loads
 
 #import celery
@@ -145,10 +144,6 @@ CELERYBEAT_SCHEDULE = {
 
 CELERY_TIMEZONE = 'Europe/Budapest'
 
-
-register('myjson', my_dumps, my_loads, 
-    content_type='application/x-myjson',
-    content_encoding='utf-8') 
 
 # Tell celery to use your new serializer:
 CELERY_ACCEPT_CONTENT = ['myjson']
