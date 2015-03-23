@@ -125,7 +125,7 @@ class Pump(models.Model):
     id = models.IntegerField(max_length=1, primary_key=True)
     switch = models.ForeignKey('Switch')
     up_time = models.IntegerField(default=0)
-    run_limit = models.IntegerField(deafult=1)
+    run_limit = models.IntegerField(default=1)
     down_time = models.IntegerField(default=0)
     stop_limit = models.IntegerField(default=1)
 
