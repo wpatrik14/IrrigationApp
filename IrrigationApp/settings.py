@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 import djcelery
 
-from .myjson import my_dumps, my_loads
-
 #import celery
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -146,8 +144,8 @@ CELERY_TIMEZONE = 'Europe/Budapest'
 
 
 # Tell celery to use your new serializer:
-CELERY_ACCEPT_CONTENT = ['myjson']
-CELERY_TASK_SERIALIZER = 'myjson'
-CELERY_RESULT_SERIALIZER = 'myjson'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 djcelery.setup_loader()
