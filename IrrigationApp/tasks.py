@@ -16,6 +16,7 @@ from celery import task
 #app = Celery('tasks', include=['celery.task.http'])
 
 celery = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http']) #!
+celery.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
 
 def get_weather_data_from_server():
     req = urllib2.Request('http://api.worldweatheronline.com/free/v1/weather.ashx?q=God&format=json&num_of_days=5&key=bffc71ad3fa08458dbf6fc77a0383cd421d61052')
