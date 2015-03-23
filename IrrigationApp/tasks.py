@@ -8,7 +8,8 @@ from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateVal
 from django.http import HttpResponse
 import json
 import time
-from urllib.request import urlopen
+#from urllib.request import urlopen
+import urllib2
 from celery import task
 
 #app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
@@ -17,7 +18,8 @@ from celery import task
 celery = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http']) #!
 
 def get_weather_data_from_server():
-    res = urlopen('http://api.worldweatheronline.com/free/v1/weather.ashx?q=God&format=json&num_of_days=5&key=bffc71ad3fa08458dbf6fc77a0383cd421d61052')
+    req = urllib2.Request('http://api.worldweatheronline.com/free/v1/weather.ashx?q=God&format=json&num_of_days=5&key=bffc71ad3fa08458dbf6fc77a0383cd421d61052')
+    res = urllib2.urlopen(req)
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
@@ -149,7 +151,7 @@ def setIrrigation(mSegment, status):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
+    urllib2.Request("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
         
     switches = Switch.objects.all()
     running_segments=0;
@@ -170,7 +172,7 @@ def setIrrigation(mSegment, status):
     pump.save(update_fields=['switch'])
     settings.running_segments=running_segments
     settings.save(update_fields=['running_segments'])
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
+    urllib2.Request("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
     return
 
 def addTaskToQueue(mSegment):
@@ -272,25 +274,29 @@ def automation_control():
     else:
         return 'Settings not found'
     
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/datas')
+    req = urllib2.Request('http://'+arduino.IP+':'+arduino.PORT+'/datas')
+    res = urllib2.urlopen(req)
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     digital_pins=int(js['digital_pins'])
     node_counts=int(js['node_counts'])
     
     for i in range(digital_pins) :
-        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/pinNumber/'+str(i+1))
+        req = urllib2.Request('http://'+arduino.IP+':'+arduino.PORT+'/pinNumber/'+str(i+1))
+        res = urllib2.urlopen(req)
         reader = codecs.getreader("utf-8")
         js = json.load(reader(res))
         Switch(pinNumber=int(js['pinNumber']),status=int(js['status'])).save()
     
     for i in range(node_counts) :
-        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+str(i+1))
+        req = urllib2.Request('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+str(i+1))
+        res = urllib2.urlopen(req)
         reader = codecs.getreader("utf-8")
         js = json.load(reader(res))
         Sensor(node=int(js['nodeId']),value=int(js['value'])).save()
     
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/flowMeter')
+    req = urllib2.Request('http://'+arduino.IP+':'+arduino.PORT+'/flowMeter')
+    res = urllib2.urlopen(req)
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     settings.flow_meter=js['flow_meter']

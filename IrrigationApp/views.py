@@ -13,8 +13,8 @@ from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateVal
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from urllib.request import urlopen
-
+#from urllib.request import urlopen
+import urllib2
 import subprocess
 
 def showMenu(request):
@@ -233,7 +233,8 @@ def setIrrigation(mSegment, status):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
+    #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
+    urllib2.Request("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
         
     switches = Switch.objects.all()
     running_segments=0;
@@ -253,7 +254,8 @@ def setIrrigation(mSegment, status):
     pump.save(update_fields=['switch'])
     settings.running_segments=running_segments
     settings.save(update_fields=['running_segments'])
-    urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
+    #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
+    urllib2.Request("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
     
 def addTaskToQueue(mSegment):
     tasks = TaskQueue.objects.all().order_by('seq_number')
@@ -575,7 +577,8 @@ def doAddArduino(request):
                       PORT=port)
     arduino.save()
 
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
+    req = urllib2.Request('http://'+arduino.IP+':'+arduino.PORT)
+    res = urllib2.urlopen(req)
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
     
