@@ -256,6 +256,12 @@ def setIrrigation(mSegment, status):
     
     
 def addTaskToQueue(mSegment):
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return 'Settings not found'
+    
     tasks = TaskQueue.objects.all().order_by('seq_number')
     TaskQueue(segment_id=mSegment,
                           seq_number=len(tasks)+1).save()
