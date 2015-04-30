@@ -542,10 +542,12 @@ def doAddSettings(request):
                                   cost_perLiter=cost,
                                   runnable_segments_number=number_of_runnable_segments)
     settings.save()
+    settings.save()
     pump = Pump(id=0,
                 switch=switch,
                 run_limit=run_limit,
                 stop_limit=stop_limit)
+    pump.save()
     
     return redirect('/getSystemStatus')
 
