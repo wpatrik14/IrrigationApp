@@ -267,11 +267,7 @@ def automation_control():
     else:
         return 'Arduino was not found'
     
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return 'Settings not found'
+    
     
     res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/datas')
     reader = codecs.getreader("utf-8")
@@ -362,6 +358,12 @@ def automation_control():
             segment=task.segment_id
             if segment.switch.status == 0 :
                 switchIrrigation(segment, 1)
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return 'Settings not found'
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water = settings.water + 5.5
