@@ -287,6 +287,12 @@ def automation_control():
         js = json.load(reader(res))
         Sensor(node=int(js['nodeId']),value=int(js['value'])).save()
     
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return 'Settings not found'
+    
     res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/flowMeter')
     reader = codecs.getreader("utf-8")
     js = json.load(reader(res))
@@ -359,11 +365,7 @@ def automation_control():
             if segment.switch.status == 0 :
                 switchIrrigation(segment, 1)
     
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return 'Settings not found'
+    
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water = settings.water + 5.5
