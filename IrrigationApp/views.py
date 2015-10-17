@@ -370,8 +370,6 @@ def getSystemStatus(request):
     tasks = TaskQueue.objects.all().order_by('seq_number')
     pump = Pump.objects.get(id=0)
     
-    #Command (0-read, 1-write), NodeId (0-relay, 1-other), PinNumber, Stat
-    
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
