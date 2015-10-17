@@ -236,9 +236,6 @@ def setIrrigation(mSegment, status):
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
     pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout, stderr = pipe.communicate()
-    
-    logger.error('stdout'+stdout)
-    logger.error('stderr'+stderr)
         
     switches = Switch.objects.all()
     running_segments=0;
@@ -263,7 +260,7 @@ def setIrrigation(mSegment, status):
     #stdout, stderr = pipe.communicate()
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
     
-    return stderr
+    return stdout
     
 def addTaskToQueue(mSegment):
     settings = IrrigationSettings.objects.all()
@@ -314,7 +311,10 @@ def switchIrrigation(mSegment, status):
                                                                        )
                     mIrrigationHistory.save()
                     mSegment.irrigation_history=mIrrigationHistory
-                setIrrigation(mSegment, 1)
+                
+                result = setIrrigation(mSegment, 1)
+                return result
+                
         else :
             return 'Waiting for pump'
                 
@@ -330,7 +330,9 @@ def switchIrrigation(mSegment, status):
                     mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
                     mSegment.up_time = 0
                     mSegment.irrigation_history=None
-                setIrrigation(mSegment, 0)
+                
+                result = setIrrigation(mSegment, 0)
+                return result
         else :
             return 'Waiting for pump'
         
@@ -358,11 +360,11 @@ def getSystemStatus(request):
         status = request.POST['status']
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
-            addTaskToQueue(mSegment)
-            #result = setIrrigation(mSegment, status)
+            #addTaskToQueue(mSegment)
+            result = switchIrrigation(mSegment, status)
         else :
             deleteTaskFromQueue(mSegment)
-            #result = setIrrigation(mSegment, status)
+            result = switchIrrigation(mSegment, status)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
