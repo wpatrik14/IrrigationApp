@@ -245,7 +245,7 @@ def setIrrigation(mSegment, status):
         pump.switch.status = 1
     else :
         pump.switch.status = 0
-    pump.save(update_fields=['switch'])
+    pump.save()
     settings.running_segments=running_segments
     settings.save(update_fields=['running_segments'])
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -259,10 +259,10 @@ def addTaskToQueue(mSegment):
         return 'Settings not found'
     
     tasks = TaskQueue.objects.all().order_by('seq_number')
-    TaskQueue(segment_id=mSegment,
-                          seq_number=len(tasks)+1).save()
     if len(tasks) < settings.runnable_segments_number :
         switchIrrigation(mSegment,1)
+    else :
+        TaskQueue(segment_id=mSegment,seq_number=len(tasks)+1).save()
         
 def deleteTaskFromQueue(mSegment):
     if mSegment.switch.status == 1:
