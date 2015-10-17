@@ -6,7 +6,7 @@
 <fieldset>
 
 	<!-- Form Name -->
-	<legend>Status of the Segments</legend><a href="/showAddNewSegment">New Segment</a>
+	<legend>Status of the Zones</legend><a href="/showAddNewZone">New Zone</a>
 
 <table class="table table-striped table-condensed">
 	<thead>
@@ -27,41 +27,41 @@
 		<th>Forecast</th>
 		<th>Edit</th>
 	</thead>
-	{% for segment in segments %}
+	{% for zone in zones %}
 	<tr>
-		<td>{{segment.name}}</td>
-		<td>{{segment.soil_type.name}}</td>
-		<td>{{segment.size_m2}} m2</td>
-		<td>{{segment.sensor.value}}%</td>
+		<td>{{zone.name}}</td>
+		<td>{{zone.soil_type.name}}</td>
+		<td>{{zone.size_m2}} m2</td>
+		<td>{{zone.sensor.value}}%</td>
 		<td>
 			<form id="change_switch" action="getSystemStatus" method="post">
 				{% csrf_token %}
-				{% if segment.switch.status == 1 %}
-				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
+				{% if zone.switch.status == 1 %}
+				<input type="hidden" name="zone" value = "{{ zone.id }}"/>
 				<input type="hidden" name="status" value = "0"/>
 				<button id="switch" name="switch" class="btn btn-success">Turn OFF</button>
 				{% else %}
-				<input type="hidden" name="segment" value = "{{ segment.id }}"/>
+				<input type="hidden" name="zone" value = "{{ zone.id }}"/>
 				<input type="hidden" name="status" value = "1"/>
 				<button id="switch" name="switch" class="btn btn-danger">Turn ON</button>
 				{% endif %}
 								
 			</form>
 		</td>
-		<td>{{segment.up_time}} min</td>
-		<td>{{segment.water_quantity|floatformat:-2}} mm</td>
-		<td>{{segment.type}}</td>
-		<td><a href="/showIrrigationTemplateValues/?template={{segment.template.id}}">{{segment.template.name}}</a></td>
-		<td>{{segment.template.day_counter}}</td>
-		<td>{{segment.moisture_minLimit}}%</td>
-		<td>{{segment.moisture_maxLimit}}%</td>
-		<td>{{segment.duration_today}} min</td>
-		<td>{{segment.duration_maxLimit}} min</td>
-		<td>{{segment.forecast_enabled}}</td>
+		<td>{{zone.up_time}} min</td>
+		<td>{{zone.water_quantity|floatformat:-2}} mm</td>
+		<td>{{zone.type}}</td>
+		<td><a href="/showIrrigationTemplateValues/?template={{zone.template.id}}">{{zone.template.name}}</a></td>
+		<td>{{zone.template.day_counter}}</td>
+		<td>{{zone.moisture_minLimit}}%</td>
+		<td>{{zone.moisture_maxLimit}}%</td>
+		<td>{{zone.duration_today}} min</td>
+		<td>{{zone.duration_maxLimit}} min</td>
+		<td>{{zone.forecast_enabled}}</td>
 		<td>
-		<form id="showEditSegment" action="showEditSegment" method="post">
+		<form id="showEditZone" action="showEditZone" method="post">
 				{% csrf_token %}
-				<input type="hidden" name="editSegment" value = "{{ segment.id }}"/>
+				<input type="hidden" name="editZone" value = "{{ zone.id }}"/>
 				<button id="delete" name="delete" class="btn btn-default">EDIT</button>
 			</form>		
 		</td>
@@ -76,7 +76,7 @@
 	<!-- Form Name -->
 	<legend>Irrigation status</legend>
 	Pump is: {{ pump.switch.status }} (pin-number: {{ pump.switch.pinNumber }})</br>
-	Count of running segments: {{ settings.running_segments }}</br>
+	Count of running zones: {{ settings.running_zones }}</br>
 	Flow meter: {{ settings.flow_meter }} liter/minute</br>
 	Water quantity: {{ settings.water }} liter</br>
 	Total cost: {{ settings.total_cost }} Ft ({{settings.cost_perLiter}} Ft/liter)</br></br>
@@ -90,13 +90,13 @@
 	
 	<table class="table table-striped table-condensed">
 	<thead>
-		<th>Segment</th>
+		<th>Zone</th>
 		<th>Seq number</th>
 		<th>Delete</th>
 	</thead>
 	{% for task in tasks %}
 	<tr>
-		<td>{{task.segment_id.name}}</td>
+		<td>{{task.zone_id.name}}</td>
 		<td>{{task.seq_number}}</td>
 		<td>
 		<form id="deleteTask" action="deleteTask" method="post">
@@ -123,7 +123,7 @@
 		<th>Date</th>
 		<th>Time</th>
 		<th>Duration</th>
-		<th>Segments</th>
+		<th>Zones</th>
 		<th>Delete</th>
 	</thead>
 	{% for simpleSchedule in simpleSchedules %}
@@ -132,7 +132,7 @@
 		<td>{{simpleSchedule.date|date:"Y-m-d"}}</td>
 		<td>{{simpleSchedule.time|time:"H:i"}}</td>
 		<td>{{simpleSchedule.duration}} min</td>
-		<td>{{simpleSchedule.segment.name}}</td>
+		<td>{{simpleSchedule.zone.name}}</td>
 		<td>
 		<form id="deleteSimpleSchedule" action="deleteSimpleSchedule" method="post">
 				{% csrf_token %}
@@ -159,7 +159,7 @@
 		<th>Day</th>
 		<th>Time</th>
 		<th>Duration</th>
-		<th>Segments</th>
+		<th>Zones</th>
 		<th>Delete</th>
 	</thead>
 	{% for repeatableSchedule in repeatableSchedules %}
@@ -169,7 +169,7 @@
 		<td>{{repeatableSchedule.day}}</td>
 		<td>{{repeatableSchedule.time|time:"H:i"}}</td>
 		<td>{{repeatableSchedule.duration}} min</td>
-		<td>{{repeatableSchedule.segment.name}}</td>
+		<td>{{repeatableSchedule.zone.name}}</td>
 		<td>
 		<form id="deleteRepeatableSchedule" action="deleteRepeatableSchedule" method="post">
 				{% csrf_token %}

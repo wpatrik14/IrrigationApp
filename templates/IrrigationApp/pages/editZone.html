@@ -1,16 +1,16 @@
 {% include "IrrigationApp/pages/frame/htmlHeader.html" %}
 
-		<form class="form-horizontal" id="doEditSegment" action="{% url 'doEditSegment'%}" method="post">
+		<form class="form-horizontal" id="doEditZone" action="{% url 'doEditZone'%}" method="post">
 				{% csrf_token %}
 				<fieldset>
 				
 				<!-- Form Name -->
-				<legend>Edit segment</legend>
+				<legend>Edit zone</legend>
 				
 				<!-- Text input-->
 				<div class="form-group">
-				  <label for="name">Name of the segment:</label>
-				    <input id="name" name="name" type="text" value="{{ segment.name }}" placeholder="Name of the Segment" class="form-control" required autofocus>
+				  <label for="name">Name of the zone:</label>
+				    <input id="name" name="name" type="text" value="{{ zone.name }}" placeholder="Name of the Zone" class="form-control" required autofocus>
 				</div>
 				
 				<!-- Select Basic -->
@@ -72,19 +72,19 @@
 				<!-- Text input-->
 				<div class="form-group">
 				  <label for="moisture_minLimit">Minimum of moisture</label>
-				    <input id="moisture_minLimit" name="moisture_minLimit"  value="{{ segment.moisture_minLimit }}" type="text" placeholder="Minimum of moisture" class="form-control" required autofocus>
+				    <input id="moisture_minLimit" name="moisture_minLimit"  value="{{ zone.moisture_minLimit }}" type="text" placeholder="Minimum of moisture" class="form-control" required autofocus>
 				</div>
 				
 				<!-- Text input-->
 				<div class="form-group">
 				  <label for="moisture_maxLimit">Maxiumum of moisture</label>
-				    <input id="moisture_maxLimit" name="moisture_maxLimit" type="text" value="{{ segment.moisture_maxLimit }}" placeholder="Maximum of moisture" class="form-control" required autofocus>
+				    <input id="moisture_maxLimit" name="moisture_maxLimit" type="text" value="{{ zone.moisture_maxLimit }}" placeholder="Maximum of moisture" class="form-control" required autofocus>
 				</div>
 				
 				<!-- Text input-->
 				<div class="form-group">
 				  <label for="duration_maxLimit">Maxiumum of duration (min)</label>
-				    <input id="duration_maxLimit" name="duration_maxLimit" type="text" value="{{ segment.duration_maxLimit }}" placeholder="Maxiumum of duration (min)" class="form-control" required autofocus>
+				    <input id="duration_maxLimit" name="duration_maxLimit" type="text" value="{{ zone.duration_maxLimit }}" placeholder="Maxiumum of duration (min)" class="form-control" required autofocus>
 				</div>
 				
 				<!-- Multiple Checkboxes -->
@@ -98,11 +98,11 @@
 				<!-- Button -->
 				<div class="form-group">
 				  <label for="submit"></label>
-				    <button id="submit" name="submit" class="btn btn-success">Edit segment</button>
+				    <button id="submit" name="submit" class="btn btn-success">Edit zone</button>
 				</div>
 				
 				</fieldset>
-				<input type="hidden" name="segment_id" value = "{{ segment.id }}"/>
+				<input type="hidden" name="zone_id" value = "{{ zone.id }}"/>
 				</form>
 </div>
 </body>

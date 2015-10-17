@@ -1,16 +1,16 @@
 {% include "IrrigationApp/pages/frame/htmlHeader.html" %}
 
-		<form class="form-horizontal" id="addNewSegment" action="{% url 'doAddNewSegment'%}" method="post">
+		<form class="form-horizontal" id="addNewZone" action="{% url 'doAddNewZone'%}" method="post">
 				{% csrf_token %}
 				<fieldset>
 				
 				<!-- Form Name -->
-				<legend>Add new segment</legend>
+				<legend>Add new zone</legend>
 				
 				<!-- Text input-->
 				<div class="form-group">
-				  <label for="name">Name of the segment:</label>
-				    <input id="name" name="name" type="text" placeholder="Name of the Segment" class="form-control" required autofocus>
+				  <label for="name">Name of the zone:</label>
+				    <input id="name" name="name" type="text" placeholder="Name of the Zone" class="form-control" required autofocus>
 				</div>
 				
 				<!-- Select Basic -->
@@ -98,7 +98,7 @@
 				<!-- Button -->
 				<div class="form-group">
 				  <label for="submit"></label>
-				    <button id="submit" name="submit" class="btn btn-success">Add segment</button>
+				    <button id="submit" name="submit" class="btn btn-success">Add zone</button>
 				</div>
 				
 				</fieldset>

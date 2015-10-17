@@ -4,7 +4,7 @@ import codecs
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
-from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, WeatherHistory, WeatherForecast, Sensor, Switch, Segment, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, Arduino, TaskQueue, SoilType
+from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, Arduino, TaskQueue, SoilType
 from django.http import HttpResponse
 import json
 import time
@@ -133,7 +133,7 @@ def get_weather_datas():
     
     return '\n\nGETTING WEATHER DATAS........... DONE'
 
-def setIrrigation(mSegment, status):
+def setIrrigation(mZone, status):
         
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -141,15 +141,15 @@ def setIrrigation(mSegment, status):
     else:
         return 'Settings not found'
     
-    mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
+    mSwitch = Switch.objects.get(pinNumber=mZone.switch.pinNumber)
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
-    mSegment.switch=mSwitch
-    mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
+    mZone.switch=mSwitch
+    mZone.save(update_fields=['switch','up_time','irrigation_history']) 
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     switches = Switch.objects.all()
-    running_segments=0;
+    running_zones=0;
     pump_status = False
     
     pump=Pump.objects.get(id=0)
@@ -157,7 +157,7 @@ def setIrrigation(mSegment, status):
     for switch in switches :
         if switch.pinNumber != pump.switch.pinNumber :
             if switch.status == 1 :
-                running_segments=running_segments+1
+                running_zones=running_zones+1
                 pump_status = True
         
     if pump_status :
@@ -165,13 +165,13 @@ def setIrrigation(mSegment, status):
     else :
         pump.switch.status = 0
     pump.save(update_fields=['switch'])
-    settings.running_segments=running_segments
-    settings.save(update_fields=['running_segments'])
+    settings.running_zones=running_zones
+    settings.save(update_fields=['running_zones'])
     
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return
 
-def addTaskToQueue(mSegment):
+def addTaskToQueue(mZone):
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -180,32 +180,32 @@ def addTaskToQueue(mSegment):
         return 'Settings not found'
     
     tasks = TaskQueue.objects.all().order_by('seq_number')
-    TaskQueue(segment_id=mSegment,
+    TaskQueue(zone_id=mZone,
                           seq_number=len(tasks)+1).save()
-    if len(tasks) < settings.runnable_segments_number :
-        switchIrrigation(mSegment,1)
+    if len(tasks) < settings.runnable_zones_number :
+        switchIrrigation(mZone,1)
     return
 
-def deleteTaskFromQueue(mSegment):    
-    if mSegment.switch.status == 1:
+def deleteTaskFromQueue(mZone):    
+    if mZone.switch.status == 1:
         tasks = TaskQueue.objects.all().order_by('seq_number')
         if len(tasks) > 0 :
-            deleted_task=TaskQueue.objects.get(segment_id=mSegment)
+            deleted_task=TaskQueue.objects.get(zone_id=mZone)
             seq_number=deleted_task.seq_number
             deleted_task.delete()
-            switchIrrigation(mSegment, 0)
+            switchIrrigation(mZone, 0)
             tasks = TaskQueue.objects.all().order_by('seq_number')
             if tasks is not None:
                 for task in tasks :
                     if task.seq_number>seq_number:
-                        temp=TaskQueue.objects.get(segment_id=task.segment_id)
+                        temp=TaskQueue.objects.get(zone_id=task.zone_id)
                         temp.seq_number=temp.seq_number-1
                         temp.save()
         else :
-            switchIrrigation(mSegment, 0)
+            switchIrrigation(mZone, 0)
     return
     
-def switchIrrigation(mSegment, status):
+def switchIrrigation(mZone, status):
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -217,37 +217,37 @@ def switchIrrigation(mSegment, status):
     
     if status == 1 :
         if pump.switch.status == 1 or pump.down_time >= pump.stop_limit :
-            if mSegment.switch.status == 0 and mSegment.duration_today<mSegment.duration_maxLimit :
-                if mSegment.irrigation_history is None :
-                    mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
-                                                                       moisture_startValue=mSegment.sensor.value
+            if mZone.switch.status == 0 and mZone.duration_today<mZone.duration_maxLimit :
+                if mZone.irrigation_history is None :
+                    mIrrigationHistory = IrrigationHistory(zone_id=mZone,
+                                                                       moisture_startValue=mZone.sensor.value
                                                                        )
                     mIrrigationHistory.save()
-                    mSegment.irrigation_history=mIrrigationHistory
-                setIrrigation(mSegment, 1)
+                    mZone.irrigation_history=mIrrigationHistory
+                setIrrigation(mZone, 1)
         else :
             return 'Waiting for pump'
                 
     else :  
         if pump.switch.status == 0 or pump.up_time >= pump.run_limit:              
-            if mSegment.switch.status == 1:
-                if mSegment.irrigation_history is not None:
-                    mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
+            if mZone.switch.status == 1:
+                if mZone.irrigation_history is not None:
+                    mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
                     mHistory.end_date=datetime.now()
-                    mHistory.duration=mSegment.up_time+1
-                    mHistory.moisture_endValue=mSegment.sensor.value
+                    mHistory.duration=mZone.up_time+1
+                    mHistory.moisture_endValue=mZone.sensor.value
                     mHistory.status='done'
                     mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-                    mSegment.up_time = 0
-                    mSegment.irrigation_history=None
-                setIrrigation(mSegment, 0)
+                    mZone.up_time = 0
+                    mZone.irrigation_history=None
+                setIrrigation(mZone, 0)
         else :
             return 'Waiting for pump'
 
-def changeSegment(segment):    
-    mSegment = Segment.objects.get(id=segment.id)
-    mSegment.up_time=up_time
-    mSegment.save(update_fields=['up_time'])
+def changeZone(zone):    
+    mZone = Zone.objects.get(id=zone.id)
+    mZone.up_time=up_time
+    mZone.save(update_fields=['up_time'])
     return
 
 def changeSchedule(schedule, status):
@@ -290,7 +290,7 @@ def automation_control():
     settings.flow_meter=12
     settings.save(update_fields=['flow_meter'])
     
-    segments = Segment.objects.all()
+    zones = Zone.objects.all()
     
     weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
     if not weatherForecast.exists() :
@@ -298,63 +298,63 @@ def automation_control():
     
     weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
     
-    for segment in segments :
-        if segment.type == "Automatic" :
-            if segment.sensor.value<segment.moisture_minLimit :
-                if segment.forecast_enabled :
+    for zone in zones :
+        if zone.type == "Automatic" :
+            if zone.sensor.value<zone.moisture_minLimit :
+                if zone.forecast_enabled :
                     if weatherForecast[0].precipMM < 0.5 :
                         #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
-                        addTaskToQueue(segment)
+                        addTaskToQueue(zone)
                     else :
-                        deleteTaskFromQueue(segment)
+                        deleteTaskFromQueue(zone)
                 else :
                    #turn on irrigation anyway
-                    addTaskToQueue(segment) 
+                    addTaskToQueue(zone) 
                 
-            elif segment.sensor.value>segment.moisture_maxLimit:
+            elif zone.sensor.value>zone.moisture_maxLimit:
                 #turn off irrigation
-                deleteTaskFromQueue(segment)
-                segment.up_time=0
-                segment.save(update_fields=['up_time'])
+                deleteTaskFromQueue(zone)
+                zone.up_time=0
+                zone.save(update_fields=['up_time'])
                 
-            if segment.switch.status == 1 :
-                if segment.duration_today+2>segment.duration_maxLimit :
+            if zone.switch.status == 1 :
+                if zone.duration_today+2>zone.duration_maxLimit :
                     #turn off irrigation
-                    deleteTaskFromQueue(segment)
-                    segment.up_time=0
-                    segment.save(update_fields=['up_time'])
+                    deleteTaskFromQueue(zone)
+                    zone.up_time=0
+                    zone.save(update_fields=['up_time'])
                 else :
                     settings = IrrigationSettings.objects.get(id=0)
-                    segment.up_time=segment.up_time+1
-                    segment.duration_today=segment.duration_today+1
-                    segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments
-                    segment.save(update_fields=['up_time','duration_today','water_quantity'])
+                    zone.up_time=zone.up_time+1
+                    zone.duration_today=zone.duration_today+1
+                    zone.water_quantity=zone.water_quantity+5.5/float(zone.size_m2)/settings.running_zones
+                    zone.save(update_fields=['up_time','duration_today','water_quantity'])
                     
         else :
-            if segment.duration_today+1>segment.duration_maxLimit :
+            if zone.duration_today+1>zone.duration_maxLimit :
                 #turn off irrigation
-                deleteTaskFromQueue(segment)
-                segment.up_time=0
-                segment.save(update_fields=['up_time'])
+                deleteTaskFromQueue(zone)
+                zone.up_time=0
+                zone.save(update_fields=['up_time'])
             
-            if segment.switch.status == 1 :
+            if zone.switch.status == 1 :
                 settings = IrrigationSettings.objects.get(id=0)
-                segment.up_time=segment.up_time+1
-                segment.duration_today=segment.duration_today+1
-                segment.water_quantity=segment.water_quantity+5.5/float(segment.size_m2)/settings.running_segments
-                segment.save(update_fields=['up_time','duration_today','water_quantity'])
+                zone.up_time=zone.up_time+1
+                zone.duration_today=zone.duration_today+1
+                zone.water_quantity=zone.water_quantity+5.5/float(zone.size_m2)/settings.running_zones
+                zone.save(update_fields=['up_time','duration_today','water_quantity'])
                 
             else :
-                segment.up_time=0
-                segment.save(update_fields=['up_time'])
+                zone.up_time=0
+                zone.save(update_fields=['up_time'])
     
     tasks = TaskQueue.objects.all()
-    if len(tasks) > settings.runnable_segments_number-1 :
-        for i in range(settings.runnable_segments_number) :
+    if len(tasks) > settings.runnable_zones_number-1 :
+        for i in range(settings.runnable_zones_number) :
             task = TaskQueue.objects.get(seq_number=i+1)
-            segment=task.segment_id
-            if segment.switch.status == 0 :
-                switchIrrigation(segment, 1)
+            zone=task.zone_id
+            if zone.switch.status == 0 :
+                switchIrrigation(zone, 1)
     
     
     
@@ -399,23 +399,23 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                switchIrrigation(simpleSchedule.segment, 1)
+                switchIrrigation(simpleSchedule.zone, 1)
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
-            if int(simpleSchedule.segment.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.segment.up_time) == int(simpleSchedule.segment.duration_maxLimit) or simpleSchedule.segment.switch.status == 'off':
+            if int(simpleSchedule.zone.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.zone.up_time) == int(simpleSchedule.zone.duration_maxLimit) or simpleSchedule.zone.switch.status == 'off':
                 simpleSchedule.delete()
-                switchIrrigation(simpleSchedule.segment, 0)
+                switchIrrigation(simpleSchedule.zone, 0)
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                switchIrrigation(repeatableSchedule.segment, 1)
+                switchIrrigation(repeatableSchedule.zone, 1)
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
-            if int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.segment.up_time) == int(repeatableSchedule.segment.duration_maxLimit) or repeatableSchedule.segment.switch.status == 'off':
-                switchIrrigation(repeatableSchedule.segment, 0)
+            if int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.zone.duration_maxLimit) or repeatableSchedule.zone.switch.status == 'off':
+                switchIrrigation(repeatableSchedule.zone, 0)
                 changeSchedule(repeatableSchedule,'stopped')
                 
                            
@@ -438,28 +438,28 @@ def follow_irrigation_template():
         return "Please set up settings first"
     
     irrigationTemplates = IrrigationTemplate.objects.all()
-    segments = Segment.objects.all()
+    zones = Zone.objects.all()
     
-    for segment in segments :
-        segment.duration_today=0
-        segment.water_quantity=0
-        segment.save(update_fields=['duration_today','water_quantity'])
-        if segment.template is not None :
+    for zone in zones :
+        zone.duration_today=0
+        zone.water_quantity=0
+        zone.save(update_fields=['duration_today','water_quantity'])
+        if zone.template is not None :
             try:
-                irrigationTemplate = segment.template
+                irrigationTemplate = zone.template
                 irrigationTemplateValue = IrrigationTemplateValue.objects.filter(template=irrigationTemplate).get(day_number=irrigationTemplate.day_counter)
-                # getting the moisture value and setting the segment
-                if segment.type == 'Automatic' :
-                    segment.moisture_minLimit=irrigationTemplateValue.value - 10
-                    segment.moisture_maxLimit=irrigationTemplateValue.value + 10
-                    segment.save(update_fields=['moisture_minLimit','moisture_maxLimit'])
+                # getting the moisture value and setting the zone
+                if zone.type == 'Automatic' :
+                    zone.moisture_minLimit=irrigationTemplateValue.value - 10
+                    zone.moisture_maxLimit=irrigationTemplateValue.value + 10
+                    zone.save(update_fields=['moisture_minLimit','moisture_maxLimit'])
                     irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
                     irrigationTemplate.save(update_fields=['day_counter'])
             except Exception as e :
-                switchIrrigation(segment, 0)
-                segment.type='Manual'
-                segment.template=None
-                segment.save(update_fields=['type','template'])
+                switchIrrigation(zone, 0)
+                zone.type='Manual'
+                zone.template=None
+                zone.save(update_fields=['type','template'])
                 irrigationTemplate.day_counter = 0
                 irrigationTemplate.save(update_fields=['day_counter'])
     

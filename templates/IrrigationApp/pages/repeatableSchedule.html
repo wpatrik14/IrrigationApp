@@ -20,7 +20,7 @@
 		
 		<!-- Multiple Checkboxes -->
 				<div class="control-group">
-				  <label class="control-label" for="segments">Days</label>
+				  <label class="control-label" for="zones">Days</label>
 				  <div class="controls">
 				    <label class="checkbox" for="monday">
 				      <input type="checkbox" name="monday" id="monday" value="monday">
@@ -73,13 +73,13 @@
 				
 				<!-- Multiple Checkboxes -->
 				<div class="control-group">
-				  <label class="control-label" for="segments">Segments</label>
+				  <label class="control-label" for="zones">Zones</label>
 				  <div class="controls">
-				    {% for segment in segments %}
+				    {% for zone in zones %}
 				      
-				    <label class="checkbox" for="{{ segment.id }}">
-				      <input type="checkbox" name="{{ segment.id }}" id="{{ segment.id }}" value="{{ segment.id }}">
-				      {{ segment.name }}
+				    <label class="checkbox" for="{{ zone.id }}">
+				      <input type="checkbox" name="{{ zone.id }}" id="{{ zone.id }}" value="{{ zone.id }}">
+				      {{ zone.name }}
 				    </label>
 				    
 				    {% endfor %}

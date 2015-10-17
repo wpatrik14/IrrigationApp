@@ -10,7 +10,7 @@ import json
 import logging
 import time
 
-from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino, SoilType, TaskQueue
+from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, Arduino, SoilType, TaskQueue
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -74,7 +74,7 @@ def doRegistration(request):
     return redirect('/showLogin')
 
 @login_required
-def showAddNewSegment(request):
+def showAddNewZone(request):
     if request.session.get('username') :
         username = request.session.get('username')
         user = User.objects.get(username=username)
@@ -87,10 +87,10 @@ def showAddNewSegment(request):
     irrigationTemplates = IrrigationTemplate.objects.all()
     soilTypes = SoilType.objects.all()
     
-    return render(request, 'IrrigationApp/pages/addNewSegment.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
+    return render(request, 'IrrigationApp/pages/addNewZone.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
     
 @login_required
-def doAddNewSegment(request):
+def doAddNewZone(request):
     if request.session.get('username') :
         username = request.session.get('username')
         user = User.objects.get(username=username)
@@ -124,7 +124,7 @@ def doAddNewSegment(request):
     switch = Switch.objects.get(pinNumber=switch)
     soil = SoilType.objects.get(id=soil_type)
     
-    mSegment = Segment(
+    mZone = Zone(
                     name = name,
                     sensor = sensor,
                     switch = switch,
@@ -137,16 +137,16 @@ def doAddNewSegment(request):
                     soil_type=soil,
                     size_m2=size
                             )
-    mSegment.save()
+    mZone.save()
     
     if irrigationTemplate is not None :
-        irrigationTemplate.segment_id=mSegment
-        irrigationTemplate.save(update_fields=['day_counter','segment_id'])
+        irrigationTemplate.zone_id=mZone
+        irrigationTemplate.save(update_fields=['day_counter','zone_id'])
     
     return redirect('/getSystemStatus')
 
 @login_required
-def showEditSegment(request):
+def showEditZone(request):
     if request.session.get('username') :
         username = request.session.get('username')
         user = User.objects.get(username=username)
@@ -154,18 +154,18 @@ def showEditSegment(request):
         return redirect('/showLogin')
     
     settings = IrrigationSettings.objects.get(id=0)
-    id = request.POST['editSegment']
-    segment = Segment.objects.get(id=id)
+    id = request.POST['editZone']
+    zone = Zone.objects.get(id=id)
     
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
     irrigationTemplates = IrrigationTemplate.objects.all()
     soilTypes = SoilType.objects.all()
         
-    return render(request, 'IrrigationApp/pages/editSegment.html', { 'username':user.username, 'settings':settings, 'segment':segment, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
+    return render(request, 'IrrigationApp/pages/editZone.html', { 'username':user.username, 'settings':settings, 'zone':zone, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
 
 @login_required
-def doEditSegment(request):
+def doEditZone(request):
     if request.session.get('username') :
         username = request.session.get('username')
         user = User.objects.get(username=username)
@@ -173,7 +173,7 @@ def doEditSegment(request):
         return redirect('/showLogin')
     
     settings = IrrigationSettings.objects.get(id=0)
-    id = request.POST['segment_id']
+    id = request.POST['zone_id']
     name = request.POST['name']
     size = request.POST['size']
     sensor = request.POST['sensor']
@@ -189,7 +189,7 @@ def doEditSegment(request):
     else:
         enabled = True
     
-    mSegment = Segment.objects.get(id=id)
+    mZone = Zone.objects.get(id=id)
         
     if irrigationTemplate_id=="None":
         irrigationTemplate=None
@@ -202,43 +202,43 @@ def doEditSegment(request):
     switch = Switch.objects.get(pinNumber=switch)
     soil = SoilType.objects.get(id=soil_type)
        
-    mSegment.name = name
-    mSegment.sensor = sensor
-    mSegment.switch = switch
-    mSegment.moisture_minLimit = moisture_minLimit
-    mSegment.moisture_maxLimit = moisture_maxLimit
-    mSegment.duration_maxLimit = duration_maxLimit
-    mSegment.forecast_enabled = enabled
-    mSegment.template = irrigationTemplate
-    mSegment.type = type
-    mSegment.soil_type=soil
-    mSegment.size_m2=size
-    mSegment.save()
+    mZone.name = name
+    mZone.sensor = sensor
+    mZone.switch = switch
+    mZone.moisture_minLimit = moisture_minLimit
+    mZone.moisture_maxLimit = moisture_maxLimit
+    mZone.duration_maxLimit = duration_maxLimit
+    mZone.forecast_enabled = enabled
+    mZone.template = irrigationTemplate
+    mZone.type = type
+    mZone.soil_type=soil
+    mZone.size_m2=size
+    mZone.save()
     
     return redirect('/getSystemStatus')
 
-def setIrrigation(mSegment, status):
+def setIrrigation(mZone, status):
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
     else:
         return redirect('/showAddSettings')
     
-    mSwitch = Switch.objects.get(pinNumber=mSegment.switch.pinNumber)
+    mSwitch = Switch.objects.get(pinNumber=mZone.switch.pinNumber)
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
-    mSegment.switch=mSwitch
-    mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
+    mZone.switch=mSwitch
+    mZone.save(update_fields=['switch','up_time','irrigation_history']) 
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)       
     switches = Switch.objects.all()
-    running_segments=0;
+    running_zones=0;
     pump_status = False
     pump=Pump.objects.get(id=0)
     
     for switch in switches :
         if switch.pinNumber != pump.switch.pinNumber :
             if switch.status == 1 :
-                running_segments=running_segments+1
+                running_zones=running_zones+1
                 pump_status = True
         
     if pump_status :
@@ -246,12 +246,12 @@ def setIrrigation(mSegment, status):
     else :
         pump.switch.status = 0
     pump.save()
-    settings.running_segments=running_segments
-    settings.save(update_fields=['running_segments'])
+    settings.running_zones=running_zones
+    settings.save(update_fields=['running_zones'])
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return
     
-def addTaskToQueue(mSegment):
+def addTaskToQueue(mZone):
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
@@ -259,30 +259,30 @@ def addTaskToQueue(mSegment):
         return 'Settings not found'
     
     tasks = TaskQueue.objects.all().order_by('seq_number')
-    if len(tasks) < settings.runnable_segments_number :
-        switchIrrigation(mSegment,1)
+    if len(tasks) < settings.runnable_zones_number :
+        switchIrrigation(mZone,1)
     else :
-        TaskQueue(segment_id=mSegment,seq_number=len(tasks)+1).save()
+        TaskQueue(zone_id=mZone,seq_number=len(tasks)+1).save()
         
-def deleteTaskFromQueue(mSegment):
-    if mSegment.switch.status == 1:
+def deleteTaskFromQueue(mZone):
+    if mZone.switch.status == 1:
         tasks = TaskQueue.objects.all().order_by('seq_number')
         if len(tasks) > 0 :
-            deleted_task=TaskQueue.objects.get(segment_id=mSegment)
+            deleted_task=TaskQueue.objects.get(zone_id=mZone)
             seq_number=deleted_task.seq_number
             deleted_task.delete()
-            switchIrrigation(mSegment, 0)
+            switchIrrigation(mZone, 0)
             tasks = TaskQueue.objects.all().order_by('seq_number')
             if tasks is not None:
                 for task in tasks :
                     if task.seq_number>seq_number:
-                        temp=TaskQueue.objects.get(segment_id=task.segment_id)
+                        temp=TaskQueue.objects.get(zone_id=task.zone_id)
                         temp.seq_number=temp.seq_number-1
                         temp.save()
         else :
-            switchIrrigation(mSegment, 0)
+            switchIrrigation(mZone, 0)
     
-def switchIrrigation(mSegment, status):
+def switchIrrigation(mZone, status):
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
@@ -293,15 +293,15 @@ def switchIrrigation(mSegment, status):
     
     if status == 1 :
         if pump.switch.status == 1 or pump.down_time >= pump.stop_limit :
-            if mSegment.switch.status == 0 and mSegment.duration_today<mSegment.duration_maxLimit :
-                if mSegment.irrigation_history is None :
-                    mIrrigationHistory = IrrigationHistory(segment_id=mSegment,
-                                                                       moisture_startValue=mSegment.sensor.value
+            if mZone.switch.status == 0 and mZone.duration_today<mZone.duration_maxLimit :
+                if mZone.irrigation_history is None :
+                    mIrrigationHistory = IrrigationHistory(zone_id=mZone,
+                                                                       moisture_startValue=mZone.sensor.value
                                                                        )
                     mIrrigationHistory.save()
-                    mSegment.irrigation_history=mIrrigationHistory
+                    mZone.irrigation_history=mIrrigationHistory
                 
-                result = setIrrigation(mSegment, 1)
+                result = setIrrigation(mZone, 1)
                 return result
                 
         else :
@@ -309,18 +309,18 @@ def switchIrrigation(mSegment, status):
                 
     else :  
         if pump.switch.status == 0 or pump.up_time >= pump.run_limit:              
-            if mSegment.switch.status == 1:
-                if mSegment.irrigation_history is not None:
-                    mHistory=IrrigationHistory.objects.get(id=mSegment.irrigation_history.id)
+            if mZone.switch.status == 1:
+                if mZone.irrigation_history is not None:
+                    mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
                     mHistory.end_date=datetime.now()
-                    mHistory.duration=mSegment.up_time+1
-                    mHistory.moisture_endValue=mSegment.sensor.value
+                    mHistory.duration=mZone.up_time+1
+                    mHistory.moisture_endValue=mZone.sensor.value
                     mHistory.status='done'
                     mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-                    mSegment.up_time = 0
-                    mSegment.irrigation_history=None
+                    mZone.up_time = 0
+                    mZone.irrigation_history=None
                 
-                result = setIrrigation(mSegment, 0)
+                result = setIrrigation(mZone, 0)
                 return result
         else :
             return 'Waiting for pump'
@@ -344,20 +344,20 @@ def getSystemStatus(request):
     
     result='N/A'
     
-    if 'segment' in request.POST :
-        segment = request.POST['segment']
+    if 'zone' in request.POST :
+        zone = request.POST['zone']
         status = request.POST['status']
-        mSegment = Segment.objects.get(id=segment)
+        mZone = Zone.objects.get(id=zone)
         if status == '1':    
-            addTaskToQueue(mSegment)
+            addTaskToQueue(mZone)
         else :
-            deleteTaskFromQueue(mSegment)
+            deleteTaskFromQueue(mZone)
     
-    segments = Segment.objects.all()
+    zones = Zone.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
     pump = Pump.objects.get(id=0)
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'username':user.username, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'username':user.username, 'settings':settings,'zones':zones, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
 @login_required
@@ -369,8 +369,8 @@ def showSimpleSchedule(request):
         return redirect('/showLogin')
     
     settings = IrrigationSettings.objects.get(id=0)
-    segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'username':user.username, 'settings':settings, 'segments':segments})
+    zones = Zone.objects.all()
+    return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'username':user.username, 'settings':settings, 'zones':zones})
     
 @login_required
 def doSimpleSchedule(request):
@@ -384,14 +384,14 @@ def doSimpleSchedule(request):
     date = request.POST['date']
     time = request.POST['time']
     duration = request.POST['duration']
-    segments = Segment.objects.all()
-    for segment in segments :    
-        if str(segment.id) in request.POST:    
+    zones = Zone.objects.all()
+    for zone in zones :    
+        if str(zone.id) in request.POST:    
             mSimpleSchedule = SimpleSchedule(
                                              date=date,
                                              time=time,
                                              duration=duration,
-                                             segment=segment)
+                                             zone=zone)
             mSimpleSchedule.save()
     
     return redirect('/getSystemStatus')
@@ -405,8 +405,8 @@ def showRepeatableSchedule(request):
         return redirect('/showLogin')
 
     settings = IrrigationSettings.objects.get(id=0)
-    segments = Segment.objects.all()
-    return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'username':user.username, 'settings':settings, 'segments':segments})
+    zones = Zone.objects.all()
+    return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'username':user.username, 'settings':settings, 'zones':zones})
     
 @login_required
 def doRepeatableSchedule(request):
@@ -421,9 +421,9 @@ def doRepeatableSchedule(request):
     time = request.POST['time']
     duration = request.POST['duration']
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    segments = Segment.objects.all()
-    for segment in segments :    
-        if str(segment.id) in request.POST:    
+    zones = Zone.objects.all()
+    for zone in zones :    
+        if str(zone.id) in request.POST:    
             for day in days :
                 if day in request.POST:
                     mRepeatableSchedule = RepeatableSchedule(
@@ -431,7 +431,7 @@ def doRepeatableSchedule(request):
                                                      day=day,
                                                      time=time,
                                                      duration=duration,
-                                                     segment=segment)
+                                                     zone=zone)
                     mRepeatableSchedule.save()
     
     return redirect('/getSystemStatus')
@@ -541,7 +541,7 @@ def doAddSettings(request):
     switch = request.POST['switch']
     evapotranspiracy = request.POST['evapotranspiracy']
     cost = request.POST['cost']
-    number_of_runnable_segments = request.POST['number_of_runnable_segments']
+    number_of_runnable_zones = request.POST['number_of_runnable_zones']
     run_limit = request.POST['run_limit']
     stop_limit = request.POST['stop_limit']
     
@@ -549,7 +549,7 @@ def doAddSettings(request):
     settings = IrrigationSettings(id=0,
                                   evapotranspiracy=evapotranspiracy,
                                   cost_perLiter=cost,
-                                  runnable_segments_number=number_of_runnable_segments)
+                                  runnable_zones_number=number_of_runnable_zones)
     settings.save()
     settings.save()
     pump = Pump(id=0,
