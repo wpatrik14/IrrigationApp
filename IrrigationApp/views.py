@@ -364,16 +364,16 @@ def getSystemStatus(request):
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
             #addTaskToQueue(mSegment)
-            setIrrigation(mSegment, status)
+            result = setIrrigation(mSegment, status)
         else :
             #deleteTaskFromQueue(mSegment)
-            setIrrigation(mSegment, status)
+            result = setIrrigation(mSegment, status)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
     pump = Pump.objects.get(id=0)
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'result':result, 'username':user.username, 'arduino':arduino, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
 @login_required
