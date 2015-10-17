@@ -145,11 +145,8 @@ def setIrrigation(mSegment, status):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
-    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE)
-    result = pipe.stdout.read() 
-     
-        
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
     switches = Switch.objects.all()
     running_segments=0;
     pump_status = False
@@ -170,9 +167,7 @@ def setIrrigation(mSegment, status):
     settings.running_segments=running_segments
     settings.save(update_fields=['running_segments'])
     
-    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE)
-    result = pipe.stdout.read()
-    #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return
 
 def addTaskToQueue(mSegment):
@@ -262,16 +257,23 @@ def changeSchedule(schedule, status):
 #@app.task
 @task()
 def automation_control():
+    reader = codecs.getreader("utf-8")
     
-    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '0', '0', '0', '0'], stdout=subprocess.PIPE)
-    result = pipe.stdout.read()
-    Switch(pinNumber=0,status=0).save()
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '0', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(3)
+    file = open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r')
+    js = json.load(reader(file.read()))
+    Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
+    
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '1', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(3)
+    file = open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r')
+    js = json.load(reader(file.read()))
+    Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
     
     for i in range(node_counts) :
-        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+str(i+1))
-        reader = codecs.getreader("utf-8")
-        js = json.load(reader(res))
-        Sensor(node=int(js['nodeId']),value=int(js['value'])).save()
+
+        Sensor(node=1,value=60).save()
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -279,10 +281,7 @@ def automation_control():
     else:
         return 'Settings not found'
     
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/flowMeter')
-    reader = codecs.getreader("utf-8")
-    js = json.load(reader(res))
-    settings.flow_meter=js['flow_meter']
+    settings.flow_meter=12
     settings.save(update_fields=['flow_meter'])
     
     segments = Segment.objects.all()
