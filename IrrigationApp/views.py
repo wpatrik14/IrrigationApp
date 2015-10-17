@@ -256,7 +256,7 @@ def setIrrigation(mSegment, status):
     settings.save(update_fields=['running_segments'])
     
     pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE)
-    result = pipe.stdout.read()
+    #result = pipe.stdout.read()
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
     
     return result
