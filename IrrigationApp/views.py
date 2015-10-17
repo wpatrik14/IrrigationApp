@@ -235,9 +235,7 @@ def setIrrigation(mSegment, status):
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
     pipe = subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    f = open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r')
-    result = f.read()
-        
+            
     switches = Switch.objects.all()
     running_segments=0;
     pump_status = False
@@ -258,10 +256,6 @@ def setIrrigation(mSegment, status):
     settings.save(update_fields=['running_segments'])
     
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #f = open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r')
-    #result = f.read()
-    
-    return result
     
 def addTaskToQueue(mSegment):
     settings = IrrigationSettings.objects.all()
@@ -362,14 +356,17 @@ def getSystemStatus(request):
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
             #addTaskToQueue(mSegment)
-            result = setIrrigation(mSegment, status)
+            setIrrigation(mSegment, status)
         else :
             #deleteTaskFromQueue(mSegment)
-            result = setIrrigation(mSegment, status)
+            setIrrigation(mSegment, status)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
     pump = Pump.objects.get(id=0)
+    
+    f = open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r')
+    result = f.read()
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'result':result, 'username':user.username, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
