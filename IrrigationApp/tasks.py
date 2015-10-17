@@ -4,7 +4,7 @@ import codecs
 from datetime import datetime
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
-from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, Arduino, TaskQueue, SoilType
+from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, TaskQueue, SoilType
 from django.http import HttpResponse
 import json
 import time
@@ -376,11 +376,6 @@ def automation_control():
 #@app.task
 @task()
 def scheduler():
-    arduino = Arduino.objects.all()
-    if arduino.exists() :
-        arduino = Arduino.objects.get(id=0)
-    else:
-        return "Arduino was not found"
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -425,11 +420,6 @@ def scheduler():
 #@app.task
 @task()
 def follow_irrigation_template():
-    arduino = Arduino.objects.all()
-    if arduino.exists() :
-        arduino = Arduino.objects.get(id=0)
-    else:
-        return "Arduino was not found"
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
