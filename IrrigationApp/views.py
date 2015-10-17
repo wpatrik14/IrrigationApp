@@ -500,10 +500,23 @@ def showIrrigationHistory(request):
     else :
         return redirect('/showLogin')
     
-    settings = IrrigationSettings.objects.get(id=0)
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
         
-    return render(request, 'IrrigationApp/pages/history.html', { 'username':user.username, 'settings':settings, 'irrigationHistories':irrigationHistories })
+    return render(request, 'IrrigationApp/pages/history.html', { 'username':user.username, 'irrigationHistories':irrigationHistories })
+
+@login_required
+def deleteIrrigationHistory(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    IrrigationHistory.objects.all().delete()
+    
+    irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
+        
+    return render(request, 'IrrigationApp/pages/history.html', { 'username':user.username, 'irrigationHistories':irrigationHistories })
 
 @login_required
 def showAddSettings(request):
