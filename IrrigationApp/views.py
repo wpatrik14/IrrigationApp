@@ -229,13 +229,7 @@ def setIrrigation(mSegment, status):
     mSwitch.save(update_fields=['status'])
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    time.sleep(3)
-    result=""
-    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-        result=str(file.read())
-        
-            
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)       
     switches = Switch.objects.all()
     running_segments=0;
     pump_status = False
@@ -255,7 +249,7 @@ def setIrrigation(mSegment, status):
     settings.running_segments=running_segments
     settings.save(update_fields=['running_segments'])
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return result
+    return
     
 def addTaskToQueue(mSegment):
     settings = IrrigationSettings.objects.all()
@@ -355,17 +349,15 @@ def getSystemStatus(request):
         status = request.POST['status']
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
-            #addTaskToQueue(mSegment)
-            result = setIrrigation(mSegment, status)
+            addTaskToQueue(mSegment)
         else :
-            #deleteTaskFromQueue(mSegment)
-            result = setIrrigation(mSegment, status)
+            deleteTaskFromQueue(mSegment)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
     pump = Pump.objects.get(id=0)
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'result':result, 'username':user.username, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'username':user.username, 'settings':settings,'segments':segments, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
 
 
 @login_required
