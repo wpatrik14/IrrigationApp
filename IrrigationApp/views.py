@@ -361,10 +361,10 @@ def getSystemStatus(request):
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
             #addTaskToQueue(mSegment)
-            result = switchIrrigation(mSegment, status)
+            result = setIrrigation(mSegment, status)
         else :
             deleteTaskFromQueue(mSegment)
-            result = switchIrrigation(mSegment, status)
+            result = setIrrigation(mSegment, status)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
