@@ -259,6 +259,7 @@ def setIrrigation(mSegment, status):
     result = pipe.stdout.read()
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
     
+    return result
     
 def addTaskToQueue(mSegment):
     settings = IrrigationSettings.objects.all()
