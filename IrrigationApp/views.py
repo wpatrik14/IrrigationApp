@@ -233,8 +233,8 @@ def setIrrigation(mSegment, status):
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
-    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE)
-    result = pipe.stdout.read()
+    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = pipe.communicate()
         
     switches = Switch.objects.all()
     running_segments=0;
@@ -255,11 +255,11 @@ def setIrrigation(mSegment, status):
     settings.running_segments=running_segments
     settings.save(update_fields=['running_segments'])
     
-    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE)
-    #result = pipe.stdout.read()
+    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #stdout, stderr = pipe.communicate()
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+pump.switch.pinNumber+"/status/"+str(pump.switch.status))
     
-    return result
+    return stdout
     
 def addTaskToQueue(mSegment):
     settings = IrrigationSettings.objects.all()
