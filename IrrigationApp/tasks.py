@@ -10,6 +10,7 @@ import json
 import time
 from urllib.request import urlopen
 from celery import task
+import subprocess
 
 #app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
 #app = Celery('tasks', include=['celery.task.http'])
