@@ -133,12 +133,7 @@ def get_weather_datas():
     return '\n\nGETTING WEATHER DATAS........... DONE'
 
 def setIrrigation(mSegment, status):
-    arduino = Arduino.objects.all()
-    if arduino.exists() :
-        arduino = Arduino.objects.get(id=0)
-    else:
-        return 'Arduino was not found'
-    
+        
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
@@ -215,11 +210,6 @@ def deleteTaskFromQueue(mSegment):
     return
     
 def switchIrrigation(mSegment, status):
-    arduino = Arduino.objects.all()
-    if arduino.exists() :
-        arduino = Arduino.objects.get(id=0)
-    else:
-        return 'Arduino was not found'
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -273,25 +263,9 @@ def changeSchedule(schedule, status):
 @task()
 def automation_control():
     
-    arduino = Arduino.objects.all()
-    if arduino.exists() :
-        arduino = Arduino.objects.get(id=0)
-    else:
-        return 'Arduino was not found'
-    
-    
-    
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/datas')
-    reader = codecs.getreader("utf-8")
-    js = json.load(reader(res))
-    digital_pins=int(js['digital_pins'])
-    node_counts=int(js['node_counts'])
-    
-    for i in range(digital_pins) :
-        res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/pinNumber/'+str(i+1))
-        reader = codecs.getreader("utf-8")
-        js = json.load(reader(res))
-        Switch(pinNumber=int(js['pinNumber']),status=int(js['status'])).save()
+    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '0', '0', '0', '0'], stdout=subprocess.PIPE)
+    result = pipe.stdout.read()
+    Switch(pinNumber=0,status=0).save()
     
     for i in range(node_counts) :
         res = urlopen('http://'+arduino.IP+':'+arduino.PORT+'/nodeId/'+str(i+1))

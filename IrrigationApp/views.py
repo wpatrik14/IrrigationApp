@@ -7,6 +7,7 @@ from datetime import date, datetime, timedelta, time
 from django.contrib.auth.models import User
 import codecs
 import json
+import logging
 
 from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Segment, Switch, Sensor, IrrigationHistory, Arduino, SoilType, TaskQueue
 
@@ -233,8 +234,11 @@ def setIrrigation(mSegment, status):
     mSegment.switch=mSwitch
     mSegment.save(update_fields=['switch','up_time','irrigation_history']) 
     #urlopen("http://"+arduino.IP+":"+arduino.PORT+"/pinNumber/"+mSwitch.pinNumber+"/status/"+str(mSwitch.status))
-    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    pipe = subprocess.Popen(['/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stdout, stderr = pipe.communicate()
+    
+    logger.error('stdout'+stdout)
+    logger.error('stderr'+stderr)
         
     switches = Switch.objects.all()
     running_segments=0;
@@ -293,11 +297,6 @@ def deleteTaskFromQueue(mSegment):
             switchIrrigation(mSegment, 0)
     
 def switchIrrigation(mSegment, status):
-    arduino = Arduino.objects.all()
-    if arduino.exists() :
-        arduino = Arduino.objects.get(id=0)
-    else:
-        return redirect('/showAddArduino')
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
@@ -343,12 +342,6 @@ def getSystemStatus(request):
     else :
         return redirect('/showLogin')
     
-    arduino = Arduino.objects.all()
-    if arduino.exists() :
-        arduino = Arduino.objects.get(id=0)
-    else:
-        return redirect('/showAddArduino')
-    
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
@@ -365,11 +358,11 @@ def getSystemStatus(request):
         status = request.POST['status']
         mSegment = Segment.objects.get(id=segment)
         if status == '1':    
-            #addTaskToQueue(mSegment)
-            result = setIrrigation(mSegment, status)
+            addTaskToQueue(mSegment)
+            #result = setIrrigation(mSegment, status)
         else :
-            #deleteTaskFromQueue(mSegment)
-            result = setIrrigation(mSegment, status)
+            deleteTaskFromQueue(mSegment)
+            #result = setIrrigation(mSegment, status)
     
     segments = Segment.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
