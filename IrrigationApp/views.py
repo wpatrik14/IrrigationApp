@@ -358,6 +358,8 @@ def getSystemStatus(request):
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
     
+    result='asd'
+    
     if 'segment' in request.POST :
         segment = request.POST['segment']
         status = request.POST['status']
