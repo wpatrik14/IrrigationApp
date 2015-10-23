@@ -219,11 +219,9 @@ def doEditZone(request):
 
 def setZoneTemplate(zone,irrigationTemplate):
     settings = IrrigationSettings.objects.get(id=0)
-    settings.water
-    settings.evapotranspiracy
     
     template_values = KcValue.objects.filter(template=irrigationTemplate)
-    pr=settings.water/float(zone.size_m2)*60.0/25.4
+    pr=4.0/float(zone.size_m2)*60.0/25.4
     gyz=float(zone.root_length)/30.0
     
     skipped_day=0
