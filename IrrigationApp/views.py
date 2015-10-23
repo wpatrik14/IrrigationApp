@@ -141,7 +141,7 @@ def doAddNewZone(request):
                     size_m2=size,
                     root_length=root,
                     moisture_deviation=deviation,
-                    efficiency=efficiencys
+                    efficiency=efficiency
                             )
     mZone.save()
     
