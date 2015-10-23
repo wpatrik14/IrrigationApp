@@ -47,7 +47,7 @@ class Zone(models.Model):
     efficiency=models.IntegerField(max_length=3)
     soil_type=models.ForeignKey('SoilType')
     water_quantity=models.FloatField(default=0)
-    template_day_counter = models.IntegerField(max_length=3)
+    template_day_counter = models.IntegerField(max_length=3, default=0)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
