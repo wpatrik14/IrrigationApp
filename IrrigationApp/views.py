@@ -121,33 +121,27 @@ def doAddNewZone(request):
         irrigationTemplate=None
     else:
         irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-        irrigationTemplate.day_counter=0
+        setZoneTemplate(mZone,irrigationTemplate)
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
     soil = SoilType.objects.get(id=soil_type)
     
-    mZone = Zone(
-                    name = name,
-                    sensor = sensor,
-                    switch = switch,
-                    moisture_minLimit = moisture_minLimit,
-                    moisture_maxLimit = moisture_maxLimit,
-                    duration_maxLimit = duration_maxLimit,
-                    forecast_enabled = enabled,
-                    type = type,
-                    template = irrigationTemplate,
-                    soil_type=soil,
-                    size_m2=size,
-                    root_length=root,
-                    moisture_deviation=deviation,
-                    efficiency=efficiency
-                            )
+    mZone.name = name
+    mZone.sensor = sensor
+    mZone.switch = switch
+    mZone.moisture_minLimit = moisture_minLimit
+    mZone.moisture_maxLimit = moisture_maxLimit
+    mZone.duration_maxLimit = duration_maxLimit
+    mZone.forecast_enabled = enabled
+    mZone.template = irrigationTemplate
+    mZone.type = type
+    mZone.soil_type=soil
+    mZone.size_m2=size
+    mZone.root=root
+    mZone.moisture_deviation=deviation
+    mZone.efficiency=efficiency
     mZone.save()
-    
-    if irrigationTemplate is not None :
-        irrigationTemplate.zone_id=mZone
-        irrigationTemplate.save(update_fields=['day_counter','zone_id'])
     
     return redirect('/getSystemStatus')
 
@@ -190,6 +184,9 @@ def doEditZone(request):
     irrigationTemplate_id = request.POST['irrigationTemplate']
     soil_type = request.POST['soil_type']
     type = request.POST['type']
+    root = request.POST['root']
+    deviation = request.POST['deviation']
+    efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
         enabled = False
     else:
