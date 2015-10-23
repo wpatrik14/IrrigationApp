@@ -661,7 +661,7 @@ def showZoneTemplate(request):
     zone_id = request.POST['zone_id']
     zone = Zone.objects.get(id=zone_id)
     
-    template_values = ZoneTemplateValue.objects.filter(zone=zone)
+    template_values = ZoneTemplateValue.objects.all()
     
     return render(request, 'IrrigationApp/pages/templateStatus.html', { 'template_values':template_values, 'zone':zone })
 
