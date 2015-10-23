@@ -634,8 +634,8 @@ def doAddIrrigationTemplate(request):
     template = IrrigationTemplate(name=name).save()
 
     for point in js['data'] :    
-        day_number=point['x']
-        kc_value=point['y']
+        day_number=int(point['x'])
+        kc_value=float(point['y'])
         KcValue(template,day_number,kc_value).save()
                                                            
     return redirect('/getSystemStatus')
