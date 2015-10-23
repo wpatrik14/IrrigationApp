@@ -35,12 +35,9 @@ urlpatterns = patterns('',
     url(r'deleteSimpleSchedule[/]?$', views.deleteSimpleSchedule, name='deleteSimpleSchedule'),
     url(r'deleteRepeatableSchedule[/]?$', views.deleteRepeatableSchedule, name='deleteRepeatableSchedule'),
     
-    url(r'showAddIrrigationTemplate[/]?$', views.showAddIrrigationTemplate, name='showAddIrrigationTemplate'),
     url(r'doAddIrrigationTemplate[/]?$', views.doAddIrrigationTemplate, name='doAddIrrigationTemplate'),
     url(r'showDeleteIrrigationTemplate[/]?$', views.showDeleteIrrigationTemplate, name='showDeleteIrrigationTemplate'),
     url(r'doDeleteIrrigationTemplate[/]?$', views.doDeleteIrrigationTemplate, name='doDeleteIrrigationTemplate'),
-    
-    url(r'showIrrigationTemplateValues[/]?$', views.showIrrigationTemplateValues, name='showIrrigationTemplateValues'),
     url(r'showAddIrrigationTemplate2[/]?$', views.showAddIrrigationTemplate2, name='showAddIrrigationTemplate2'),
     
     url(r'deleteTask[/]?$', views.deleteTask, name='deleteTask'),
