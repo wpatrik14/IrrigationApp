@@ -666,7 +666,9 @@ def showZoneTemplate(request):
     
     return render(request, 'IrrigationApp/pages/templateStatus.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues, 'zone':zone })
 
+def showAddIrrigationTemplate(request):
+    return render(request, 'IrrigationApp/pages/addIrrigationTemplate.html', { })
 
-def showAddIrrigationTemplate2(request):
+def showAddIrrigationTemplateValues(request):
     zones = Zone.objects.all()
-    return render(request, 'IrrigationApp/pages/addIrrigationTemplate2.html', { 'zones':zones })
+    return render(request, 'IrrigationApp/pages/addIrrigationTemplateValues.html', { 'zones':zones })
