@@ -232,8 +232,8 @@ def setZoneTemplate(zone,irrigationTemplate):
         day_number=template_value.day_number
         kc_value=template_value.kc_value
         
-        f=gyz*float(zone.moisture_deviation)/100.0/(settings.evapotranspiracy*kc_value)
-        rt=60*f*settings.evapotranspiracy*kc_value/(pr*float(zone.efficiency)/100.0)
+        f=(float(gyz)*float(zone.moisture_deviation)/100.0)/(settings.evapotranspiracy*kc_value)
+        rt=(60.0*float(f)*settings.evapotranspiracy*kc_value)/(float(pr)*float(zone.efficiency)/100.0)
         mm=rt*0.207
         
         if skipped_day==0 :
