@@ -652,8 +652,10 @@ def doDeleteIrrigationTemplate(request):
     id = request.POST['irrigationTemplate']
     
     irrigationTemplate = IrrigationTemplate.objects.get(id=id)
-    kc_value = KcValue.objects.get(template=irrigationTemplate)
-    ZoneTemplateValue.objects.filter(zone=kc_value.zone).delete()
+    kc_values = KcValue.objects.filter(template=irrigationTemplate)
+    for kc_value in kc_values :
+        ZoneTemplateValue.objects.get(kc_value=kc_value).delete()
+    
     KcValue.objects.filter(template=irrigationTemplate).delete()
     irrigationTemplate.delete()
     
