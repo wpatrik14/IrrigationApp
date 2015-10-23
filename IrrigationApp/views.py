@@ -109,7 +109,7 @@ def doAddNewZone(request):
     irrigationTemplate_id = request.POST['irrigationTemplate']
     soil_type = request.POST['soil_type']
     type = request.POST['type']
-    root = request.POST['root']
+    root_length = request.POST['root']
     deviation = request.POST['deviation']
     efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
@@ -131,7 +131,7 @@ def doAddNewZone(request):
          type = type,
          soil_type=soil,
          size_m2=size,
-         root=root,
+         root_length=root_length,
          moisture_deviation=deviation,
          efficiency=efficiency)
     zone.save()
@@ -181,7 +181,7 @@ def doEditZone(request):
     irrigationTemplate_id = request.POST['irrigationTemplate']
     soil_type = request.POST['soil_type']
     type = request.POST['type']
-    root = request.POST['root']
+    root_length = request.POST['root']
     deviation = request.POST['deviation']
     efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
@@ -205,7 +205,7 @@ def doEditZone(request):
     zone.type = type
     zone.soil_type=soil
     zone.size_m2=size
-    zone.root=root
+    zone.root_length=root_length
     zone.moisture_deviation=deviation
     zone.efficiency=efficiency
     zone.save()
