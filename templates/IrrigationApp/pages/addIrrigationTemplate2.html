@@ -16,6 +16,16 @@
 			    <input id="name" name="name" type="text" placeholder="Name" class="form-control" required="">
 			</div>
 			
+			<!-- Select Basic -->
+				<div class="form-group">
+				  <label for="zone">Zone</label>
+				    <select id="zone" name="zone" class="form-control">
+				      {% for zone in zones %}
+				      <option value="{{ zone.id }}">{{ zone.name }}</option>
+				      {% endfor %}
+				    </select>
+				</div>
+			
 			<input type="hidden" id="series" name="series" value="" />
 
 			<!-- Button -->
@@ -61,7 +71,7 @@
         title: {
                 text: 'Days from planting'
            },
-        categories: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        categories: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     },
     yAxis: {
             title: {
@@ -77,8 +87,8 @@
 
                     drag: function (e) {
                         
-                        if (e.newY > 100) {
-                            this.y = 100;
+                        if (e.newY > 1.4) {
+                            this.y = 1.4;
                             return false;
                         } else if (e.newY < 0) {
                         	this.y = 0;
@@ -88,7 +98,7 @@
                     },
                     drop: function () {
                     	                 	
-                    	chart.yAxis[0].setExtremes(0, 100);
+                    	chart.yAxis[0].setExtremes(0, 1.4);
                     }
                 }
             },
@@ -112,7 +122,7 @@
 
     series: [{
         	name: 'Moisture',
-        	data: [10, 10, 20, 30, 40, 50, 60, 70, 70, 70, 40, 10],
+        	data: [0.4, 0.4, 0.6, 0.75, 0.9, 1.05, 1.2, 1.2, 1.2, 0.8, 0.4],
         	draggableY: true
     	}]
 
@@ -147,7 +157,7 @@
 	    } 
 	});
 	$(document).ready ( function(){
-	   chart.yAxis[0].setExtremes(0, 100);
+	   chart.yAxis[0].setExtremes(0, 1.4);
 	});
 </script>
 </div>

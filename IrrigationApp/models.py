@@ -97,8 +97,8 @@ class IrrigationTemplateValue(models.Model):
     day_number = models.IntegerField(max_length=3, primary_key=True)
     kc_value = models.FloatField(max_length=4)
     irrigation_required = models.BooleanField(default=False)
-    runtime = models.IntegerField(max_length=3)
-    water_mm = models.FloatField(max_length=3)
+    runtime = models.IntegerField(max_length=3,default=0)
+    water_mm = models.FloatField(max_length=3,default=0)
     def __unicode__(self):
         return self.day_number
     

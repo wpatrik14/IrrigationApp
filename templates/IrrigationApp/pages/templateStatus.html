@@ -1,0 +1,34 @@
+{% include "IrrigationApp/pages/frame/htmlHeader_refresh.html" %}
+
+</br>Current time: <span id="time"></span>
+
+<fieldset>
+
+	<!-- Form Name -->
+	<legend>Status of Template Irrigation</legend>
+
+<table class="table table-striped table-condensed">
+	
+	<thead>
+		<th>Day Number</th>
+		<th>Kc value</th>
+		<th>Irrigation</th>
+		<th>Runtime</th>
+		<th>mm</th>
+	</thead>
+	
+	{% for irrigationTemplateValue in irrigationTemplateValues %}
+	<tr>
+		<td>{{irrigationTemplateValue.day_number}}</td>
+		<td>{{irrigationTemplateValue.kc_value}}</td>
+		<td>{{irrigationTemplateValue.irrigation_required}}</td>
+		<td>{{irrigationTemplateValue.runtime}}</td>
+		<td>{{irrigationTemplateValue.water_mm}}</td>
+	</tr>
+	{% endfor %}
+</table>
+</fieldset>
+
+</div>
+</body>
+</html>

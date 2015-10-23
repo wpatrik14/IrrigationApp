@@ -567,45 +567,6 @@ def doAddSettings(request):
     return redirect('/getSystemStatus')
 
 @login_required
-def showAddArduino(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-        
-    return render(request, 'IrrigationApp/pages/addArduino.html', { 'username':user.username })
-
-@login_required
-def doAddArduino(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-
-    ip = request.POST['ip_address']
-    port = request.POST['port_number']
-
-    arduino = Arduino(id=0,
-                      IP=ip,
-                      PORT=port)
-    arduino.save()
-
-    res = urlopen('http://'+arduino.IP+':'+arduino.PORT)
-    reader = codecs.getreader("utf-8")
-    js = json.load(reader(res))
-    
-    for digital in js['digitals'] :
-        Switch(pinNumber=digital['pinNumber'],status=digital['status']).save()
-    
-    for node in js['nodes'] :
-        Sensor(node=node['nodeId'],value=node['value']).save()
-    
-    
-    return redirect('/showAddSettings')
-
-@login_required
 def showAddSoilType(request):
     if request.session.get('username') :
         username = request.session.get('username')
@@ -630,25 +591,55 @@ def doAddSoilType(request):
     
     return redirect('/getSystemStatus')
 
-def showAddIrrigationTemplate(request):
-    
-    return render(request, 'IrrigationApp/pages/addIrrigationTemplate.html', { })
-
 def doAddIrrigationTemplate(request):
     
     name = request.POST['name']
     series = request.POST['series']
+    zone_id = request.POST['zone']
     js = json.loads(series)
-    irrigationTemplate = IrrigationTemplate(name=name,
-                                            day_counter=0)
+    irrigationTemplate = IrrigationTemplate(name=name,day_counter=0)
     irrigationTemplate.save()
     
-    for point in js['data'] :    
-        IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=point['x'],
-                             value=point['y']).save()                                                   
+    settings = IrrigationSettings.objects.get(id=0)
+    settings.water
+    settings.evapotranspiracy
     
-    irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
+    zone = Zone.objects.get(id=zone_id)
+    zone.size_m2
+    zone.root_length
+    zone.moisture_deviation
+    zone.efficiency
+    
+    pr=settings.water/zone.size_m2*60/25.4
+    gyz=zone.root_length/30
+    
+    skipped_day=0
+    for point in js['data'] :    
+        day_number=point['x']
+        kc_value=point['y']
+        
+        f=gyz*zone.moisture_deviation/100/(settings.evapotranspiracy*kc_value)
+        rt=60*f*settings.evapotranspiracy*kc_value/(pr*zone.efficiency/100)
+        mm=rt*0.207
+        
+        if skipped_day==0 :
+            IrrigationTemplateValue(template=irrigationTemplate,
+                             day_number=day_number,
+                             kc_value=kc_value,
+                             irrigation_required=True,
+                             runtime=int(rt),
+                             water_mm=mm).save()  
+            skipped_day=int(f)-1 
+        else :
+            IrrigationTemplateValue(template=irrigationTemplate,
+                             day_number=day_number,
+                             kc_value=kc_value,
+                             irrigation_required=False,
+                             runtime=0,
+                             water_mm=0).save()
+        
+        skipped_day=skipped_day-1
+                                                        
     return redirect('/getSystemStatus')
 
 def showDeleteIrrigationTemplate(request):
@@ -666,14 +657,16 @@ def doDeleteIrrigationTemplate(request):
     
     return redirect('/getSystemStatus')
 
-def showIrrigationTemplateValues(request):
-    id = request.GET['template']
-    irrigationTemplate = IrrigationTemplate.objects.get(id=id)
+def showZoneTemplate(request):
+    zone_id = request.GET['zone']
+    zone = Zone.objects.get(id=zone_id)
+    
+    irrigationTemplate = IrrigationTemplate.objects.get(id=zone.template.id)
     irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
     
-    return render(request, 'IrrigationApp/pages/irrigationTemplateValues.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues })
+    return render(request, 'IrrigationApp/pages/templateStatus.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues, 'zone':zone })
 
 
 def showAddIrrigationTemplate2(request):
-    
-    return render(request, 'IrrigationApp/pages/addIrrigationTemplate2.html', { })
+    zones = Zone.objects.all()
+    return render(request, 'IrrigationApp/pages/addIrrigationTemplate2.html', { 'zones':zones })

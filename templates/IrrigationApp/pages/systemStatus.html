@@ -25,6 +25,7 @@
 		<th>Duration today</th>
 		<th>Max. duration</th>
 		<th>Forecast</th>
+		<th>Irrigation template</th>
 		<th>Edit</th>
 	</thead>
 	{% for zone in zones %}
@@ -59,10 +60,17 @@
 		<td>{{zone.duration_maxLimit}} min</td>
 		<td>{{zone.forecast_enabled}}</td>
 		<td>
+		<form id="showZoneTemplate" action="showZoneTemplate" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="zone" value = "{{ zone.id }}"/>
+				<button id="show" name="show" class="btn btn-default">SHOW</button>
+			</form>		
+		</td>
+		<td>
 		<form id="showEditZone" action="showEditZone" method="post">
 				{% csrf_token %}
 				<input type="hidden" name="editZone" value = "{{ zone.id }}"/>
-				<button id="delete" name="delete" class="btn btn-default">EDIT</button>
+				<button id="edit" name="edit" class="btn btn-default">EDIT</button>
 			</form>		
 		</td>
 	</tr>
