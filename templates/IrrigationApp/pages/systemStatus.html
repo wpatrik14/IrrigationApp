@@ -58,14 +58,14 @@
 		<td>{{zone.duration_maxLimit}} min</td>
 		<td>{{zone.forecast_enabled}}</td>
 		<td>
-		<form id="showZoneTemplate" action="showZoneTemplate" method="post">
+			<form id="showZoneTemplate" action="showZoneTemplate" method="post">
 				{% csrf_token %}
-				<input type="hidden" name="zone" value = "{{ zone.id }}"/>
+				<input type="hidden" name="zone_id" value = "{{ zone.id }}"/>
 				<button id="show" name="show" class="btn btn-default">SHOW</button>
 			</form>		
 		</td>
 		<td>
-		<form id="showEditZone" action="showEditZone" method="post">
+			<form id="showEditZone" action="showEditZone" method="post">
 				{% csrf_token %}
 				<input type="hidden" name="editZone" value = "{{ zone.id }}"/>
 				<button id="edit" name="edit" class="btn btn-default">EDIT</button>

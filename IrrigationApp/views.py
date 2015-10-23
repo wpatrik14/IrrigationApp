@@ -658,7 +658,7 @@ def doDeleteIrrigationTemplate(request):
     return redirect('/getSystemStatus')
 
 def showZoneTemplate(request):
-    zone_id = request.GET['zone']
+    zone_id = request.GET['zone_id']
     zone = Zone.objects.get(id=zone_id)
     
     template_values = ZoneTemplateValue.objects.filter(zone=zone)
