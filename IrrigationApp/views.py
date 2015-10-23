@@ -127,7 +127,7 @@ def doAddNewZone(request):
          moisture_minLimit = moisture_minLimit,
          moisture_maxLimit = moisture_maxLimit,
          duration_maxLimit = duration_maxLimit,
-         forecast_enabled = enable,
+         forecast_enabled = enabled,
          type = type,
          soil_type=soil,
          size_m2=size,
