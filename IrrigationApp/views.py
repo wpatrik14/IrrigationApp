@@ -116,32 +116,29 @@ def doAddNewZone(request):
         enabled = False
     else:
         enabled = True
-        
-    if irrigationTemplate_id=="None":
-        irrigationTemplate=None
-    else:
-        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-        setZoneTemplate(mZone,irrigationTemplate)
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
     soil = SoilType.objects.get(id=soil_type)
     
-    mZone.name = name
-    mZone.sensor = sensor
-    mZone.switch = switch
-    mZone.moisture_minLimit = moisture_minLimit
-    mZone.moisture_maxLimit = moisture_maxLimit
-    mZone.duration_maxLimit = duration_maxLimit
-    mZone.forecast_enabled = enabled
-    mZone.template = irrigationTemplate
-    mZone.type = type
-    mZone.soil_type=soil
-    mZone.size_m2=size
-    mZone.root=root
-    mZone.moisture_deviation=deviation
-    mZone.efficiency=efficiency
-    mZone.save()
+    zone = Zone(name = name,
+         sensor = sensor,
+         switch = switch,
+         moisture_minLimit = moisture_minLimit,
+         moisture_maxLimit = moisture_maxLimit,
+         duration_maxLimit = duration_maxLimit,
+         forecast_enabled = enable,
+         type = type,
+         soil_type=soil,
+         size_m2=size,
+         root=root,
+         moisture_deviation=deviation,
+         efficiency=efficiency)
+    zone.save()
+    
+    if irrigationTemplate_id!="None":
+        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+        setZoneTemplate(zone,irrigationTemplate)
     
     return redirect('/getSystemStatus')
 
@@ -192,31 +189,30 @@ def doEditZone(request):
     else:
         enabled = True
     
-    mZone = Zone.objects.get(id=id)
-        
-    if irrigationTemplate_id=="None":
-        irrigationTemplate=None
-    else:
-        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-        setZoneTemplate(mZone,irrigationTemplate)
-        
+    zone = Zone.objects.get(id=id)        
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
     soil = SoilType.objects.get(id=soil_type)
        
-    mZone.name = name
-    mZone.sensor = sensor
-    mZone.switch = switch
-    mZone.moisture_minLimit = moisture_minLimit
-    mZone.moisture_maxLimit = moisture_maxLimit
-    mZone.duration_maxLimit = duration_maxLimit
-    mZone.forecast_enabled = enabled
-    mZone.template = irrigationTemplate
-    mZone.type = type
-    mZone.soil_type=soil
-    mZone.size_m2=size
-    mZone.save()
+    zone.name = name
+    zone.sensor = sensor
+    zone.switch = switch
+    zone.moisture_minLimit = moisture_minLimit
+    zone.moisture_maxLimit = moisture_maxLimit
+    zone.duration_maxLimit = duration_maxLimit
+    zone.forecast_enabled = enabled
+    zone.type = type
+    zone.soil_type=soil
+    zone.size_m2=size
+    zone.root=root
+    zone.moisture_deviation=deviation
+    zone.efficiency=efficiency
+    zone.save()
+    
+    if irrigationTemplate_id!="None":
+        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+        setZoneTemplate(zone,irrigationTemplate)
     
     return redirect('/getSystemStatus')
 
@@ -256,6 +252,8 @@ def setZoneTemplate(zone,irrigationTemplate):
         
         skipped_day=skipped_day-1
     
+    zone.template=irrigationTemplate
+    zone.save(update_fields=['template'])
     return
 
 def setIrrigation(mZone, status):
