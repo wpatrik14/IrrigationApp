@@ -109,6 +109,9 @@ def doAddNewZone(request):
     irrigationTemplate_id = request.POST['irrigationTemplate']
     soil_type = request.POST['soil_type']
     type = request.POST['type']
+    root = request.POST['root']
+    deviation = request.POST['deviation']
+    efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
         enabled = False
     else:
@@ -135,7 +138,10 @@ def doAddNewZone(request):
                     type = type,
                     template = irrigationTemplate,
                     soil_type=soil,
-                    size_m2=size
+                    size_m2=size,
+                    root_length=root,
+                    moisture_deviation=deviation,
+                    efficiency=efficiencys
                             )
     mZone.save()
     
