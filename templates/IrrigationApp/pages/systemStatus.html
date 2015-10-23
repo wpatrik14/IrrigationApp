@@ -18,7 +18,6 @@
 		<th>Uptime</th>
 		<th>mm</th>
 		<th>Type</th>
-		<th>Plant</th>
 		<th>Days</th>
 		<th>Min. moisture</th>
 		<th>Max. moisture</th>
@@ -52,8 +51,7 @@
 		<td>{{zone.up_time}} min</td>
 		<td>{{zone.water_quantity|floatformat:-2}} mm</td>
 		<td>{{zone.type}}</td>
-		<td><a href="/showIrrigationTemplateValues/?template={{zone.template.id}}">{{zone.template.name}}</a></td>
-		<td>{{zone.template.day_counter}}</td>
+		<td>{{zone.template_day_counter}}</td>
 		<td>{{zone.moisture_minLimit}}%</td>
 		<td>{{zone.moisture_maxLimit}}%</td>
 		<td>{{zone.duration_today}} min</td>

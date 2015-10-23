@@ -17,13 +17,13 @@
 		<th>mm</th>
 	</thead>
 	
-	{% for irrigationTemplateValue in irrigationTemplateValues %}
+	{% for template_value in template_values %}
 	<tr>
-		<td>{{irrigationTemplateValue.day_number}}</td>
-		<td>{{irrigationTemplateValue.kc_value}}</td>
-		<td>{{irrigationTemplateValue.irrigation_required}}</td>
-		<td>{{irrigationTemplateValue.runtime}}</td>
-		<td>{{irrigationTemplateValue.water_mm}}</td>
+		<td>{{template_value.kc_value.day_number}}</td>
+		<td>{{template_value.kc_value.kc_value}}</td>
+		<td>{{template_value.irrigation_required}}</td>
+		<td>{{template_value.runtime}}</td>
+		<td>{{template_value.water_mm}}</td>
 	</tr>
 	{% endfor %}
 </table>

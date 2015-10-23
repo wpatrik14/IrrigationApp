@@ -40,13 +40,14 @@ class Zone(models.Model):
     forecast_enabled=models.BooleanField(default=False)
     type=models.CharField(max_length=10)
     irrigation_history=models.ForeignKey('IrrigationHistory', null = True)
-    template=models.ForeignKey('IrrigationTemplate', null = True)
+    irrigation_template=models.ForeignKey('IrrigationTemplate', null = True)
     size_m2=models.IntegerField(default=0)
     root_length=models.IntegerField(default=20)
     moisture_deviation=models.IntegerField(max_length=3)
     efficiency=models.IntegerField(max_length=3)
     soil_type=models.ForeignKey('SoilType')
     water_quantity=models.FloatField(default=0)
+    template_day_counter = models.IntegerField(max_length=3)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
@@ -92,10 +93,9 @@ class IrrigationHistory(models.Model):
     def __unicode__(self):
         return self.start_date + ' ' + self.end_date
     
-class IrrigationTemplateValue(models.Model):
-    template = models.ForeignKey('IrrigationTemplate')
-    day_number = models.IntegerField(max_length=3, primary_key=True)
-    kc_value = models.FloatField(max_length=4)
+class ZoneTemplateValue(models.Model):
+    zone = models.ForeignKey('Zone')
+    kc_value = models.ForeignKey('KcValue')
     irrigation_required = models.BooleanField(default=False)
     runtime = models.IntegerField(max_length=3,default=0)
     water_mm = models.FloatField(max_length=3,default=0)
@@ -103,10 +103,16 @@ class IrrigationTemplateValue(models.Model):
         return self.day_number
     
 class IrrigationTemplate(models.Model):
-    day_counter = models.IntegerField(max_length=3)
     name = models.CharField(max_length=15)
     def __unicode__(self):
-        return self.template
+        return self.name
+    
+class KcValue(models.Model):
+    template = models.ForeignKey('IrrigationTemplate')
+    day_number = models.IntegerField(max_length=3)
+    kc_value = models.FloatField()
+    def __unicode__(self):
+        return self.kc_value
    
 class IrrigationSettings(models.Model):
     id = models.IntegerField(max_length=1, primary_key=True)

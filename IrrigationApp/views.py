@@ -10,7 +10,7 @@ import json
 import logging
 import time
 
-from IrrigationApp.models import Pump, IrrigationTemplate, IrrigationTemplateValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
+from IrrigationApp.models import Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -201,8 +201,8 @@ def doEditZone(request):
         irrigationTemplate=None
     else:
         irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-        irrigationTemplate.day_counter=0
-        irrigationTemplate.save(update_fields=['day_counter'])
+        setZoneTemplate(mZone,irrigationTemplate)
+        
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
@@ -222,6 +222,44 @@ def doEditZone(request):
     mZone.save()
     
     return redirect('/getSystemStatus')
+
+
+def setZoneTemplate(zone,irrigationTemplate):
+    settings = IrrigationSettings.objects.get(id=0)
+    settings.water
+    settings.evapotranspiracy
+    
+    template_values = KcValue.objects.filter(template=irrigationTemplate)
+    pr=settings.water/zone.size_m2*60/25.4
+    gyz=zone.root_length/30
+    
+    skipped_day=0
+    for template_value in template_values :    
+        
+        day_number=template_value.day_number
+        kc_value=template_value.kc_value
+        
+        f=gyz*zone.moisture_deviation/100/(settings.evapotranspiracy*kc_value)
+        rt=60*f*settings.evapotranspiracy*kc_value/(pr*zone.efficiency/100)
+        mm=rt*0.207
+        
+        if skipped_day==0 :
+            ZoneTemplateValue(zone=zone,
+                              kc_value=template_value,
+                              irrigation_required=True,
+                              runtime=int(rt),
+                              water_mm=mm).save()
+            skipped_day=int(f)-1 
+        else :
+            ZoneTemplateValue(zone=zone,
+                              kc_value=template_value,
+                              irrigation_required=False,
+                              runtime=0,
+                              water_mm=0).save()
+        
+        skipped_day=skipped_day-1
+    
+    return
 
 def setIrrigation(mZone, status):
     settings = IrrigationSettings.objects.all()
@@ -595,10 +633,10 @@ def doAddIrrigationTemplate(request):
     
     name = request.POST['name']
     series = request.POST['series']
-    zone_id = request.POST['zone']
+    
     js = json.loads(series)
-    irrigationTemplate = IrrigationTemplate(name=name,day_counter=0)
-    irrigationTemplate.save()
+    
+    template = IrrigationTemplate(name).save()
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water
@@ -617,6 +655,8 @@ def doAddIrrigationTemplate(request):
     for point in js['data'] :    
         day_number=point['x']
         kc_value=point['y']
+        
+        KcValues(template,day_number,kc_value).save()
         
         f=gyz*zone.moisture_deviation/100/(settings.evapotranspiracy*kc_value)
         rt=60*f*settings.evapotranspiracy*kc_value/(pr*zone.efficiency/100)
@@ -639,7 +679,7 @@ def doAddIrrigationTemplate(request):
                              water_mm=0).save()
         
         skipped_day=skipped_day-1
-                                                        
+                                                            
     return redirect('/getSystemStatus')
 
 def showDeleteIrrigationTemplate(request):
@@ -661,14 +701,9 @@ def showZoneTemplate(request):
     zone_id = request.GET['zone']
     zone = Zone.objects.get(id=zone_id)
     
-    irrigationTemplate = IrrigationTemplate.objects.get(id=zone.template.id)
-    irrigationTemplateValues = IrrigationTemplateValue.objects.filter(template=irrigationTemplate)
+    template_values = ZoneTemplateValue.objects.filter(zone=zone)
     
-    return render(request, 'IrrigationApp/pages/templateStatus.html', { 'irrigationTemplate':irrigationTemplate, 'irrigationTemplateValues':irrigationTemplateValues, 'zone':zone })
+    return render(request, 'IrrigationApp/pages/templateStatus.html', { 'template_values':template_values, 'zone':zone })
 
 def showAddIrrigationTemplate(request):
     return render(request, 'IrrigationApp/pages/addIrrigationTemplate.html', { })
-
-def showAddIrrigationTemplateValues(request):
-    zones = Zone.objects.all()
-    return render(request, 'IrrigationApp/pages/addIrrigationTemplateValues.html', { 'zones':zones })
