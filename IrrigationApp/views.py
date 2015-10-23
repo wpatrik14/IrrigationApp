@@ -631,7 +631,7 @@ def doAddIrrigationTemplate(request):
     
     js = json.loads(series)
     
-    template = IrrigationTemplate(name).save()
+    template = IrrigationTemplate(name=name).save()
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water
