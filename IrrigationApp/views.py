@@ -632,49 +632,12 @@ def doAddIrrigationTemplate(request):
     js = json.loads(series)
     
     template = IrrigationTemplate(name=name).save()
-    
-    settings = IrrigationSettings.objects.get(id=0)
-    settings.water
-    settings.evapotranspiracy
-    
-    zone = Zone.objects.get(id=zone_id)
-    zone.size_m2
-    zone.root_length
-    zone.moisture_deviation
-    zone.efficiency
-    
-    pr=settings.water/zone.size_m2*60/25.4
-    gyz=zone.root_length/30
-    
-    skipped_day=0
+
     for point in js['data'] :    
         day_number=point['x']
         kc_value=point['y']
-        
         KcValues(template,day_number,kc_value).save()
-        
-        f=gyz*zone.moisture_deviation/100/(settings.evapotranspiracy*kc_value)
-        rt=60*f*settings.evapotranspiracy*kc_value/(pr*zone.efficiency/100)
-        mm=rt*0.207
-        
-        if skipped_day==0 :
-            IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=day_number,
-                             kc_value=kc_value,
-                             irrigation_required=True,
-                             runtime=int(rt),
-                             water_mm=mm).save()  
-            skipped_day=int(f)-1 
-        else :
-            IrrigationTemplateValue(template=irrigationTemplate,
-                             day_number=day_number,
-                             kc_value=kc_value,
-                             irrigation_required=False,
-                             runtime=0,
-                             water_mm=0).save()
-        
-        skipped_day=skipped_day-1
-                                                            
+                                                           
     return redirect('/getSystemStatus')
 
 def showDeleteIrrigationTemplate(request):
