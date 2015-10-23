@@ -25,8 +25,6 @@ urlpatterns = patterns('',
     url(r'doEditZone[/]?$', views.doEditZone, name='doEditZone'),
     url(r'showAddSettings[/]?$', views.showAddSettings, name='showAddSettings'),
     url(r'doAddSettings[/]?$', views.doAddSettings, name='doAddSettings'),
-    url(r'showAddArduino[/]?$', views.showAddArduino, name='showAddArduino'),
-    url(r'doAddArduino[/]?$', views.doAddArduino, name='doAddArduino'),
     url(r'showAddSoilType[/]?$', views.showAddSoilType, name='showAddSoilType'),
     url(r'doAddSoilType[/]?$', views.doAddSoilType, name='doAddSoilType'),
     
