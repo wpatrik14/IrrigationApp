@@ -652,7 +652,9 @@ def doDeleteIrrigationTemplate(request):
     id = request.POST['irrigationTemplate']
     
     irrigationTemplate = IrrigationTemplate.objects.get(id=id)
-    IrrigationTemplateValue.objects.filter(template=irrigationTemplate).delete()
+    kc_value = KcValue.objects.get(template=irrigationTemplate)
+    ZoneTemplateValue.objects.filter(zone=kc_value.zone).delete()
+    KcValue.objects.filter(template=irrigationTemplate).delete()
     irrigationTemplate.delete()
     
     return redirect('/getSystemStatus')
