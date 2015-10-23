@@ -252,8 +252,8 @@ def setZoneTemplate(zone,irrigationTemplate):
         
         skipped_day=skipped_day-1
     
-    zone.template=irrigationTemplate
-    zone.save(update_fields=['template'])
+    zone.irrigation_template=irrigationTemplate
+    zone.save(update_fields=['irrigation_template'])
     return
 
 def setIrrigation(mZone, status):
