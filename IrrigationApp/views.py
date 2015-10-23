@@ -631,8 +631,8 @@ def doAddIrrigationTemplate(request):
     
     js = json.loads(series)
     
-    template = IrrigationTemplate(name=name).save()
-
+    template = IrrigationTemplate(name=name)
+    template.save()
     for point in js['data'] :    
         day_number=int(point['x'])
         kc_value=float(point['y'])
