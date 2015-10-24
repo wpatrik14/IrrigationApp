@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from celery import Celery
 import codecs
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
 from IrrigationApp.models import Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, TaskQueue, SoilType
@@ -447,8 +447,9 @@ def follow_irrigation_template():
                     if templateValue.kc_value.day_number == zone.template_day_counter :
                         if zone.type == 'Automatic' :
                             if templateValue.irrigation_required == True :
-                                date = datetime.now().strftime("%Y-%m-%d")
-                                time = datetime.now().strftime("%H:%M")
+                                irrigation_date = datetime.now() + timedelta(hours=1)
+                                date = irrigation_date.strftime("%Y-%m-%d")
+                                time = irrigation_date.strftime("%H:%M")
                                 duration = templateValue.runtime
                                 zones = Zone.objects.all()
                                 mSimpleSchedule = SimpleSchedule(date=date,
@@ -456,8 +457,8 @@ def follow_irrigation_template():
                                                                  duration=duration,
                                                                  zone=zone)
                                 mSimpleSchedule.save()
-                zone.template_day_counter=zone.template_day_counter+1
-                zone.save(update_fields=['template_day_counter'])
+                            zone.template_day_counter=zone.template_day_counter+1
+                            zone.save(update_fields=['template_day_counter'])
                                 
             except Exception as e :
                 switchIrrigation(zone, 0)
