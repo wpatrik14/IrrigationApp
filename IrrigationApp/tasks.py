@@ -260,44 +260,8 @@ def changeSchedule(schedule, status):
     schedule.save(update_fields=['status'])
     return
 
-#@app.task
-@task()
-def automation_control():
-    reader = codecs.getreader("utf-8")
-    result=""
-    
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '1', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(3)
-    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-        result=str(file.read())
-        js = json.loads(result)
-        Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
-    
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '2', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(3)
-    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-        result=str(file.read())
-        js = json.loads(result)
-        Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
-    
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '1', '0', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(3)
-    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-        result=str(file.read())
-        js = json.loads(result)
-        Sensor(node=int(js['Node']),value=int(js['Stat'])).save()
-    
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return 'Settings not found'
-    
-    settings.flow_meter=4
-    settings.save(update_fields=['flow_meter'])
-    
-    zones = Zone.objects.all()
-    
+
+def forecastIrrigation():
     weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
     if not weatherForecast.exists() :
         get_weather_data_from_server()
@@ -353,6 +317,47 @@ def automation_control():
             else :
                 zone.up_time=0
                 zone.save(update_fields=['up_time'])
+
+
+#@app.task
+@task()
+def automation_control():
+    reader = codecs.getreader("utf-8")
+    result=""
+    
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '1', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(3)
+    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+        result=str(file.read())
+        js = json.loads(result)
+        Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
+    
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '2', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(3)
+    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+        result=str(file.read())
+        js = json.loads(result)
+        Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
+    
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '1', '0', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(3)
+    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+        result=str(file.read())
+        js = json.loads(result)
+        Sensor(node=int(js['Node']),value=int(js['Stat'])).save()
+    
+    settings = IrrigationSettings.objects.all()
+    if settings.exists() :
+        settings = IrrigationSettings.objects.get(id=0)
+    else:
+        return 'Settings not found'
+    
+    settings.flow_meter=4
+    settings.save(update_fields=['flow_meter'])
+    
+    zones = Zone.objects.all()
+    
+    
     
     tasks = TaskQueue.objects.all()
     if len(tasks) > settings.runnable_zones_number-1 :
