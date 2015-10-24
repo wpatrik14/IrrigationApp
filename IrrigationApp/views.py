@@ -9,6 +9,7 @@ import codecs
 import json
 import logging
 import time
+import math
 
 from IrrigationApp.models import Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
 
@@ -238,9 +239,9 @@ def setZoneTemplate(zone,irrigationTemplate):
             ZoneTemplateValue(zone=zone,
                               kc_value=template_value,
                               irrigation_required=True,
-                              runtime=int(rt),
+                              runtime=math.floor(rt),
                               water_mm=mm).save()
-            skipped_day=int(f) 
+            skipped_day=math.floor(f) 
         else :
             ZoneTemplateValue(zone=zone,
                               kc_value=template_value,
