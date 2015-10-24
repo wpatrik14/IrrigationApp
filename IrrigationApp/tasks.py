@@ -448,22 +448,25 @@ def follow_irrigation_template():
         if zone.irrigation_template is not None :
             try:
                 templateValues = ZoneTemplateValue.objects.filter(zone=zone)
+                required_irrigation=False
                 for templateValue in templateValues :
                     if templateValue.kc_value.day_number == zone.template_day_counter :
                         if zone.type == 'Automatic' :
                             if templateValue.irrigation_required == True :
-                                irrigation_date = datetime.now() + timedelta(hours=1)
-                                date = irrigation_date.strftime("%Y-%m-%d")
-                                time = irrigation_date.strftime("%H:%M")
-                                duration = templateValue.runtime
-                                zones = Zone.objects.all()
-                                mSimpleSchedule = SimpleSchedule(date=date,
-                                                                 time=time,
-                                                                 duration=duration,
-                                                                 zone=zone)
-                                mSimpleSchedule.save()
-                            zone.template_day_counter=zone.template_day_counter+1
-                            zone.save(update_fields=['template_day_counter'])
+                                required_irrigation=True
+                if required_irrigation == True :
+                    irrigation_date = datetime.now() + timedelta(hours=1)
+                    date = irrigation_date.strftime("%Y-%m-%d")
+                    time = irrigation_date.strftime("%H:%M")
+                    duration = templateValue.runtime
+                    zones = Zone.objects.all()
+                    schedule=SimpleSchedule(date=date,
+                                   time=time,
+                                   duration=duration,
+                                   zone=zone)
+                    schedule.save()                
+                zone.template_day_counter=zone.template_day_counter+1
+                zone.save(update_fields=['template_day_counter'])
                                 
             except Exception as e :
                 switchIrrigation(zone, 0)
