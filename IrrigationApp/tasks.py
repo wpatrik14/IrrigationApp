@@ -449,20 +449,21 @@ def follow_irrigation_template():
             try:
                 templateValues = ZoneTemplateValue.objects.filter(zone=zone)
                 required_irrigation=False
+                runtime = 0
                 for templateValue in templateValues :
                     if templateValue.kc_value.day_number == zone.template_day_counter :
                         if zone.type == 'Automatic' :
                             if templateValue.irrigation_required == True :
                                 required_irrigation=True
+                                runtime = templateValue.runtime
                 if required_irrigation == True :
                     irrigation_date = datetime.now() + timedelta(hours=1)
                     date = irrigation_date.strftime("%Y-%m-%d")
                     time = irrigation_date.strftime("%H:%M")
-                    duration = templateValue.runtime
                     zones = Zone.objects.all()
                     schedule=SimpleSchedule(date=date,
                                    time=time,
-                                   duration=duration,
+                                   duration=runtime,
                                    zone=zone)
                     schedule.save()                
                 zone.template_day_counter=zone.template_day_counter+1
