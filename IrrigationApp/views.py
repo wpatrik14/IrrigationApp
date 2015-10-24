@@ -239,9 +239,9 @@ def setZoneTemplate(zone,irrigationTemplate):
             ZoneTemplateValue(zone=zone,
                               kc_value=template_value,
                               irrigation_required=True,
-                              runtime=math.floor(rt),
+                              runtime=int(round(rt,0)),
                               water_mm=mm).save()
-            skipped_day=math.floor(f) 
+            skipped_day=int(round(f,0)) 
         else :
             ZoneTemplateValue(zone=zone,
                               kc_value=template_value,
