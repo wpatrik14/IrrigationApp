@@ -150,7 +150,7 @@ def setIrrigation(mZone, status):
 
     switches = Switch.objects.all()
     running_zones=0;
-    pump_status = False
+    pump_status = 0
     
     pump=Pump.objects.get(id=0)
     
@@ -158,17 +158,22 @@ def setIrrigation(mZone, status):
         if switch.pinNumber != pump.switch.pinNumber :
             if switch.status == 1 :
                 running_zones=running_zones+1
-                pump_status = True
+                pump_status = 1
         
-    if pump_status :
-        pump.switch.status = 1
+    if pump_status == 1:
+        pump_switch=pump.switch
+        pump_switch.status=1
+        pump_switch.save()
     else :
-        pump.switch.status = 0
+        pump_switch=pump.switch
+        pump_switch.status=0
+        pump_switch.save()
+    
     pump.save(update_fields=['switch'])
     settings.running_zones=running_zones
     settings.save(update_fields=['running_zones'])
     
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump_status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return
 
 def addTaskToQueue(mZone):
@@ -260,6 +265,7 @@ def changeSchedule(schedule, status):
 def automation_control():
     reader = codecs.getreader("utf-8")
     result=""
+    
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '1', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     time.sleep(3)
     with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
@@ -287,7 +293,7 @@ def automation_control():
     else:
         return 'Settings not found'
     
-    settings.flow_meter=12
+    settings.flow_meter=4
     settings.save(update_fields=['flow_meter'])
     
     zones = Zone.objects.all()
@@ -434,23 +440,31 @@ def follow_irrigation_template():
         zone.duration_today=0
         zone.water_quantity=0
         zone.save(update_fields=['duration_today','water_quantity'])
-        if zone.template is not None :
+        if zone.irrigation_template is not None :
             try:
-                irrigationTemplate = zone.template
-                irrigationTemplateValue = IrrigationTemplateValue.objects.filter(template=irrigationTemplate).get(day_number=irrigationTemplate.day_counter)
-                # getting the moisture value and setting the zone
-                if zone.type == 'Automatic' :
-                    zone.moisture_minLimit=irrigationTemplateValue.value - 10
-                    zone.moisture_maxLimit=irrigationTemplateValue.value + 10
-                    zone.save(update_fields=['moisture_minLimit','moisture_maxLimit'])
-                    irrigationTemplate.day_counter = irrigationTemplate.day_counter + 1
-                    irrigationTemplate.save(update_fields=['day_counter'])
+                templateValues = ZoneTemplateValue.objects.filter(zone=zone)
+                for templateValue in templateValues :
+                    if templateValue.kc_value.day_number == zone.template_day_counter :
+                        if zone.type == 'Automatic' :
+                            if templateValue.irrigation_required == True :
+                                date = datetime.now().strftime("%Y-%m-%d")
+                                time = datetime.now().strftime("%H:%M")
+                                duration = templateValue.runtime
+                                zones = Zone.objects.all()
+                                mSimpleSchedule = SimpleSchedule(date=date,
+                                                                 time=time,
+                                                                 duration=duration,
+                                                                 zone=zone)
+                                mSimpleSchedule.save()
+                zone.template_day_counter=zone.template_day_counter+1
+                zone.save(update_fields=['template_day_counter'])
+                                
             except Exception as e :
                 switchIrrigation(zone, 0)
                 zone.type='Manual'
                 zone.template=None
-                zone.save(update_fields=['type','template'])
-                irrigationTemplate.day_counter = 0
-                irrigationTemplate.save(update_fields=['day_counter'])
+                zone.template_day_counter=0
+                zone.save(update_fields=['type','template','template_day_counter'])
+    
     
     return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
