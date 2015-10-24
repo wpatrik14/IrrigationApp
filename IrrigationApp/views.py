@@ -209,6 +209,7 @@ def doEditZone(request):
     zone.root_length=root_length
     zone.moisture_deviation=deviation
     zone.efficiency=efficiency
+    zone.template_day_counter=0
     zone.save()
     
     if irrigationTemplate_id!="None":
