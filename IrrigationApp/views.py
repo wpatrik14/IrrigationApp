@@ -213,6 +213,7 @@ def doEditZone(request):
     
     if irrigationTemplate_id!="None":
         irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+        ZoneTemplateValue.objects.filter(zone=zone).delete()
         setZoneTemplate(zone,irrigationTemplate)
     
     return redirect('/getSystemStatus')
