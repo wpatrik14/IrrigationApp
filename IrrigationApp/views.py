@@ -240,7 +240,7 @@ def setZoneTemplate(zone,irrigationTemplate):
                               irrigation_required=True,
                               runtime=int(rt),
                               water_mm=mm).save()
-            skipped_day=int(f)-1 
+            skipped_day=int(f) 
         else :
             ZoneTemplateValue(zone=zone,
                               kc_value=template_value,
