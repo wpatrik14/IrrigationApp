@@ -50,12 +50,7 @@
 		        xAxis: {
 		            gridLineWidth: 1,
 		            minPadding: 0.2,
-		            maxPadding: 0.2,
-		            maxZoom: 7,
-		            categories: [
-		            {% for moistureHistory in moistureHistories %}
-		            [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}]
-		            {% if not forloop.last %},{% endif %}{% endfor %}]
+		            maxPadding: 0.2
 		        },
 		        yAxis: {
 		            title: {
@@ -63,7 +58,6 @@
 		            },
 		            minPadding: 0.2,
 		            maxPadding: 0.2,
-		            maxZoom: 50,
 		            plotLines: [{
 		                value: 0,
 		                width: 1,
@@ -91,7 +85,7 @@
 		        series: [{
 		            data: [
 		            {% for moistureHistory in moistureHistories %}
-		            [{{ moistureHistory.value }}]
+		            [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}},{{ moistureHistory.value }}]
 		            {% if not forloop.last %},{% endif %}{% endfor %}]
 		            }]
 		    });
@@ -105,7 +99,7 @@
 		<script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 		
-<div id="container" style="min-width: 310px; height: 400px; max-width: 900px; margin: 0 auto"></div>
+<div id="container" style="min-width: 800px; height: 800px; max-width: 900px; margin: 0 auto"></div>
 </div>
 </body>
 </html>
