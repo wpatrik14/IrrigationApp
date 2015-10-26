@@ -51,7 +51,11 @@
 		            gridLineWidth: 1,
 		            minPadding: 0.2,
 		            maxPadding: 0.2,
-		            maxZoom: 7
+		            maxZoom: 7,
+		            categories: [
+		            {% for moistureHistory in moistureHistories %}
+		            [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}]
+		            {% if not forloop.last %},{% endif %}{% endfor %}]
 		        },
 		        yAxis: {
 		            title: {
@@ -87,7 +91,7 @@
 		        series: [{
 		            data: [
 		            {% for moistureHistory in moistureHistories %}
-		            [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}, {{ moistureHistory.value }}]
+		            [{{ moistureHistory.value }}]
 		            {% if not forloop.last %},{% endif %}{% endfor %}]
 		            }]
 		    });
