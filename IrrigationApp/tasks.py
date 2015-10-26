@@ -344,8 +344,8 @@ def automation_control():
     with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
         result=str(file.read())
         js = json.loads(result)
-        sensor=Sensor(node=int(js['Node']),value=int(js['Stat'])).save()
-        node_id=sensor.node
+        sensor=Sensor(node=int(js['Node']),value=int(js['Stat']))
+        sensor.save()
         zones=Zone.objects.all()
         for zone in zones :
             if zone.sensor.node == sensor.node :
