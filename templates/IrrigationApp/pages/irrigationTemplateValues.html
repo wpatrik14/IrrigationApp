@@ -31,6 +31,67 @@
 				</style>
 	<script type="text/javascript">
 		$(function () {
+    $('#container').highcharts({
+        title: {
+            text: 'Moisture history for {{zone.name}}',
+            x: -20 //center
+        },
+        subtitle: {
+            text: '',
+            x: -20
+        },
+        xAxis: {
+            categories: [{% for moistureHistory in moistureHistories %}
+				      '{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}'
+				      	{% if not forloop.last %}
+						,
+						{% endif %}	
+				     {% endfor %}]
+        },
+        yAxis: {
+            title: {
+                text: 'Temperature (°C)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '°C'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: 'Moisture',
+            data: [{% for moistureHistory in moistureHistories %}
+				      {{moistureHistory.value}}
+				      	{% if not forloop.last %}
+						,
+						{% endif %}	
+				     {% endfor %}]
+        }]
+    });
+});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		$(function () {
 		    $('#container').highcharts({
 		        chart: {
 		            type: 'spline',
