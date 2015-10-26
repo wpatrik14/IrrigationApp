@@ -11,7 +11,7 @@ import logging
 import time
 import math
 
-from IrrigationApp.models import Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
+from IrrigationApp.models import MoistureHistory, Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
