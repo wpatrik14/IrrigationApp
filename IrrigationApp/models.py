@@ -93,6 +93,13 @@ class IrrigationHistory(models.Model):
     def __unicode__(self):
         return self.start_date + ' ' + self.end_date
     
+class MoistureHistory(models.Model):
+    zone_id = models.ForeignKey('Zone')
+    value = models.IntegerField(max_length=3,default=0)
+    date = models.DateTimeField(default=datetime.now, blank=True)
+    def __unicode__(self):
+        return self.value
+    
 class ZoneTemplateValue(models.Model):
     zone = models.ForeignKey('Zone')
     kc_value = models.ForeignKey('KcValue')

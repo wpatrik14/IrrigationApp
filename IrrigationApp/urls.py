@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     
     url(r'showWeatherStatus[/]?$', views.showWeatherStatus, name='showWeatherStatus'),
     url(r'showIrrigationHistory[/]?$', views.showIrrigationHistory, name='showIrrigationHistory'),
+    url(r'showMoistureHistory[/]?$', views.showMoistureHistory, name='showMoistureHistory'),
     
     url(r'getSystemStatus[/]?$', views.getSystemStatus, name='getSystemStatus'),
     url(r'showAddNewZone[/]?$', views.showAddNewZone, name='showAddNewZone'),

@@ -4,7 +4,7 @@ import codecs
 from datetime import datetime, timedelta
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
-from IrrigationApp.models import Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, TaskQueue, SoilType
+from IrrigationApp.models import Pump, IrrigationTemplate, MoistureHistory, ZoneTemplateValue, KcValue, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, TaskQueue, SoilType
 from django.http import HttpResponse
 import json
 import time
@@ -344,7 +344,9 @@ def automation_control():
     with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
         result=str(file.read())
         js = json.loads(result)
-        Sensor(node=int(js['Node']),value=int(js['Stat'])).save()
+        sensor=Sensor(node=int(js['Node']),value=int(js['Stat'])).save()
+        zone=Zone.objects.get(sensor=sensor)
+        MoistureHistory(zone=zone,value=int(js['Stat'])).save()
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -356,7 +358,6 @@ def automation_control():
     settings.save(update_fields=['flow_meter'])
     
     zones = Zone.objects.all()
-    
     
     
     tasks = TaskQueue.objects.all()
