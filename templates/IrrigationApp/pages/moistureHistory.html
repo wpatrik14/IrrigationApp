@@ -33,13 +33,10 @@
 		$(function () {
     $('#container').highcharts({
         chart: {
-            type: 'spline'
+            type: 'area'
         },
         title: {
             text: 'Moisture history for {{zone.name}}'
-        },
-        subtitle: {
-            text: ''
         },
         xAxis: {
             categories: [{% for moistureHistory in moistureHistories %}
@@ -52,35 +49,18 @@
         yAxis: {
             title: {
                 text: 'Moisture'
-            },
-            labels: {
-                formatter: function () {
-                    return this.value + '%';
-                }
-            }
-        },
-        tooltip: {
-            crosshairs: true,
-            shared: true
-        },
-        plotOptions: {
-            spline: {
-                marker: {
-                    radius: 4,
-                    lineColor: '#666666',
-                    lineWidth: 1
-                }
             }
         },
         series: [{
-            name: 'Moisture',
-            data: [{% for moistureHistory in moistureHistories %}
-				      {{moistureHistory.value}}
+		            data: [
+		            {% for irrigationTemplateValue in irrigationTemplateValues %}
+				      [{{ irrigationTemplateValue.day_number }}, {{ irrigationTemplateValue.value }}]
 				      	{% if not forloop.last %}
 						,
 						{% endif %}	
-				     {% endfor %}]
-        }]
+				     {% endfor %}
+		            ]
+		        }]
     });
 });
 		</script>
