@@ -87,7 +87,7 @@
 		        series: [{
 		            data: [
 		            {% for moistureHistory in moistureHistories %}
-				      [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}, {{ moistureHistory.value }}]
+				      [{{moistureHistory.date|time:"H:i"}}, {{ moistureHistory.value }}]
 				      	{% if not forloop.last %}
 						,
 						{% endif %}	
