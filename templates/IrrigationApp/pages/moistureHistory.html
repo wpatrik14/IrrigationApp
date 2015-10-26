@@ -51,6 +51,20 @@
                 text: 'Moisture'
             }
         },
+        plotOptions: {
+            area: {
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        },
         series: [{
             name: 'Moisture',
             data: [{% for moistureHistory in moistureHistories %}
