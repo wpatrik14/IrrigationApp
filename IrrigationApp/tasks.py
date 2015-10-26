@@ -345,8 +345,11 @@ def automation_control():
         result=str(file.read())
         js = json.loads(result)
         sensor=Sensor(node=int(js['Node']),value=int(js['Stat'])).save()
-        zone=Zone.objects.get(sensor=sensor)
-        MoistureHistory(zone=zone,value=int(js['Stat'])).save()
+        node_id=sensor.node
+        zones=Zone.objects.all()
+        for zone in zones :
+            if zone.sensor.node == sensor.node :
+                MoistureHistory(zone=zone,value=sensor.value).save()
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
