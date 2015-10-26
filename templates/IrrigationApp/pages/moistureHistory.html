@@ -70,7 +70,7 @@
         series: [{
             name: 'Moisture',
             data: [{% for moistureHistory in moistureHistories %}
-				      {{moistureHistory.value}}'
+				      {{moistureHistory.value}}
 				      	{% if not forloop.last %}
 						,
 						{% endif %}	
