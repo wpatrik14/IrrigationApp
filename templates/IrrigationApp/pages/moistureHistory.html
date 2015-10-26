@@ -87,13 +87,9 @@
 		        series: [{
 		            data: [
 		            {% for moistureHistory in moistureHistories %}
-				      [{{moistureHistory.date|time:"H:i"}}, {{ moistureHistory.value }}]
-				      	{% if not forloop.last %}
-						,
-						{% endif %}	
-				     {% endfor %}
-		            ]
-		        }]
+		            [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}, {{ moistureHistory.value }}]
+		            {% if not forloop.last %},{% endif %}{% endfor %}]
+		            }]
 		    });
 		});
 		</script>
