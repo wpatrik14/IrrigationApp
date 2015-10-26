@@ -52,15 +52,14 @@
             }
         },
         series: [{
-		            data: [
-		            {% for irrigationTemplateValue in irrigationTemplateValues %}
-				      [{{ irrigationTemplateValue.day_number }}, {{ irrigationTemplateValue.value }}]
+            name: 'Moisture',
+            data: [{% for moistureHistory in moistureHistories %}
+				      {{moistureHistory.value}}
 				      	{% if not forloop.last %}
 						,
 						{% endif %}	
-				     {% endfor %}
-		            ]
-		        }]
+				     {% endfor %}]
+        }]
     });
 });
 		</script>
