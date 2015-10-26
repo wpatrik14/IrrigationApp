@@ -42,7 +42,7 @@
         },
         xAxis: {
             categories: [{% for moistureHistory in moistureHistories %}
-				      ['{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}']
+				      '{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}'
 				      	{% if not forloop.last %}
 						,
 						{% endif %}	
