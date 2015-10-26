@@ -43,7 +43,7 @@
                         'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
             },
             xAxis: {
-                type: 'datetime'
+
             },
             yAxis: {
                 title: {
@@ -85,7 +85,7 @@
                 name: 'Moisture',
                 data: [
 		            {% for moistureHistory in moistureHistories %}
-				      [{{moistureHistory.date}}, {{ moistureHistory.value }}]
+				      [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}, {{ moistureHistory.value }}]
 				      	{% if not forloop.last %}
 						,
 						{% endif %}	
