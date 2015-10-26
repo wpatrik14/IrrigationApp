@@ -31,69 +31,53 @@
 				</style>
 	<script type="text/javascript">
 		$(function () {
-		    $('#container').highcharts({
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                text: 'Moisture data for {{zone.name}}'
-            },
-            subtitle: {
-                text: document.ontouchstart === undefined ?
-                        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-            },
-            xAxis: {
-
-            },
-            yAxis: {
-                title: {
-                    text: 'Moisture (%)'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                area: {
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
-                    },
-                    marker: {
-                        radius: 2
-                    },
-                    lineWidth: 1,
-                    states: {
-                        hover: {
-                            lineWidth: 1
-                        }
-                    },
-                    threshold: null
-                }
-            },
-
-            series: [{
-                type: 'area',
-                name: 'Moisture',
-                data: [
-		            {% for moistureHistory in moistureHistories %}
-				      [{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}, {{ moistureHistory.value }}]
+    $('#container').highcharts({
+        title: {
+            text: 'Moisture history for {{zone.name}}',
+            x: -20 //center
+        },
+        subtitle: {
+            text: '',
+            x: -20
+        },
+        xAxis: {
+            categories: [{% for moistureHistory in moistureHistories %}
+				      ['{{moistureHistory.date|date:"Y-m-d"}} {{moistureHistory.date|time:"H:i"}}']
 				      	{% if not forloop.last %}
 						,
 						{% endif %}	
-				     {% endfor %}
-		            ]
+				     {% endfor %}]
+        },
+        yAxis: {
+            title: {
+                text: 'Temperature (°C)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
             }]
-        });
+        },
+        tooltip: {
+            valueSuffix: '°C'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: 'Moisture',
+            data: [{% for moistureHistory in moistureHistories %}
+				      {{moistureHistory.value}}'
+				      	{% if not forloop.last %}
+						,
+						{% endif %}	
+				     {% endfor %}]
+        }]
     });
+});
 		</script>
 
 </head>
