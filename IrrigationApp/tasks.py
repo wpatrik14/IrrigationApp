@@ -349,7 +349,7 @@ def automation_control():
         zones=Zone.objects.all()
         for zone in zones :
             if zone.sensor.node == sensor.node :
-                MoistureHistory(zone=zone,value=sensor.value).save()
+                MoistureHistory(zone_id=zone,value=sensor.value).save()
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
