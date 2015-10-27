@@ -10,6 +10,7 @@ import json
 import logging
 import time
 import math
+import paho.mqtt.publish as publish
 
 from IrrigationApp.models import MoistureHistory, Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
 
@@ -271,6 +272,8 @@ def setIrrigation(mZone, status):
     mZone.switch=mSwitch
     mZone.save(update_fields=['switch','up_time','irrigation_history']) 
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)       
+    publish.single("irrigationapp/switch", "{\"Node\":\"1\",\"Command\":\"0\",\"Pin\":\""+str(mSwitch.pinNumber)+"\",\"Stat\":\""+str(mSwitch.status)+"\"", hostname="iot.eclipse.org")
+    
     switches = Switch.objects.all()
     running_zones=0;
     pump_status = False
@@ -290,6 +293,8 @@ def setIrrigation(mZone, status):
     settings.running_zones=running_zones
     settings.save(update_fields=['running_zones'])
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    publish.single("irrigationapp/switch", "{\"Node\":\"1\",\"Command\":\"0\",\"Pin\":\""+str(pump.switch.pinNumber)+"\",\"Stat\":\""+str(pump_status)+"\"", hostname="iot.eclipse.org")
+    
     return
     
 def addTaskToQueue(mZone):
@@ -304,6 +309,7 @@ def addTaskToQueue(mZone):
         switchIrrigation(mZone,1)
     else :
         TaskQueue(zone_id=mZone,seq_number=len(tasks)+1).save()
+        publish.single("irrigationapp/task", "Added", hostname="iot.eclipse.org")
         
 def deleteTaskFromQueue(mZone):
     if mZone.switch.status == 1:
@@ -312,6 +318,7 @@ def deleteTaskFromQueue(mZone):
             deleted_task=TaskQueue.objects.get(zone_id=mZone)
             seq_number=deleted_task.seq_number
             deleted_task.delete()
+            publish.single("irrigationapp/task", "Deleted", hostname="iot.eclipse.org")
             switchIrrigation(mZone, 0)
             tasks = TaskQueue.objects.all().order_by('seq_number')
             if tasks is not None:
@@ -434,7 +441,7 @@ def doSimpleSchedule(request):
                                              duration=duration,
                                              zone=zone)
             mSimpleSchedule.save()
-    
+    publish.single("irrigationapp/schedule", "Simple schedule added", hostname="iot.eclipse.org")
     return redirect('/getSystemStatus')
 
 @login_required
@@ -474,7 +481,7 @@ def doRepeatableSchedule(request):
                                                      duration=duration,
                                                      zone=zone)
                     mRepeatableSchedule.save()
-    
+    publish.single("irrigationapp/schedule", "Repeatable schedule added", hostname="iot.eclipse.org")
     return redirect('/getSystemStatus')
 
 @login_required
