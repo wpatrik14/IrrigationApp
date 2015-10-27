@@ -274,6 +274,7 @@ def forecastIrrigation():
         get_weather_data_from_server()
     
     weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
+    zones = Zone.objects.all()
     
     for zone in zones :
         if zone.type == "Automatic" :
@@ -367,9 +368,6 @@ def automation_control():
     settings.flow_meter=4
     settings.save(update_fields=['flow_meter'])
     
-    zones = Zone.objects.all()
-    
-    
     tasks = TaskQueue.objects.all()
     if len(tasks) > settings.runnable_zones_number-1 :
         for i in range(settings.runnable_zones_number) :
@@ -377,8 +375,6 @@ def automation_control():
             zone=task.zone_id
             if zone.switch.status == 0 :
                 switchIrrigation(zone, 1)
-    
-    
     
     settings = IrrigationSettings.objects.get(id=0)
     settings.water = settings.water + 5.5
@@ -392,6 +388,13 @@ def automation_control():
         pump.down_time = pump.down_time + 1
     
     pump.save(update_fields=['up_time','down_time'])
+    
+    zones = Zone.objects.all()
+    for zone in zones :
+        if zone.switch.status == 1 :
+            zone.up_time=zone.up_time+1
+            zone.duration_today=zone.duration_today+1
+            zone.save(update_fields=['up_time','duration_today'])
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 
