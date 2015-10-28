@@ -576,7 +576,7 @@ def showWeatherHistory(request):
     
     weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')
         
-    return render(request, 'IrrigationApp/pages/moistureHistory.html', { 'username':user.username, 'weatherHistories':weatherHistories })
+    return render(request, 'IrrigationApp/pages/weatherHistory.html', { 'username':user.username, 'weatherHistories':weatherHistories })
 
 @login_required
 def deleteIrrigationHistory(request):
