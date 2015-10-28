@@ -31,7 +31,60 @@
 				</style>
 	<script type="text/javascript">
 		$(function () {
-    $('#container').highcharts({
+    $('#precip').highcharts({
+        chart: {
+            type: 'area'
+        },
+        title: {
+            text: 'Weather history'
+        },
+        xAxis: {
+            categories: [{% for weatherHistory in weatherHistories %}
+				      '{{weatherHistory.observation_time|date:"Y-m-d"}} {{weatherHistory.observation_time|time:"H:i"}}'
+				      	{% if not forloop.last %}
+						,
+						{% endif %}	
+				     {% endfor %}]
+        },
+        yAxis: {
+            title: {
+                text: 'Precipitation'
+            },
+            min: 0, 
+            max: 15
+        },
+        plotOptions: {
+            area: {
+                marker: {
+                    enabled: false,
+                    symbol: 'circle',
+                    radius: 2,
+                    states: {
+                        hover: {
+                            enabled: true
+                        }
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Precipitation (mm)',
+            data: [{% for weatherHistory in weatherHistories %}
+				      {{weatherHistory.precipMM}}
+				      	{% if not forloop.last %}
+						,
+						{% endif %}	
+				     {% endfor %}]
+        }
+        ]
+    });
+});
+		</script>
+		
+		
+		<script type="text/javascript">
+		$(function () {
+    $('#temp').highcharts({
         chart: {
             type: 'area'
         },
@@ -75,14 +128,6 @@
 						,
 						{% endif %}	
 				     {% endfor %}]
-        },{
-            name: 'Precipitation (mm)',
-            data: [{% for weatherHistory in weatherHistories %}
-				      {{weatherHistory.precipMM}}
-				      	{% if not forloop.last %}
-						,
-						{% endif %}	
-				     {% endfor %}]
         }
         ]
     });
@@ -96,7 +141,8 @@
 		<script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 		
-<div id="container" style="min-width: 310px; height: 500px; max-width: 1000px; margin: 0 auto"></div>
+<div id="precip" style="min-width: 310px; height: 500px; max-width: 1000px; margin: 0 auto"></div>
+<div id="temp" style="min-width: 310px; height: 500px; max-width: 1000px; margin: 0 auto"></div>
 </div>
 </body>
 </html>
