@@ -567,6 +567,18 @@ def showMoistureHistory(request):
     return render(request, 'IrrigationApp/pages/moistureHistory.html', { 'username':user.username, 'moistureHistories':moistureHistories, 'zone':zone })
 
 @login_required
+def showWeatherHistory(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')
+        
+    return render(request, 'IrrigationApp/pages/moistureHistory.html', { 'username':user.username, 'weatherHistories':weatherHistories })
+
+@login_required
 def deleteIrrigationHistory(request):
     if request.session.get('username') :
         username = request.session.get('username')
