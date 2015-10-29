@@ -562,7 +562,7 @@ def showMoistureHistory(request):
     
     zone_id = request.POST['zone_id']
     zone=Zone.objects.get(id=zone_id)
-    moistureHistories = MoistureHistory.objects.filter(zone_id=zone).order_by('-date')
+    moistureHistories = MoistureHistory.objects.filter(zone_id=zone).order_by('-date')[:100]
         
     return render(request, 'IrrigationApp/pages/moistureHistory.html', { 'username':user.username, 'moistureHistories':moistureHistories, 'zone':zone })
 

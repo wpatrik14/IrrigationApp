@@ -138,6 +138,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'IrrigationApp.tasks.follow_irrigation_template',
         'schedule': crontab(minute=0, hour='*/24'),
     },
+    'getSensorData': {
+        'task': 'IrrigationApp.tasks.getSensorData',
+        'schedule': crontab(minute='*/15'),
+    },
 }
 
 CELERY_TIMEZONE = 'Europe/Budapest'

@@ -347,18 +347,6 @@ def automation_control():
         js = json.loads(result)
         Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
     
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '1', '0', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(3)
-    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-        result=str(file.read())
-        js = json.loads(result)
-        sensor=Sensor(node=js['Node'],value=int(js['Stat']))
-        sensor.save()
-        zones=Zone.objects.all()
-        for zone in zones :
-            if zone.sensor.node == sensor.node :
-                MoistureHistory(zone_id=zone,value=sensor.value,date=datetime.now()).save()
-    
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
@@ -492,3 +480,19 @@ def follow_irrigation_template():
     
     
     return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
+
+
+@task()
+def getSensorData():
+    zones=Zone.objects.all()
+    for zone in zones :
+        subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', str(zone.sensor.node), '0', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        time.sleep(3)
+        with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+            result=str(file.read())
+            js = json.loads(result)
+            sensor=Sensor(node=js['Node'],value=int(js['Stat']))
+            sensor.save()
+            MoistureHistory(zone_id=zone,value=sensor.value,date=datetime.now()).save()
+            
+    return '\n\nGET SENSOR DATA...........DONE'
