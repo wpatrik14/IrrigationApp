@@ -562,7 +562,7 @@ def showMoistureHistory(request):
     
     zone_id = request.POST['zone_id']
     zone=Zone.objects.get(id=zone_id)
-    moistureHistories = MoistureHistory.objects.filter(zone_id=zone).order_by('-date')[:100]
+    moistureHistories = MoistureHistory.objects.filter(zone_id=zone).order_by('date')[:300]
         
     return render(request, 'IrrigationApp/pages/moistureHistory.html', { 'username':user.username, 'moistureHistories':moistureHistories, 'zone':zone })
 
@@ -574,7 +574,7 @@ def showWeatherHistory(request):
     else :
         return redirect('/showLogin')
     
-    weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')[:100]
+    weatherHistories = WeatherHistory.objects.all().order_by('observation_time')[:100]
         
     return render(request, 'IrrigationApp/pages/weatherHistory.html', { 'username':user.username, 'weatherHistories':weatherHistories })
 
