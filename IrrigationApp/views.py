@@ -574,7 +574,7 @@ def showWeatherHistory(request):
     else :
         return redirect('/showLogin')
     
-    weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')
+    weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')[:100]
         
     return render(request, 'IrrigationApp/pages/weatherHistory.html', { 'username':user.username, 'weatherHistories':weatherHistories })
 
