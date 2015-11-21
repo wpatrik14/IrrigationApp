@@ -55,13 +55,22 @@ def addTaskToQueue(mZone):
         settings = IrrigationSettings.objects.get(id=0)
     else:
         return 'Settings not found'
-    
-    tasks = TaskQueue.objects.all().order_by('seq_number')
-    if len(tasks) < settings.runnable_zones_number :
+
+    if getRunningZonesNumber() < settings.runnable_zones_number :
         switchIrrigation(mZone,1)
     else :
         TaskQueue(zone_id=mZone,seq_number=len(tasks)+1).save()
         publish.single("irrigationapp/task", "Added", hostname="iot.eclipse.org")
+
+def getRunningZonesNumber():
+    switches = Switch.objects.all()
+    running_zones=0;
+    
+    for switch in switches :
+        if switch.pinNumber != pump.switch.pinNumber :
+            if switch.status == 1 :
+                running_zones=running_zones+1
+    return running_zones;
         
 def deleteTaskFromQueue(mZone):
     if mZone.switch.status == 1:
