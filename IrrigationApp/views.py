@@ -272,7 +272,7 @@ def setIrrigation(mZone, status):
     mZone.switch=mSwitch
     mZone.save(update_fields=['switch','up_time','irrigation_history']) 
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)       
-    publish.single("irrigationapp/switch", "{\"Node\":\"1\",\"Command\":\"0\",\"Pin\":\""+str(mSwitch.pinNumber)+"\",\"Stat\":\""+str(mSwitch.status)+"\"", hostname="iot.eclipse.org")
+    publish.single("irrigationapp/switch", "{\"Node\":\"0\",\"Command\":\"2\",\"Pin\":\""+str(mSwitch.pinNumber)+"\",\"Stat\":\""+str(mSwitch.status)+"\"", hostname="iot.eclipse.org")
     
     switches = Switch.objects.all()
     running_zones=0;
@@ -293,7 +293,7 @@ def setIrrigation(mZone, status):
     settings.running_zones=running_zones
     settings.save(update_fields=['running_zones'])
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    publish.single("irrigationapp/switch", "{\"Node\":\"1\",\"Command\":\"0\",\"Pin\":\""+str(pump.switch.pinNumber)+"\",\"Stat\":\""+str(pump_status)+"\"", hostname="iot.eclipse.org")
+    publish.single("irrigationapp/switch", "{\"Node\":\"0\",\"Command\":\"2\",\"Pin\":\""+str(pump.switch.pinNumber)+"\",\"Stat\":\""+str(pump_status)+"\"", hostname="iot.eclipse.org")
     
     return
     
