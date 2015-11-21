@@ -226,6 +226,20 @@ def automation_control():
         result=str(file.read())
         js = json.loads(result)
         Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
+        
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '3', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(3)
+    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+        result=str(file.read())
+        js = json.loads(result)
+        Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
+        
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', '4', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(3)
+    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+        result=str(file.read())
+        js = json.loads(result)
+        Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
