@@ -12,7 +12,7 @@ from urllib.request import urlopen
 from celery import task
 import subprocess
 import paho.mqtt.publish as publish
-from IrrigationApp.views import setIrrigation, addTaskToQueue, deleteTaskFromQueue, switchIrrigation
+from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue, deleteTaskFromQueue
 
 #app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
 #app = Celery('tasks', include=['celery.task.http'])
