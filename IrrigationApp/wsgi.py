@@ -13,6 +13,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "IrrigationApp.settings")
 
 import paho.mqtt.client as mqtt
 from IrrigationApp.shared import addTaskToQueue, deleteTaskFromQueue
+import codecs
+from IrrigationApp.models import Zone
+import json
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
