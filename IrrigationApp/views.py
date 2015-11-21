@@ -518,6 +518,11 @@ def doAddSettings(request):
                 stop_limit=stop_limit)
     pump.save()
     
+    Sensor(node="1",value=0).save()
+    Sensor(node="2",value=0).save()
+    Sensor(node="3",value=0).save()
+    Sensor(node="4",value=0).save()
+    
     return redirect('/getSystemStatus')
 
 @login_required
