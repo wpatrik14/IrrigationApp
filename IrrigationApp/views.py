@@ -16,7 +16,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from urllib.request import urlopen
 import subprocess
-
+from IrrigationApp.models import MoistureHistory, Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
 from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue, deleteTaskFromQueue
 
 def showMenu(request):
