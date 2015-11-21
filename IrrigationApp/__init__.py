@@ -1,9 +1,8 @@
 import pymysql
-pymysql.install_as_MySQLdb()
-
- 
 import paho.mqtt.client as mqtt
 from IrrigationApp.views import addTaskToQueue, deleteTaskFromQueue
+
+pymysql.install_as_MySQLdb()
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
