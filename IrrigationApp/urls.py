@@ -27,8 +27,6 @@ urlpatterns = patterns('',
     url(r'doEditZone[/]?$', views.doEditZone, name='doEditZone'),
     url(r'showAddSettings[/]?$', views.showAddSettings, name='showAddSettings'),
     url(r'doAddSettings[/]?$', views.doAddSettings, name='doAddSettings'),
-    url(r'showAddSoilType[/]?$', views.showAddSoilType, name='showAddSoilType'),
-    url(r'doAddSoilType[/]?$', views.doAddSoilType, name='doAddSoilType'),
     
     url(r'showSimpleSchedule[/]?$', views.showSimpleSchedule, name='showSimpleSchedule'),
     url(r'doSimpleSchedule[/]?$', views.doSimpleSchedule, name='doSimpleSchedule'),
@@ -37,10 +35,14 @@ urlpatterns = patterns('',
     url(r'deleteSimpleSchedule[/]?$', views.deleteSimpleSchedule, name='deleteSimpleSchedule'),
     url(r'deleteRepeatableSchedule[/]?$', views.deleteRepeatableSchedule, name='deleteRepeatableSchedule'),
     
-    url(r'doAddIrrigationTemplate[/]?$', views.doAddIrrigationTemplate, name='doAddIrrigationTemplate'),
-    url(r'showDeleteIrrigationTemplate[/]?$', views.showDeleteIrrigationTemplate, name='showDeleteIrrigationTemplate'),
-    url(r'doDeleteIrrigationTemplate[/]?$', views.doDeleteIrrigationTemplate, name='doDeleteIrrigationTemplate'),
-    url(r'showAddIrrigationTemplate[/]?$', views.showAddIrrigationTemplate, name='showAddIrrigationTemplate'),
+    #===========================================================================
+    # url(r'showAddSoilType[/]?$', views.showAddSoilType, name='showAddSoilType'),
+    # url(r'doAddSoilType[/]?$', views.doAddSoilType, name='doAddSoilType'),
+    # url(r'doAddIrrigationTemplate[/]?$', views.doAddIrrigationTemplate, name='doAddIrrigationTemplate'),
+    # url(r'showDeleteIrrigationTemplate[/]?$', views.showDeleteIrrigationTemplate, name='showDeleteIrrigationTemplate'),
+    # url(r'doDeleteIrrigationTemplate[/]?$', views.doDeleteIrrigationTemplate, name='doDeleteIrrigationTemplate'),
+    # url(r'showAddIrrigationTemplate[/]?$', views.showAddIrrigationTemplate, name='showAddIrrigationTemplate'),
+    #===========================================================================
     
     url(r'deleteTask[/]?$', views.deleteTask, name='deleteTask'),
     url(r'deleteIrrigationHistory[/]?$', views.deleteIrrigationHistory, name='deleteIrrigationHistory'),

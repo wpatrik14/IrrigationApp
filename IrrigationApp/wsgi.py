@@ -11,46 +11,44 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "IrrigationApp.settings")
 
 
-import paho.mqtt.client as mqtt
-from IrrigationApp.shared import addTaskToQueue, deleteTaskFromQueue
-from IrrigationApp.models import Zone
-import json
+#import paho.mqtt.client as mqtt
+#from IrrigationApp.shared import addTaskToQueue, deleteTaskFromQueue
+#from IrrigationApp.models import Zone
+#import json
 
 # The callback for when the client receives a CONNACK response from the server.
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+#def on_connect(client, userdata, flags, rc):
+#    print("Connected with result code "+str(rc))
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("irrigationapp/control")
+#    client.subscribe("irrigationapp/control")
 
 # The callback for when a PUBLISH message is received from the server.
-def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
-    message = str(msg.payload).split("'")
-    js = json.loads(message[1])
+#def on_message(client, userdata, msg):
+#    print(msg.topic+" "+str(msg.payload))
+#    message = str(msg.payload).split("'")
+#    js = json.loads(message[1])
     
-    zone = js['zone']
-    status = js['status']
-    mZone = Zone.objects.get(id=zone)
-    if status == '1':    
-        addTaskToQueue(mZone)
-    else :
-        deleteTaskFromQueue(mZone)
+#    zone = js['zone']
+#    status = js['status']
+#    mZone = Zone.objects.get(id=zone)
+#    if status == '1':    
+#        addTaskToQueue(mZone)
+#    else :
+#        deleteTaskFromQueue(mZone)
     
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+#client = mqtt.Client()
+#client.on_connect = on_connect
+#client.on_message = on_message
 
-client.connect("iot.eclipse.org", 1883, 60)
+#client.connect("iot.eclipse.org", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
 # Other loop*() functions are available that give a threaded interface and a
 # manual interface.
-client.loop_start()
-
-
+#client.loop_start()
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

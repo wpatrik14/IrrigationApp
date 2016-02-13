@@ -220,45 +220,6 @@ def doEditZone(request):
     return redirect('/getSystemStatus')
 
 
-def setZoneTemplate(zone,irrigationTemplate):
-    settings = IrrigationSettings.objects.get(id=0)
-    
-    template_values = KcValue.objects.filter(template=irrigationTemplate)
-    pr=4.0/float(zone.size_m2)*60.0/25.4
-    gyz=float(zone.root_length)/30.0
-    
-    skipped_day=0
-    for template_value in template_values :    
-        
-        day_number=template_value.day_number
-        kc_value=template_value.kc_value
-        
-        f=(gyz*float(zone.moisture_deviation)/100.0)/(settings.evapotranspiracy*kc_value)
-        rt=(60.0*f*settings.evapotranspiracy*kc_value)/(pr*float(zone.efficiency)/100.0)
-        mm=rt*0.207
-        
-        if skipped_day==0 :
-            ZoneTemplateValue(zone=zone,
-                              kc_value=template_value,
-                              irrigation_required=True,
-                              runtime=int(round(rt,0)),
-                              water_mm=mm).save()
-            skipped_day=int(round(f,0)) 
-        else :
-            ZoneTemplateValue(zone=zone,
-                              kc_value=template_value,
-                              irrigation_required=False,
-                              runtime=0,
-                              water_mm=0).save()
-        
-        if skipped_day>0 :
-            skipped_day=skipped_day-1
-    
-    zone.irrigation_template=irrigationTemplate
-    zone.save(update_fields=['irrigation_template'])
-    return
-
-
 @login_required
 def getSystemStatus(request):
     if request.session.get('username') :
@@ -525,78 +486,123 @@ def doAddSettings(request):
     
     return redirect('/getSystemStatus')
 
-@login_required
-def showAddSoilType(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-        
-    return render(request, 'IrrigationApp/pages/addSoilType.html', { 'username':user.username })
 
-@login_required
-def doAddSoilType(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
 
-    name = request.POST['name']
-    value = request.POST['value']
+#===============================================================================
+# def setZoneTemplate(zone,irrigationTemplate):
+#     settings = IrrigationSettings.objects.get(id=0)
+#     
+#     template_values = KcValue.objects.filter(template=irrigationTemplate)
+#     pr=4.0/float(zone.size_m2)*60.0/25.4
+#     gyz=float(zone.root_length)/30.0
+#     
+#     skipped_day=0
+#     for template_value in template_values :    
+#         
+#         day_number=template_value.day_number
+#         kc_value=template_value.kc_value
+#         
+#         f=(gyz*float(zone.moisture_deviation)/100.0)/(settings.evapotranspiracy*kc_value)
+#         rt=(60.0*f*settings.evapotranspiracy*kc_value)/(pr*float(zone.efficiency)/100.0)
+#         mm=rt*0.207
+#         
+#         if skipped_day==0 :
+#             ZoneTemplateValue(zone=zone,
+#                               kc_value=template_value,
+#                               irrigation_required=True,
+#                               runtime=int(round(rt,0)),
+#                               water_mm=mm).save()
+#             skipped_day=int(round(f,0)) 
+#         else :
+#             ZoneTemplateValue(zone=zone,
+#                               kc_value=template_value,
+#                               irrigation_required=False,
+#                               runtime=0,
+#                               water_mm=0).save()
+#         
+#         if skipped_day>0 :
+#             skipped_day=skipped_day-1
+#     
+#     zone.irrigation_template=irrigationTemplate
+#     zone.save(update_fields=['irrigation_template'])
+#     return
+#===============================================================================
 
-    SoilType(name=name,value=value).save();
-    
-    return redirect('/getSystemStatus')
 
-def doAddIrrigationTemplate(request):
-    
-    name = request.POST['name']
-    series = request.POST['series']
-    
-    js = json.loads(series)
-    
-    template = IrrigationTemplate(name=name)
-    template.save()
-    for point in js['data'] :    
-        day_number=int(point['x'])
-        kc_value=float(point['y'])
-        KcValue(template=template,
-                day_number=day_number,
-                kc_value=kc_value).save()
-                                                           
-    return redirect('/getSystemStatus')
-
-def showDeleteIrrigationTemplate(request):
-    
-    irrigationTemplates = IrrigationTemplate.objects.all()
-    
-    return render(request, 'IrrigationApp/pages/deleteIrrigationTemplate.html', { 'irrigationTemplates':irrigationTemplates })
-
-def doDeleteIrrigationTemplate(request):
-    id = request.POST['irrigationTemplate']
-    
-    irrigationTemplate = IrrigationTemplate.objects.get(id=id)
-    kc_values = KcValue.objects.filter(template=irrigationTemplate)
-    for kc_value in kc_values :
-        template = ZoneTemplateValue.objects.get(kc_value=kc_value)
-        zone = template.zone
-        zone.irrigation_template=None
-        zone.save(update_fields=['irrigation_template'])
-    
-    KcValue.objects.filter(template=irrigationTemplate).delete()
-    irrigationTemplate.delete()
-    
-    return redirect('/getSystemStatus')
-
-def showZoneTemplate(request):
-    zone_id = request.POST['zone_id']
-    zone = Zone.objects.get(id=zone_id)
-    
-    template_values = ZoneTemplateValue.objects.all()
-    
-    return render(request, 'IrrigationApp/pages/templateStatus.html', { 'template_values':template_values, 'zone':zone })
-
-def showAddIrrigationTemplate(request):
-    return render(request, 'IrrigationApp/pages/addIrrigationTemplate.html', { })
+#===============================================================================
+# @login_required
+# def showAddSoilType(request):
+#     if request.session.get('username') :
+#         username = request.session.get('username')
+#         user = User.objects.get(username=username)
+#     else :
+#         return redirect('/showLogin')
+#         
+#     return render(request, 'IrrigationApp/pages/addSoilType.html', { 'username':user.username })
+# 
+# @login_required
+# def doAddSoilType(request):
+#     if request.session.get('username') :
+#         username = request.session.get('username')
+#         user = User.objects.get(username=username)
+#     else :
+#         return redirect('/showLogin')
+# 
+#     name = request.POST['name']
+#     value = request.POST['value']
+# 
+#     SoilType(name=name,value=value).save();
+#     
+#     return redirect('/getSystemStatus')
+# 
+# def doAddIrrigationTemplate(request):
+#     
+#     name = request.POST['name']
+#     series = request.POST['series']
+#     
+#     js = json.loads(series)
+#     
+#     template = IrrigationTemplate(name=name)
+#     template.save()
+#     for point in js['data'] :    
+#         day_number=int(point['x'])
+#         kc_value=float(point['y'])
+#         KcValue(template=template,
+#                 day_number=day_number,
+#                 kc_value=kc_value).save()
+#                                                            
+#     return redirect('/getSystemStatus')
+# 
+# def showDeleteIrrigationTemplate(request):
+#     
+#     irrigationTemplates = IrrigationTemplate.objects.all()
+#     
+#     return render(request, 'IrrigationApp/pages/deleteIrrigationTemplate.html', { 'irrigationTemplates':irrigationTemplates })
+# 
+# def doDeleteIrrigationTemplate(request):
+#     id = request.POST['irrigationTemplate']
+#     
+#     irrigationTemplate = IrrigationTemplate.objects.get(id=id)
+#     kc_values = KcValue.objects.filter(template=irrigationTemplate)
+#     for kc_value in kc_values :
+#         template = ZoneTemplateValue.objects.get(kc_value=kc_value)
+#         zone = template.zone
+#         zone.irrigation_template=None
+#         zone.save(update_fields=['irrigation_template'])
+#     
+#     KcValue.objects.filter(template=irrigationTemplate).delete()
+#     irrigationTemplate.delete()
+#     
+#     return redirect('/getSystemStatus')
+# 
+# def showZoneTemplate(request):
+#     zone_id = request.POST['zone_id']
+#     zone = Zone.objects.get(id=zone_id)
+#     
+#     template_values = ZoneTemplateValue.objects.all()
+#     
+#     return render(request, 'IrrigationApp/pages/templateStatus.html', { 'template_values':template_values, 'zone':zone })
+# 
+# def showAddIrrigationTemplate(request):
+#     return render(request, 'IrrigationApp/pages/addIrrigationTemplate.html', { })
+#===============================================================================
