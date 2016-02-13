@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     url(r'showAddNewZone[/]?$', views.showAddNewZone, name='showAddNewZone'),
     url(r'doAddNewZone[/]?$', views.doAddNewZone, name='doAddNewZone'),
     url(r'showEditZone[/]?$', views.showEditZone, name='showEditZone'),
-    url(r'showZoneTemplate[/]?$', views.showZoneTemplate, name='showZoneTemplate'),
+    
     url(r'doEditZone[/]?$', views.doEditZone, name='doEditZone'),
     url(r'showAddSettings[/]?$', views.showAddSettings, name='showAddSettings'),
     url(r'doAddSettings[/]?$', views.doAddSettings, name='doAddSettings'),
@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'deleteRepeatableSchedule[/]?$', views.deleteRepeatableSchedule, name='deleteRepeatableSchedule'),
     
     #===========================================================================
+    # url(r'showZoneTemplate[/]?$', views.showZoneTemplate, name='showZoneTemplate'),
     # url(r'showAddSoilType[/]?$', views.showAddSoilType, name='showAddSoilType'),
     # url(r'doAddSoilType[/]?$', views.doAddSoilType, name='doAddSoilType'),
     # url(r'doAddIrrigationTemplate[/]?$', views.doAddIrrigationTemplate, name='doAddIrrigationTemplate'),
