@@ -10,7 +10,7 @@ import json
 import logging
 import time
 import math
-import paho.mqtt.publish as publish
+#import paho.mqtt.publish as publish
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -85,10 +85,10 @@ def showAddNewZone(request):
     settings = IrrigationSettings.objects.get(id=0)
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
-    irrigationTemplates = IrrigationTemplate.objects.all()
-    soilTypes = SoilType.objects.all()
+    #irrigationTemplates = IrrigationTemplate.objects.all()
+    #soilTypes = SoilType.objects.all()
     
-    return render(request, 'IrrigationApp/pages/addNewZone.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
+    return render(request, 'IrrigationApp/pages/addNewZone.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches })
     
 @login_required
 def doAddNewZone(request):
@@ -101,18 +101,18 @@ def doAddNewZone(request):
     settings = IrrigationSettings.objects.get(id=0)
     
     name = request.POST['name']
-    size = request.POST['size']
+    #size = request.POST['size']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
     moisture_minLimit = request.POST['moisture_minLimit']
     moisture_maxLimit = request.POST['moisture_maxLimit']
     duration_maxLimit = request.POST['duration_maxLimit']
-    irrigationTemplate_id = request.POST['irrigationTemplate']
-    soil_type = request.POST['soil_type']
+    #irrigationTemplate_id = request.POST['irrigationTemplate']
+    #soil_type = request.POST['soil_type']
     type = request.POST['type']
-    root_length = request.POST['root']
-    deviation = request.POST['deviation']
-    efficiency = request.POST['efficiency']
+    #root_length = request.POST['root']
+    #deviation = request.POST['deviation']
+    #efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
         enabled = False
     else:
@@ -120,7 +120,7 @@ def doAddNewZone(request):
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
-    soil = SoilType.objects.get(id=soil_type)
+    #soil = SoilType.objects.get(id=soil_type)
     
     zone = Zone(name = name,
          sensor = sensor,
@@ -129,17 +129,20 @@ def doAddNewZone(request):
          moisture_maxLimit = moisture_maxLimit,
          duration_maxLimit = duration_maxLimit,
          forecast_enabled = enabled,
-         type = type,
-         soil_type=soil,
-         size_m2=size,
-         root_length=root_length,
-         moisture_deviation=deviation,
-         efficiency=efficiency)
+         type = type
+         #soil_type=soil,
+         #size_m2=size,
+         #root_length=root_length,
+         #moisture_deviation=deviation,
+         #efficiency=efficiency
+         )
     zone.save()
     
-    if irrigationTemplate_id!="None":
-        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-        setZoneTemplate(zone,irrigationTemplate)
+    #===========================================================================
+    # if irrigationTemplate_id!="None":
+    #     irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+    #     setZoneTemplate(zone,irrigationTemplate)
+    #===========================================================================
     
     return redirect('/getSystemStatus')
 
@@ -157,10 +160,10 @@ def showEditZone(request):
     
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
-    irrigationTemplates = IrrigationTemplate.objects.all()
-    soilTypes = SoilType.objects.all()
+    #irrigationTemplates = IrrigationTemplate.objects.all()
+    #soilTypes = SoilType.objects.all()
         
-    return render(request, 'IrrigationApp/pages/editZone.html', { 'username':user.username, 'settings':settings, 'zone':zone, 'sensors':sensors, 'switches':switches, 'irrigationTemplates':irrigationTemplates, 'soilTypes':soilTypes })
+    return render(request, 'IrrigationApp/pages/editZone.html', { 'username':user.username, 'settings':settings, 'zone':zone, 'sensors':sensors, 'switches':switches })
 
 @login_required
 def doEditZone(request):
@@ -173,18 +176,18 @@ def doEditZone(request):
     settings = IrrigationSettings.objects.get(id=0)
     id = request.POST['zone_id']
     name = request.POST['name']
-    size = request.POST['size']
+    #size = request.POST['size']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
     moisture_minLimit = request.POST['moisture_minLimit']
     moisture_maxLimit = request.POST['moisture_maxLimit']
     duration_maxLimit = request.POST['duration_maxLimit']
-    irrigationTemplate_id = request.POST['irrigationTemplate']
-    soil_type = request.POST['soil_type']
+    #irrigationTemplate_id = request.POST['irrigationTemplate']
+    #soil_type = request.POST['soil_type']
     type = request.POST['type']
-    root_length = request.POST['root']
-    deviation = request.POST['deviation']
-    efficiency = request.POST['efficiency']
+    #root_length = request.POST['root']
+    #deviation = request.POST['deviation']
+    #efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
         enabled = False
     else:
@@ -194,7 +197,7 @@ def doEditZone(request):
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
-    soil = SoilType.objects.get(id=soil_type)
+    #soil = SoilType.objects.get(id=soil_type)
        
     zone.name = name
     zone.sensor = sensor
@@ -204,18 +207,20 @@ def doEditZone(request):
     zone.duration_maxLimit = duration_maxLimit
     zone.forecast_enabled = enabled
     zone.type = type
-    zone.soil_type=soil
-    zone.size_m2=size
-    zone.root_length=root_length
-    zone.moisture_deviation=deviation
-    zone.efficiency=efficiency
-    zone.template_day_counter=0
+    #zone.soil_type=soil
+    #zone.size_m2=size
+    #zone.root_length=root_length
+    #zone.moisture_deviation=deviation
+    #zone.efficiency=efficiency
+    #zone.template_day_counter=0
     zone.save()
     
-    if irrigationTemplate_id!="None":
-        irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-        ZoneTemplateValue.objects.filter(zone=zone).delete()
-        setZoneTemplate(zone,irrigationTemplate)
+    #===========================================================================
+    # if irrigationTemplate_id!="None":
+    #     irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
+    #     ZoneTemplateValue.objects.filter(zone=zone).delete()
+    #     setZoneTemplate(zone,irrigationTemplate)
+    #===========================================================================
     
     return redirect('/getSystemStatus')
 
@@ -288,7 +293,7 @@ def doSimpleSchedule(request):
                                              duration=duration,
                                              zone=zone)
             mSimpleSchedule.save()
-    publish.single("irrigationapp/schedule", "Simple schedule added", hostname="iot.eclipse.org")
+    #publish.single("irrigationapp/schedule", "Simple schedule added", hostname="iot.eclipse.org")
     return redirect('/getSystemStatus')
 
 @login_required
@@ -328,7 +333,7 @@ def doRepeatableSchedule(request):
                                                      duration=duration,
                                                      zone=zone)
                     mRepeatableSchedule.save()
-    publish.single("irrigationapp/schedule", "Repeatable schedule added", hostname="iot.eclipse.org")
+    #publish.single("irrigationapp/schedule", "Repeatable schedule added", hostname="iot.eclipse.org")
     return redirect('/getSystemStatus')
 
 @login_required

@@ -11,7 +11,7 @@ import time
 from urllib.request import urlopen
 from celery import task
 import subprocess
-import paho.mqtt.publish as publish
+#import paho.mqtt.publish as publish
 from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue, deleteTaskFromQueue
 
 #app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
@@ -247,8 +247,10 @@ def automation_control():
     else:
         return 'Settings not found'
     
-    settings.flow_meter=4
-    settings.save(update_fields=['flow_meter'])
+    #===========================================================================
+    # settings.flow_meter=4
+    # settings.save(update_fields=['flow_meter'])
+    #===========================================================================
     
     tasks = TaskQueue.objects.all()
     if len(tasks) > settings.runnable_zones_number-1 :
@@ -258,11 +260,13 @@ def automation_control():
             if zone.switch.status == 0 :
                 switchIrrigation(zone, 1)
     
-    settings = IrrigationSettings.objects.get(id=0)
-    settings.water = settings.water + 5.5
-    settings.total_cost=settings.total_cost+settings.cost_perLiter*5.5
-    settings.save(update_fields=['water','total_cost'])
-    
+    #===========================================================================
+    # settings = IrrigationSettings.objects.get(id=0)
+    # settings.water = settings.water + 5.5
+    # settings.total_cost=settings.total_cost+settings.cost_perLiter*5.5
+    # settings.save(update_fields=['water','total_cost'])
+    # 
+    #===========================================================================
     pump = Pump.objects.get(id=0)
     if pump.switch.status == 1:
         pump.up_time = pump.up_time + 1
@@ -388,6 +392,6 @@ def getSensorData():
             sensor=Sensor(node=js['Node'],value=int(js['Stat']))
             sensor.save()
             MoistureHistory(zone_id=zone,value=sensor.value,date=datetime.now()).save()
-        publish.single("irrigationapp/sensor", "{\"Node\":\""+js['Node']+"\",\"Value\":\""+js['Stat']+"\"", hostname="iot.eclipse.org")
+        #publish.single("irrigationapp/sensor", "{\"Node\":\""+js['Node']+"\",\"Value\":\""+js['Stat']+"\"", hostname="iot.eclipse.org")
             
     return '\n\nGET SENSOR DATA...........DONE'
