@@ -64,6 +64,7 @@ def addTaskToQueue(mZone):
 
 def getRunningZonesNumber():
     switches = Switch.objects.all()
+    pump=Pump.objects.get(id=0)
     running_zones=0;
     
     for switch in switches :
