@@ -464,10 +464,8 @@ def showAddSettings(request):
         user = User.objects.get(username=username)
     else :
         return redirect('/showLogin')
-    
-    switches = Switch.objects.all()
         
-    return render(request, 'IrrigationApp/pages/addSettings.html', { 'username':user.username, 'switches':switches })
+    return render(request, 'IrrigationApp/pages/addSettings.html', { 'username':user.username})
 
 @login_required
 def doAddSettings(request):
@@ -478,7 +476,7 @@ def doAddSettings(request):
         return redirect('/showLogin')
     
     switch = request.POST['switch']
-    evapotranspiracy = request.POST['evapotranspiracy']
+    evapotranspiracy = 1
     cost = request.POST['cost']
     number_of_runnable_zones = request.POST['number_of_runnable_zones']
     run_limit = request.POST['run_limit']

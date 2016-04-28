@@ -17,35 +17,34 @@ def setIrrigation(mZone, status):
         settings = IrrigationSettings.objects.get(id=0)
     else:
         return redirect('/showAddSettings')
-    
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     mSwitch = Switch.objects.get(pinNumber=mZone.switch.pinNumber)
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
     mZone.switch=mSwitch
-    mZone.save(update_fields=['switch','up_time','irrigation_history']) 
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(mSwitch.status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)       
+    mZone.save(update_fields=['switch','up_time','irrigation_history'])        
     #publish.single("irrigationapp/switch", "{\"Node\":\"0\",\"Command\":\"2\",\"Pin\":\""+str(mSwitch.pinNumber)+"\",\"Stat\":\""+str(mSwitch.status)+"\"", hostname="iot.eclipse.org")
     
-    switches = Switch.objects.all()
-    running_zones=0;
-    pump_status = False
-    pump=Pump.objects.get(id=0)
-    
-    for switch in switches :
-        if switch.pinNumber != pump.switch.pinNumber :
-            if switch.status == 1 :
-                running_zones=running_zones+1
-                pump_status = True
-        
-    if pump_status :
-        pump.switch.status = 1
-    else :
-        pump.switch.status = 0
-    pump.save()
-    settings.running_zones=running_zones
-    settings.save(update_fields=['running_zones'])
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #publish.single("irrigationapp/switch", "{\"Node\":\"0\",\"Command\":\"2\",\"Pin\":\""+str(pump.switch.pinNumber)+"\",\"Stat\":\""+str(pump_status)+"\"", hostname="iot.eclipse.org")
+#     switches = Switch.objects.all()
+#     running_zones=0;
+#     pump_status = False
+#     pump=Pump.objects.get(id=0)
+#     
+#     for switch in switches :
+#         if switch.pinNumber != pump.switch.pinNumber :
+#             if switch.status == 1 :
+#                 running_zones=running_zones+1
+#                 pump_status = True
+#         
+#     if pump_status :
+#         pump.switch.status = 1
+#     else :
+#         pump.switch.status = 0
+#     pump.save()
+#     settings.running_zones=running_zones
+#     settings.save(update_fields=['running_zones'])
+#     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(pump.switch.pinNumber), str(pump.switch.status)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#     #publish.single("irrigationapp/switch", "{\"Node\":\"0\",\"Command\":\"2\",\"Pin\":\""+str(pump.switch.pinNumber)+"\",\"Stat\":\""+str(pump_status)+"\"", hostname="iot.eclipse.org")
     
     return
     
