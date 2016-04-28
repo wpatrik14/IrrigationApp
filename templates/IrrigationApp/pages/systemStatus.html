@@ -25,9 +25,10 @@
 		<th>Duration today</th>
 		<th>Max. duration</th>
 		<th>Forecast</th>
-		<th>Moisture history</th>
+		<!--<th>Moisture history</th>-->
 		<!--<th>Irrigation template</th>-->
 		<th>Edit</th>
+		<th>Delete</th>
 	</thead>
 	{% for zone in zones %}
 	<tr>
@@ -60,6 +61,7 @@
 		<td>{{zone.duration_today}} min</td>
 		<td>{{zone.duration_maxLimit}} min</td>
 		<td>{{zone.forecast_enabled}}</td>
+		<!--
 		<td>
 			<form id="showMoistureHistory" action="showMoistureHistory" method="post">
 				{% csrf_token %}
@@ -67,6 +69,7 @@
 				<button id="show" name="show" class="btn btn-default">Moisture</button>
 			</form>		
 		</td>
+		-->
 		<!--<td>
 			<form id="showZoneTemplate" action="showZoneTemplate" method="post">
 				{% csrf_token %}
