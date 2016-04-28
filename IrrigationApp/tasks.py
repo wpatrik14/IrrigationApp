@@ -202,7 +202,7 @@ def forecastIrrigation():
                 zone.up_time=0
                 zone.save(update_fields=['up_time'])
 
-#@task()
+@task()
 def automation_control():
     reader = codecs.getreader("utf-8")
     result=""
@@ -259,7 +259,7 @@ def automation_control():
     return '\n\nAUTOMATION CONTROL........... DONE'
 
 @task()
-def scheduler():
+def scheduled_task():
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
@@ -301,7 +301,7 @@ def scheduler():
     return '\n\nSCHEDULER........... DONE'
 
 
-#@task()
+@task()
 def follow_irrigation_template():
     
     settings = IrrigationSettings.objects.all()
@@ -352,7 +352,7 @@ def follow_irrigation_template():
     return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
 
 
-#@task()
+@task()
 def getSensorData():
     zones=Zone.objects.all()
     for zone in zones :
