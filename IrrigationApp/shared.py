@@ -77,7 +77,7 @@ def getRunningZonesNumber():
 def deleteTaskFromQueue(mZone):
     if mZone.switch.status == 1:
         tasks = TaskQueue.objects.all().order_by('seq_number')
-        if len(tasks) > 0 :
+        if len(tasks) > 1 :
             deleted_task=TaskQueue.objects.get(zone_id=mZone)
             seq_number=deleted_task.seq_number
             deleted_task.delete()
