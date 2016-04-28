@@ -148,7 +148,7 @@ CELERYBEAT_SCHEDULE = {
     #    'schedule': crontab(minute=0, hour='*/1'),
     #},
     #===========================================================================
-    }
+}
 
 CELERY_TIMEZONE = 'Europe/Budapest'
 
