@@ -8,25 +8,16 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="#">IrrigationApp</a>
         </div>
-        <div class="navbar-header">
-          <a href="{% url 'showWeatherStatus'%}">Current weather status</a>
-        </div>
-        <div class="navbar-header">
-          <a href="{% url 'showWeatherHistory'%}">Weather history</a>
-        </div>
-        <div class="navbar-header">
-          <a href="{% url 'showIrrigationHistory'%}">Irrigation History</a>
-        </div>
-        <div class="navbar-header">
-          <a href="{% url 'showAddSettings'%}">Irrigation</a>
-        </div>
-        <div class="navbar-header">
-          <a href="{% url 'doLogout'%}">Logout</a>
-        </div>
-        <!--
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'getSystemStatus'%}">Status</a></li>
+            <!--<li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Templates<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="">Add Irrigation Template</a></li>
+            	<li><a href="">Delete Irrigation Template</a></li>
+              </ul>
+            </li>-->
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Weather<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -38,11 +29,15 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
+                <!--<li><a href="">Soil types</a></li>-->
             	<li><a href="{% url 'showAddSettings'%}">Irrigation</a></li>
               </ul>
             </li>
             <li><a href="{% url 'doLogout'%}">Logout</a></li>
           </ul>
-        </div>-->
+        </div><!--/.nav-collapse -->
       </div>
     </nav>
+    
+
+	
