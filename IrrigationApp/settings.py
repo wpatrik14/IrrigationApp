@@ -125,22 +125,28 @@ CELERYBEAT_SCHEDULE = {
         'task': 'IrrigationApp.tasks.get_weather_datas',
         'schedule': crontab(minute=0, hour='*/1'),
     },
-    'scheduled_task': {
-        'task': 'IrrigationApp.tasks.scheduled_task',
+    'scheduler': {
+        'task': 'IrrigationApp.tasks.scheduler',
         'schedule': crontab(minute='*/1'),
     },
-    'automation_control': {
-        'task': 'IrrigationApp.tasks.automation_control',
-        'schedule': crontab(minute=0, hour='*/24'),
-    },
-    'follow_irrigation_template': {
-        'task': 'IrrigationApp.tasks.follow_irrigation_template',
-        'schedule': crontab(minute=0, hour='*/24'),
-    },
-    'getSensorData': {
-        'task': 'IrrigationApp.tasks.getSensorData',
-        'schedule': crontab(minute=0, hour='*/24'),
-    },
+    #===========================================================================
+    #'automation_control': {
+    #    'task': 'IrrigationApp.tasks.automation_control',
+    #    'schedule': crontab(minute='*/1'),
+    #},
+    #===========================================================================
+    #===========================================================================
+    # 'follow_irrigation_template': {
+    #     'task': 'IrrigationApp.tasks.follow_irrigation_template',
+    #     'schedule': crontab(minute=0, hour='*/24'),
+    # },
+    #===========================================================================
+    #===========================================================================
+    #'getSensorData': {
+    #    'task': 'IrrigationApp.tasks.getSensorData',
+    #    'schedule': crontab(minute=0, hour='*/1'),
+    #},
+    #===========================================================================
 }
 
 CELERY_TIMEZONE = 'Europe/Budapest'
