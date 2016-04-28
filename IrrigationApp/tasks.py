@@ -259,7 +259,7 @@ def automation_control():
     return '\n\nAUTOMATION CONTROL........... DONE'
 
 @task()
-def scheduled_task():
+def scheduler():
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
