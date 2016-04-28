@@ -14,9 +14,6 @@ import subprocess
 #import paho.mqtt.publish as publish
 from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue, deleteTaskFromQueue
 
-#app = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http'])
-#app = Celery('tasks', include=['celery.task.http'])
-
 celery = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http']) #!
 celery.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
 
@@ -127,7 +124,6 @@ def get_weather_data_from_server():
     
     return
 
-#@app.task
 @task()
 def get_weather_datas():
     
@@ -206,9 +202,7 @@ def forecastIrrigation():
                 zone.up_time=0
                 zone.save(update_fields=['up_time'])
 
-
-#@app.task
-@task()
+#@task()
 def automation_control():
     reader = codecs.getreader("utf-8")
     result=""
@@ -264,7 +258,6 @@ def automation_control():
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 
-#@app.task
 @task()
 def scheduler():
     
@@ -308,8 +301,7 @@ def scheduler():
     return '\n\nSCHEDULER........... DONE'
 
 
-#@app.task
-@task()
+#@task()
 def follow_irrigation_template():
     
     settings = IrrigationSettings.objects.all()
@@ -360,7 +352,7 @@ def follow_irrigation_template():
     return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
 
 
-@task()
+#@task()
 def getSensorData():
     zones=Zone.objects.all()
     for zone in zones :
