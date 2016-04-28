@@ -126,10 +126,12 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute=0, hour='*/1'),
         #'schedule': crontab(minute='*/1'),
     },
-    'automation_control': {
-        'task': 'IrrigationApp.tasks.automation_control',
-        'schedule': crontab(minute='*/1'),
-    },
+    #===========================================================================
+    #'automation_control': {
+    #    'task': 'IrrigationApp.tasks.automation_control',
+    #    'schedule': crontab(minute='*/1'),
+    #},
+    #===========================================================================
     'scheduler': {
         'task': 'IrrigationApp.tasks.scheduler',
         'schedule': crontab(minute='*/1'),
@@ -140,11 +142,13 @@ CELERYBEAT_SCHEDULE = {
     #     'schedule': crontab(minute=0, hour='*/24'),
     # },
     #===========================================================================
-    'getSensorData': {
-        'task': 'IrrigationApp.tasks.getSensorData',
-        'schedule': crontab(minute=0, hour='*/1'),
-    },
-}
+    #===========================================================================
+    #'getSensorData': {
+    #    'task': 'IrrigationApp.tasks.getSensorData',
+    #    'schedule': crontab(minute=0, hour='*/1'),
+    #},
+    #===========================================================================
+    }
 
 CELERY_TIMEZONE = 'Europe/Budapest'
 
