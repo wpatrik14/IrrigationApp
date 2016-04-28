@@ -59,6 +59,7 @@ def addTaskToQueue(mZone):
     if getRunningZonesNumber() < settings.runnable_zones_number :
         switchIrrigation(mZone,1)
     else :
+        tasks = TaskQueue.objects.all()
         TaskQueue(zone_id=mZone,seq_number=len(tasks)+1).save()
         #publish.single("irrigationapp/task", "Added", hostname="iot.eclipse.org")
 
