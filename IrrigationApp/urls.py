@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     #===========================================================================
     
     url(r'deleteTask[/]?$', views.deleteTask, name='deleteTask'),
+    url(r'deleteZone[/]?$', views.deleteZone, name='deleteZone'),
     url(r'deleteIrrigationHistory[/]?$', views.deleteIrrigationHistory, name='deleteIrrigationHistory'),
     
     url(r'.*', views.showLogin, name='showLogin'),
