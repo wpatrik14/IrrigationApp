@@ -337,6 +337,19 @@ def doRepeatableSchedule(request):
     return redirect('/getSystemStatus')
 
 @login_required
+def deleteZone(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
+    
+    id = request.POST['zone']
+    Zone.objects.get(id=id).delete()
+        
+    return redirect('/getSystemStatus')
+
+@login_required
 def deleteSimpleSchedule(request):
     if request.session.get('username') :
         username = request.session.get('username')

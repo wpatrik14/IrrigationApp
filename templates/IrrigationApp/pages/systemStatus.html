@@ -81,6 +81,13 @@
 				<button id="edit" name="edit" class="btn btn-default">EDIT</button>
 			</form>		
 		</td>
+		<td>
+		<form id="deleteZone" action="deleteZone" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="zone" value = "{{ zone.id }}"/>
+				<button id="delete" name="delete" class="btn btn-default">DELETE</button>
+			</form>
+		</td>
 	</tr>
 	{% endfor %}
 </table>
