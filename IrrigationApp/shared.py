@@ -17,7 +17,7 @@ def setIrrigation(mZone, status):
         settings = IrrigationSettings.objects.get(id=0)
     else:
         return redirect('/showAddSettings')
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mSwitch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mZone.switch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     mSwitch = Switch.objects.get(pinNumber=mZone.switch.pinNumber)
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
