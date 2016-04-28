@@ -13,6 +13,7 @@
 		<th>Name</th>
 		<!--<th>Soil type</th>-->
 		<!--<th>Size</th>-->
+		<th>Pin Number</th>
 		<th>Moisture</th>
 		<th>Valve</th>
 		<th>Uptime</th>
@@ -33,6 +34,7 @@
 		<td>{{zone.name}}</td>
 		<!--<td>{{zone.soil_type.name}}</td>-->
 		<!--<td>{{zone.size_m2}} m2</td>-->
+		<td>{{zone.switch.pinNumber}}%</td>
 		<td>{{zone.sensor.value}}%</td>
 		<td>
 			<form id="change_switch" action="getSystemStatus" method="post">
