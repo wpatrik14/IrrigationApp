@@ -41,13 +41,13 @@ class Zone(models.Model):
     type=models.CharField(max_length=10)
     irrigation_history=models.ForeignKey('IrrigationHistory', null = True)
     irrigation_template=models.ForeignKey('IrrigationTemplate', null = True)
-    size_m2=models.IntegerField(default=0)
-    root_length=models.IntegerField(default=20)
-    moisture_deviation=models.IntegerField(max_length=3)
-    efficiency=models.IntegerField(max_length=3)
-    soil_type=models.ForeignKey('SoilType')
+    #size_m2=models.IntegerField(default=0)
+    #root_length=models.IntegerField(default=20)
+    #moisture_deviation=models.IntegerField(max_length=3)
+    #efficiency=models.IntegerField(max_length=3)
+    #soil_type=models.ForeignKey('SoilType')
     water_quantity=models.FloatField(default=0)
-    template_day_counter = models.IntegerField(max_length=3, default=0)
+    #template_day_counter = models.IntegerField(max_length=3, default=0)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
