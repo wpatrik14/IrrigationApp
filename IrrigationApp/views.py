@@ -475,6 +475,15 @@ def doAddSettings(request):
     else :
         return redirect('/showLogin')
     
+    Switch(pinNumber="1",status=0).save()
+    Switch(pinNumber="2",status=0).save()
+    Switch(pinNumber="3",status=0).save()
+    Switch(pinNumber="4",status=0).save()
+    Sensor(node="1",value=0).save()
+    Sensor(node="2",value=0).save()
+    Sensor(node="3",value=0).save()
+    Sensor(node="4",value=0).save()
+    
     switch = request.POST['switch']
     evapotranspiracy = 1
     cost = request.POST['cost']
@@ -494,11 +503,6 @@ def doAddSettings(request):
                 run_limit=run_limit,
                 stop_limit=stop_limit)
     pump.save()
-    
-    Sensor(node="1",value=0).save()
-    Sensor(node="2",value=0).save()
-    Sensor(node="3",value=0).save()
-    Sensor(node="4",value=0).save()
     
     return redirect('/getSystemStatus')
 
