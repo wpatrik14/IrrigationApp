@@ -124,7 +124,10 @@ CELERYBEAT_SCHEDULE = {
     'get_weather_datas': {
         'task': 'IrrigationApp.tasks.get_weather_datas',
         'schedule': crontab(minute=0, hour='*/1'),
-        #'schedule': crontab(minute='*/1'),
+    },
+    'scheduler': {
+        'task': 'IrrigationApp.tasks.scheduler',
+        'schedule': crontab(minute='*/1'),
     },
     #===========================================================================
     #'automation_control': {
@@ -132,10 +135,6 @@ CELERYBEAT_SCHEDULE = {
     #    'schedule': crontab(minute='*/1'),
     #},
     #===========================================================================
-    'scheduler': {
-        'task': 'IrrigationApp.tasks.scheduler',
-        'schedule': crontab(minute='*/1'),
-    },
     #===========================================================================
     # 'follow_irrigation_template': {
     #     'task': 'IrrigationApp.tasks.follow_irrigation_template',
