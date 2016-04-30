@@ -95,6 +95,6 @@ def switchIrrigation(mZone, status):
             mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
             mZone.up_time = -1
             mZone.irrigation_history=None
-        setIrrigation(mZone, 0)
+            setIrrigation(mZone, 0)
     
     return
