@@ -217,6 +217,8 @@ def automation_control():
             zone.up_time=zone.up_time+1
             zone.duration_today=zone.duration_today+1
             zone.save(update_fields=['up_time','duration_today'])
+        if zone.up_time == -1 :
+            zone.up_time=0
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 

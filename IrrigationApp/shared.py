@@ -76,27 +76,25 @@ def switchIrrigation(mZone, status):
     else:
         return redirect('/showAddSettings')
     
-    if status == "1" :
-        if mZone.switch.status == 0 and mZone.duration_today<mZone.duration_maxLimit :
-            if mZone.irrigation_history is None :
-                mIrrigationHistory = IrrigationHistory(zone_id=mZone,
-                                                                   moisture_startValue=mZone.sensor.value
-                                                                   )
-                mIrrigationHistory.save()
-                mZone.irrigation_history=mIrrigationHistory
-            setIrrigation(mZone, 1)
+    if status == "1" and mZone.switch.status == 0 and mZone.duration_today<mZone.duration_maxLimit and mZone.up_time == 0 :
+        if mZone.irrigation_history is None :
+            mIrrigationHistory = IrrigationHistory(zone_id=mZone,
+                                                               moisture_startValue=mZone.sensor.value
+                                                               )
+            mIrrigationHistory.save()
+            mZone.irrigation_history=mIrrigationHistory
+        setIrrigation(mZone, 1)
                 
     else :         
-        if mZone.switch.status == 1 :
-            if mZone.irrigation_history is not None:
-                mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
-                mHistory.end_date=datetime.now()
-                mHistory.duration=mZone.up_time+1
-                mHistory.moisture_endValue=mZone.sensor.value
-                mHistory.status='done'
-                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-                mZone.up_time = -1
-                mZone.irrigation_history=None
-            setIrrigation(mZone, 0)
+        if mZone.switch.status == 1 and mZone.irrigation_history is not None and mZone.up_time > 0 :
+            mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
+            mHistory.end_date=datetime.now()
+            mHistory.duration=mZone.up_time+1
+            mHistory.moisture_endValue=mZone.sensor.value
+            mHistory.status='done'
+            mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+            mZone.up_time = -1
+            mZone.irrigation_history=None
+        setIrrigation(mZone, 0)
     
     return
