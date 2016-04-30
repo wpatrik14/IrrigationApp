@@ -249,9 +249,9 @@ def getSystemStatus(request):
         status = request.POST['status']
         mZone = Zone.objects.get(id=zone)
         if status == '1':    
-            setIrrigation(mZone, status)
+            switchIrrigation(mZone, status)
         else :
-            setIrrigation(mZone, status)
+            switchIrrigation(mZone, status)
     
     zones = Zone.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')

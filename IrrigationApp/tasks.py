@@ -204,50 +204,12 @@ def forecastIrrigation():
 
 @task()
 def automation_control():
-    reader = codecs.getreader("utf-8")
-    result=""
-    
-    for i in range(1,8):
-        subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', '0', str(i), '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        time.sleep(3)
-        with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-            result=str(file.read())
-            js = json.loads(result)
-            Switch(pinNumber=int(js['Pin']),status=int(js['Stat'])).save()
     
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
     else:
         return 'Settings not found'
-    
-    #===========================================================================
-    # settings.flow_meter=4
-    # settings.save(update_fields=['flow_meter'])
-    #===========================================================================
-    
-    tasks = TaskQueue.objects.all()
-    if len(tasks) > settings.runnable_zones_number-1 :
-        for i in range(settings.runnable_zones_number) :
-            task = TaskQueue.objects.get(seq_number=i+1)
-            zone=task.zone_id
-            if zone.switch.status == 0 :
-                switchIrrigation(zone, 1)
-    
-    #===========================================================================
-    # settings = IrrigationSettings.objects.get(id=0)
-    # settings.water = settings.water + 5.5
-    # settings.total_cost=settings.total_cost+settings.cost_perLiter*5.5
-    # settings.save(update_fields=['water','total_cost'])
-    # 
-    #===========================================================================
-    pump = Pump.objects.get(id=0)
-    if pump.switch.status == 1:
-        pump.up_time = pump.up_time + 1
-    else :
-        pump.down_time = pump.down_time + 1
-    
-    pump.save(update_fields=['up_time','down_time'])
     
     zones = Zone.objects.all()
     for zone in zones :

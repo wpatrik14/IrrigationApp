@@ -99,10 +99,8 @@ def switchIrrigation(mZone, status):
     else:
         return redirect('/showAddSettings')
     
-    pump=Pump.objects.get(id=0)
-    
     if status == 1 :
-        if pump.switch.status == 1 or pump.down_time >= pump.stop_limit :
+        if mZone.up_time > -1 :
             if mZone.switch.status == 0 and mZone.duration_today<mZone.duration_maxLimit :
                 if mZone.irrigation_history is None :
                     mIrrigationHistory = IrrigationHistory(zone_id=mZone,
@@ -118,8 +116,8 @@ def switchIrrigation(mZone, status):
             return 'Waiting for pump'
                 
     else :  
-        if pump.switch.status == 0 or pump.up_time >= pump.run_limit:              
-            if mZone.switch.status == 1:
+        if mZone.up_time >= 1:              
+            if mZone.switch.status == 1 :
                 if mZone.irrigation_history is not None:
                     mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
                     mHistory.end_date=datetime.now()

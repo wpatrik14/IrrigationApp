@@ -100,46 +100,6 @@
 <fieldset>
 
 	<!-- Form Name -->
-	<legend>Irrigation status</legend>
-	Pump is: {{ pump.switch.status }} (pin-number: {{ pump.switch.pinNumber }})</br>
-	Count of running zones: {{ settings.running_zones }}</br>
-	Flow meter: {{ settings.flow_meter }} liter/minute</br>
-	Water quantity: {{ settings.water }} liter</br>
-	Total cost: {{ settings.total_cost }} Ft ({{settings.cost_perLiter}} Ft/liter)</br></br>
-	Result: {{result}}</br></br>
-</fieldset>
-
-<fieldset>
-
-	<!-- Form Name -->
-	<legend>Task queue</legend>
-	
-	<table class="table table-striped table-condensed">
-	<thead>
-		<th>Zone</th>
-		<th>Seq number</th>
-		<th>Delete</th>
-	</thead>
-	{% for task in tasks %}
-	<tr>
-		<td>{{task.zone_id.name}}</td>
-		<td>{{task.seq_number}}</td>
-		<td>
-		<form id="deleteTask" action="deleteTask" method="post">
-				{% csrf_token %}
-				<input type="hidden" name="task" value = "{{ task.id }}"/>
-				<button id="delete" name="delete" class="btn btn-default">DELETE</button>
-			</form>
-		</td>
-	</tr>
-	{% endfor %}
-</table>
-	
-</fieldset>
-
-<fieldset>
-
-	<!-- Form Name -->
 	<legend>Simple schedules</legend>
 	<a href="/showSimpleSchedule">New Simple Schedule</a>
 

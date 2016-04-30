@@ -129,12 +129,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'IrrigationApp.tasks.scheduler',
         'schedule': crontab(minute='*/1'),
     },
-    #===========================================================================
-    #'automation_control': {
-    #    'task': 'IrrigationApp.tasks.automation_control',
-    #    'schedule': crontab(minute='*/1'),
-    #},
-    #===========================================================================
+    'automation_control': {
+        'task': 'IrrigationApp.tasks.automation_control',
+        'schedule': crontab(minute='*/1'),
+    },
     #===========================================================================
     # 'follow_irrigation_template': {
     #     'task': 'IrrigationApp.tasks.follow_irrigation_template',
