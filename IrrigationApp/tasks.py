@@ -16,6 +16,7 @@ from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue
 
 celery = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http']) #!
 celery.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
+date = datetime.now().strftime("%Y-%m-%d")
 
 def get_weather_data_from_server():
     res = urlopen('http://api.worldweatheronline.com/free/v1/weather.ashx?q=God&format=json&num_of_days=5&key=bffc71ad3fa08458dbf6fc77a0383cd421d61052')
@@ -212,6 +213,7 @@ def automation_control():
         return 'Settings not found'
     
     zones = Zone.objects.all()
+    now = datetime.now().strftime("%Y-%m-%d")
     for zone in zones :
         if zone.switch.status == 1 :
             zone.up_time=zone.up_time+1
@@ -219,6 +221,11 @@ def automation_control():
         if zone.up_time == -1 :
             zone.up_time=0
         zone.save(update_fields=['up_time','duration_today'])
+        if date != now :
+            date = now
+            zone.duration_today=0
+        if zone.duration_today>=zone.duration_maxLimit and zone.switch.status == 1 :
+            switchIrrigation(zone, "0")
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 
@@ -242,23 +249,23 @@ def scheduler():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(time) in str(simpleSchedule.time) :
-                switchIrrigation(simpleSchedule.zone, 1)
+                switchIrrigation(simpleSchedule.zone, "1")
                 changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.zone.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.zone.up_time) == int(simpleSchedule.zone.duration_maxLimit) or simpleSchedule.zone.switch.status == 'off':
                 simpleSchedule.delete()
-                switchIrrigation(simpleSchedule.zone, 0)
+                switchIrrigation(simpleSchedule.zone, "0")
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(time) in str(repeatableSchedule.time) :
-                switchIrrigation(repeatableSchedule.zone, 1)
+                switchIrrigation(repeatableSchedule.zone, "1")
                 changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.zone.duration_maxLimit) or repeatableSchedule.zone.switch.status == 'off':
-                switchIrrigation(repeatableSchedule.zone, 0)
+                switchIrrigation(repeatableSchedule.zone, "0")
                 changeSchedule(repeatableSchedule,'stopped')
                 
                            
