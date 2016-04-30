@@ -212,7 +212,7 @@ def automation_control():
         return 'Settings not found'
     
     zones = Zone.objects.all()
-    before = (datetime.datetime.now() - datetime.timedelta(minutes=2)).strftime("%Y-%m-%d")
+    before = (datetime.now() - timedelta(minutes=2)).strftime("%Y-%m-%d")
     now = datetime.now().strftime("%Y-%m-%d")
     for zone in zones :
         if before != now :
