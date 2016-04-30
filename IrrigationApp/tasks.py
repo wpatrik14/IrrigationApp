@@ -16,7 +16,6 @@ from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue
 
 celery = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http']) #!
 celery.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
-date = datetime.now().strftime("%Y-%m-%d")
 
 def get_weather_data_from_server():
     res = urlopen('http://api.worldweatheronline.com/free/v1/weather.ashx?q=God&format=json&num_of_days=5&key=bffc71ad3fa08458dbf6fc77a0383cd421d61052')
@@ -213,17 +212,17 @@ def automation_control():
         return 'Settings not found'
     
     zones = Zone.objects.all()
+    before = (datetime.datetime.now() - datetime.timedelta(minutes=2)).strftime("%Y-%m-%d")
     now = datetime.now().strftime("%Y-%m-%d")
     for zone in zones :
+        if before != now :
+            zone.duration_today=0
         if zone.switch.status == 1 :
             zone.up_time=zone.up_time+1
             zone.duration_today=zone.duration_today+1
         if zone.up_time == -1 :
             zone.up_time=0
         zone.save(update_fields=['up_time','duration_today'])
-        if date != now :
-            date = now
-            zone.duration_today=0
         if zone.duration_today>=zone.duration_maxLimit and zone.switch.status == 1 :
             switchIrrigation(zone, "0")
             
