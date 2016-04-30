@@ -176,16 +176,9 @@ def automation_control():
             if not weatherForecast.exists() :
                 get_weather_data_from_server()
                 weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-            if weatherForecast[0].precipMM > 2 :
-                irrigationStatus="0"
-            if weatherForecast[1].precipMM > 4 :
-                irrigationStatus="0"
-            if weatherForecast[2].precipMM > 6 :
-                irrigationStatus="0"
-            if weatherForecast[3].precipMM > 8 :
-                irrigationStatus="0"
-            if (irrigationStatus != str(zone.switch.status)) :
-                switchIrrigation(zone,irrigationStatus)
+            precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM + weatherForecast[2].precipMM
+            if precipMM > 6 :
+                switchIrrigation(zone,"0")
     
             
     return '\n\nAUTOMATION CONTROL........... DONE'
