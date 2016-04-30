@@ -247,17 +247,13 @@ def getSystemStatus(request):
     if 'zone' in request.POST :
         zone = request.POST['zone']
         status = request.POST['status']
-        mZone = Zone.objects.get(id=zone)
-        if status == '1':    
-            switchIrrigation(mZone, status)
-        else :
-            switchIrrigation(mZone, status)
+        mZone = Zone.objects.get(id=zone) 
+        switchIrrigation(mZone, status)
     
     zones = Zone.objects.all()
     tasks = TaskQueue.objects.all().order_by('seq_number')
-    pump = Pump.objects.get(id=0)
     
-    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'pump':pump, 'username':user.username, 'settings':settings,'zones':zones, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules, 'tasks':tasks})
+    return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'zones':zones, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
 
 @login_required
