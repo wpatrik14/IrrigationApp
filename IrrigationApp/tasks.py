@@ -142,69 +142,10 @@ def changeSchedule(schedule, status):
     schedule.status=status
     schedule.save(update_fields=['status'])
     return
-
-
-def forecastIrrigation():
-    weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
-    if not weatherForecast.exists() :
-        get_weather_data_from_server()
-    
-    weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:1]
-    zones = Zone.objects.all()
-    
-    for zone in zones :
-        if zone.type == "Automatic" :
-            if zone.sensor.value<zone.moisture_minLimit :
-                if zone.forecast_enabled :
-                    if weatherForecast[0].precipMM < 0.5 :
-                        #turn on irrigation if the precipitation of tomorrow will be less then 0.5 mm
-                        addTaskToQueue(zone)
-                    else :
-                        deleteTaskFromQueue(zone)
-                else :
-                   #turn on irrigation anyway
-                    addTaskToQueue(zone) 
-                
-            elif zone.sensor.value>zone.moisture_maxLimit:
-                #turn off irrigation
-                deleteTaskFromQueue(zone)
-                zone.up_time=0
-                zone.save(update_fields=['up_time'])
-                
-            if zone.switch.status == 1 :
-                if zone.duration_today+2>zone.duration_maxLimit :
-                    #turn off irrigation
-                    deleteTaskFromQueue(zone)
-                    zone.up_time=0
-                    zone.save(update_fields=['up_time'])
-                else :
-                    settings = IrrigationSettings.objects.get(id=0)
-                    zone.up_time=zone.up_time+1
-                    zone.duration_today=zone.duration_today+1
-                    zone.water_quantity=zone.water_quantity+5.5/float(zone.size_m2)/settings.running_zones
-                    zone.save(update_fields=['up_time','duration_today','water_quantity'])
-                    
-        else :
-            if zone.duration_today+1>zone.duration_maxLimit :
-                #turn off irrigation
-                deleteTaskFromQueue(zone)
-                zone.up_time=0
-                zone.save(update_fields=['up_time'])
-            
-            if zone.switch.status == 1 :
-                settings = IrrigationSettings.objects.get(id=0)
-                zone.up_time=zone.up_time+1
-                zone.duration_today=zone.duration_today+1
-                zone.water_quantity=zone.water_quantity+5.5/float(zone.size_m2)/settings.running_zones
-                zone.save(update_fields=['up_time','duration_today','water_quantity'])
-                
-            else :
-                zone.up_time=0
-                zone.save(update_fields=['up_time'])
-
+        
 @task()
 def automation_control():
-    
+        
     settings = IrrigationSettings.objects.all()
     if settings.exists() :
         settings = IrrigationSettings.objects.get(id=0)
@@ -217,14 +158,35 @@ def automation_control():
     for zone in zones :
         if before != now :
             zone.duration_today=0
+        
         if zone.switch.status == 1 :
             zone.up_time=zone.up_time+1
             zone.duration_today=zone.duration_today+1
+        
         if zone.up_time == -1 :
             zone.up_time=0
         zone.save(update_fields=['up_time','duration_today'])
+        
         if zone.duration_today>=zone.duration_maxLimit and zone.switch.status == 1 :
-            switchIrrigation(zone, "0")
+            switchIrrigation(zone,"0")
+        
+        if zone.forecast_enabled :
+            irrigationStatus=str(zone.switch.status)
+            weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
+            if not weatherForecast.exists() :
+                get_weather_data_from_server()
+                weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
+            if weatherForecast[0].precipMM > 2 :
+                irrigationStatus="0"
+            if weatherForecast[1].precipMM > 4 :
+                irrigationStatus="0"
+            if weatherForecast[2].precipMM > 6 :
+                irrigationStatus="0"
+            if weatherForecast[3].precipMM > 8 :
+                irrigationStatus="0"
+            if (irrigationStatus != str(zone.switch.status)) :
+                switchIrrigation(zone,irrigationStatus)
+    
             
     return '\n\nAUTOMATION CONTROL........... DONE'
 
