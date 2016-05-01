@@ -23,7 +23,7 @@ def setIrrigation(mZone, status):
     mSwitch.save(update_fields=['status'])
     mZone.switch=mSwitch
     
-    mZone.save(update_fields=['switch','up_time','irrigation_history','duration_maxLimit'])
+    mZone.save(update_fields=['switch','up_time','irrigation_history','moisture_maxLimit'])
     return
     
 def addTaskToQueue(mZone):
