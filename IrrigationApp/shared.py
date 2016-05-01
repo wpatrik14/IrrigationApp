@@ -22,7 +22,8 @@ def setIrrigation(mZone, status):
     mSwitch.status = status
     mSwitch.save(update_fields=['status'])
     mZone.switch=mSwitch
-    mZone.save(update_fields=['switch','up_time','irrigation_history'])
+    
+    mZone.save(update_fields=['switch','up_time','irrigation_history','duration_maxLimit'])
     return
     
 def addTaskToQueue(mZone):
@@ -95,6 +96,10 @@ def switchIrrigation(mZone, status):
             mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
             mZone.up_time = -1
             mZone.irrigation_history=None
+            if mZone.moisture_maxLimit == 6 :
+                mZone.moisture_maxLimit = 1
+            else :
+                mZone.moisture_maxLimit = mZone.moisture_maxLimit + 1
             setIrrigation(mZone, 0)
     
     return
