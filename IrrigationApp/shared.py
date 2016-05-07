@@ -102,7 +102,7 @@ def switchIrrigation(mZone, status):
             if mZone.irrigation_history is not None :
                 mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
                 mHistory.end_date=datetime.now()
-                mHistory.duration=mZone.up_time+1
+                mHistory.duration=mZone.up_time
                 mHistory.moisture_endValue=mZone.sensor.value
                 mHistory.status='done'
                 mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
