@@ -180,6 +180,10 @@ def automation_control():
             if precipMM >= zone.forecast_mm_limit :
                 zone.irrigation_enabled = False
                 zone.save(update_fields=['irrigation_enabled'])
+        else :
+            if not zone.irrigation_enabled :
+                zone.irrigation_enabled = True
+                zone.save(update_fields=['irrigation_enabled'])
     
     time.sleep(3)
     
