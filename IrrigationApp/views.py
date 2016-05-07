@@ -104,8 +104,8 @@ def doAddNewZone(request):
     #size = request.POST['size']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
-    moisture_minLimit = request.POST['moisture_minLimit']
-    moisture_maxLimit = request.POST['moisture_maxLimit']
+    forecast_mm_limit = request.POST['forecast_mm_limit']
+    current_pipe = request.POST['current_pipe']
     duration_maxLimit = request.POST['duration_maxLimit']
     #irrigationTemplate_id = request.POST['irrigationTemplate']
     #soil_type = request.POST['soil_type']
@@ -125,8 +125,8 @@ def doAddNewZone(request):
     zone = Zone(name = name,
          sensor = sensor,
          switch = switch,
-         moisture_minLimit = moisture_minLimit,
-         moisture_maxLimit = moisture_maxLimit,
+         forecast_mm_limit = forecast_mm_limit,
+         current_pipe = current_pipe,
          duration_maxLimit = duration_maxLimit,
          forecast_enabled = enabled,
          type = type
@@ -179,8 +179,8 @@ def doEditZone(request):
     #size = request.POST['size']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
-    moisture_minLimit = request.POST['moisture_minLimit']
-    moisture_maxLimit = request.POST['moisture_maxLimit']
+    forecast_mm_limit = request.POST['forecast_mm_limit']
+    current_pipe = request.POST['current_pipe']
     duration_maxLimit = request.POST['duration_maxLimit']
     #irrigationTemplate_id = request.POST['irrigationTemplate']
     #soil_type = request.POST['soil_type']
@@ -202,8 +202,8 @@ def doEditZone(request):
     zone.name = name
     zone.sensor = sensor
     zone.switch = switch
-    zone.moisture_minLimit = moisture_minLimit
-    zone.moisture_maxLimit = moisture_maxLimit
+    zone.forecast_mm_limit = forecast_mm_limit
+    zone.current_pipe = current_pipe
     zone.duration_maxLimit = duration_maxLimit
     zone.forecast_enabled = enabled
     zone.type = type
