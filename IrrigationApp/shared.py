@@ -9,6 +9,7 @@ import json
 import logging
 import time
 import math
+import random
 #import paho.mqtt.publish as publish
 
 def setIrrigation(mZone, status):
@@ -17,13 +18,22 @@ def setIrrigation(mZone, status):
         settings = IrrigationSettings.objects.get(id=0)
     else:
         return redirect('/showAddSettings')
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', '1', '0', str(mZone.switch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    mSwitch = Switch.objects.get(pinNumber=mZone.switch.pinNumber)
-    mSwitch.status = status
-    mSwitch.save(update_fields=['status'])
-    mZone.switch=mSwitch
+    seq=random.randint(1, 10)
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', str(seq), str(mZone.switch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    time.sleep(2)
+    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+        result=str(file.read())
+        js = json.loads(result)
+        r_seq=js['Seq']
+        if r_seq==str(seq) :
+            pin=js['Pin']
+            stat=js['Stat']
+            mSwitch = Switch.objects.get(pinNumber=pin)
+            mSwitch.status = stat
+            mSwitch.save(update_fields=['status'])
+            mZone.switch=mSwitch
+            mZone.save(update_fields=['switch','up_time','irrigation_history','moisture_maxLimit'])
     
-    mZone.save(update_fields=['switch','up_time','irrigation_history','moisture_maxLimit'])
     return
     
 def addTaskToQueue(mZone):
