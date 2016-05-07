@@ -158,6 +158,7 @@ def automation_control():
     for zone in zones :
         if before != now :
             zone.duration_today=0
+            zone.irrigation_enabled=True
         
         if zone.switch.status == 1 :
             zone.up_time=zone.up_time+1
@@ -165,7 +166,7 @@ def automation_control():
         
         if zone.up_time == -1 :
             zone.up_time=0
-        zone.save(update_fields=['up_time','duration_today'])
+        zone.save(update_fields=['up_time','duration_today','irrigation_enabled'])
         
         if zone.duration_today>=zone.duration_maxLimit and zone.switch.status == 1 :
             switchIrrigation(zone,"0")
