@@ -183,7 +183,7 @@ def automation_control():
     time.sleep(3)
     
     date = datetime.now().strftime("%Y-%m-%d")
-    time = datetime.now().strftime("%H:%M")
+    cur_time = datetime.now().strftime("%H:%M")
     dayNumber = datetime.now().strftime("%w")
     days = ['sunday','monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     simpleSchedules = SimpleSchedule.objects.all()
@@ -192,7 +192,7 @@ def automation_control():
     ### STARTING / END SCHEDULES
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
-            if str(time) in str(simpleSchedule.time) :
+            if str(cur_time) in str(simpleSchedule.time) :
                 switchIrrigation(simpleSchedule.zone, "1")
                 changeSchedule(simpleSchedule,'running')
             
@@ -203,7 +203,7 @@ def automation_control():
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
-            if str(time) in str(repeatableSchedule.time) :
+            if str(cur_time) in str(repeatableSchedule.time) :
                 switchIrrigation(repeatableSchedule.zone, "1")
                 changeSchedule(repeatableSchedule,'running')
             
