@@ -180,18 +180,6 @@ def automation_control():
             if precipMM >= zone.moisture_minLimit and zone.switch.status == 1 :
                 switchIrrigation(zone,"0")
     
-            
-    return '\n\nAUTOMATION CONTROL........... DONE'
-
-@task()
-def scheduler():
-    
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return "Please set up settings first"
-    
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%H:%M")
     dayNumber = datetime.now().strftime("%w")
@@ -221,10 +209,8 @@ def scheduler():
             if int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.zone.duration_maxLimit) or repeatableSchedule.zone.switch.status == 'off':
                 switchIrrigation(repeatableSchedule.zone, "0")
                 changeSchedule(repeatableSchedule,'stopped')
-                
-                           
-    return '\n\nSCHEDULER........... DONE'
-
+            
+    return '\n\nAUTOMATION CONTROL........... DONE'
 
 @task()
 def follow_irrigation_template():
