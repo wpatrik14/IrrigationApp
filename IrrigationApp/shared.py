@@ -98,19 +98,20 @@ def switchIrrigation(mZone, status):
             setIrrigation(mZone, 1)
                     
     else :         
-        if mZone.switch.status == 1 and mZone.irrigation_history is not None and mZone.up_time > 0 :
-            mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
-            mHistory.end_date=datetime.now()
-            mHistory.duration=mZone.up_time+1
-            mHistory.moisture_endValue=mZone.sensor.value
-            mHistory.status='done'
-            mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+        if mZone.switch.status == 1 and mZone.up_time > 0 :
+            if mZone.irrigation_history is not None :
+                mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
+                mHistory.end_date=datetime.now()
+                mHistory.duration=mZone.up_time+1
+                mHistory.moisture_endValue=mZone.sensor.value
+                mHistory.status='done'
+                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
             mZone.up_time = -1
             mZone.irrigation_history=None
             if mZone.current_pipe == 6 :
                 mZone.current_pipe = 1
             else :
                 mZone.current_pipe = mZone.current_pipe + 1
-        setIrrigation(mZone, 0)
+            setIrrigation(mZone, 0)
 
     return
