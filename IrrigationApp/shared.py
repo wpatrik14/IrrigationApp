@@ -111,6 +111,6 @@ def switchIrrigation(mZone, status):
                 mZone.current_pipe = 1
             else :
                 mZone.current_pipe = mZone.current_pipe + 1
-            setIrrigation(mZone, 0)
+        setIrrigation(mZone, 0)
 
     return
