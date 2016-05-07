@@ -180,7 +180,7 @@ def automation_control():
             if precipMM >= zone.moisture_minLimit and zone.switch.status == 1 :
                 switchIrrigation(zone,"0")
     
-    sleep(3)
+    time.sleep(3)
     
     date = datetime.now().strftime("%Y-%m-%d")
     time = datetime.now().strftime("%H:%M")
