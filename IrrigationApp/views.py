@@ -239,11 +239,6 @@ def getSystemStatus(request):
     else:
         return redirect('/showAddSettings')
     
-    simpleSchedules = SimpleSchedule.objects.all()
-    repeatableSchedules = RepeatableSchedule.objects.all()
-    
-    result='N/A'
-    
     if 'zone' in request.POST :
         zone = request.POST['zone']
         status = request.POST['status']
@@ -251,7 +246,8 @@ def getSystemStatus(request):
         switchIrrigation(mZone, status)
     
     zones = Zone.objects.all()
-    tasks = TaskQueue.objects.all().order_by('seq_number')
+    simpleSchedules = SimpleSchedule.objects.all()
+    repeatableSchedules = RepeatableSchedule.objects.all()
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'zones':zones, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
 
