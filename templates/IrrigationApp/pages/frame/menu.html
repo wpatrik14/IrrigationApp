@@ -1,36 +1,33 @@
 <body onload="startTime()">
-	
-	<div class="container">
+<div class="container">
     <div id="navbar">
-          <ul class="nav navbar-nav">
-            <li><a href="{% url 'getSystemStatus'%}">Status</a></li>
-            <!--<li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Templates<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="">Add Irrigation Template</a></li>
-            	<li><a href="">Delete Irrigation Template</a></li>
-              </ul>
-            </li>-->
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Weather<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="{% url 'showWeatherStatus'%}">Current weather status</a></li>
-            	<li><a href="{% url 'showWeatherHistory'%}">Weather history</a></li>
-              </ul>
-            </li>
-            <li><a href="{% url 'showIrrigationHistory'%}">Irrigation History</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <!--<li><a href="">Soil types</a></li>-->
-            	<li><a href="{% url 'showAddSettings'%}">Irrigation</a></li>
-              </ul>
-            </li>
-            <li><a href="{% url 'doLogout'%}">Logout</a></li>
+      <ul>
+        <li><a href="{% url 'getSystemStatus'%}">Status</a></li>
+        <!--<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Templates<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="">Add Irrigation Template</a></li>
+        	<li><a href="">Delete Irrigation Template</a></li>
           </ul>
-        </div>
-        <br/>
-        <br/>
+        </li>-->
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Weather<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="{% url 'showWeatherStatus'%}">Current weather status</a></li>
+        	<li><a href="{% url 'showWeatherHistory'%}">Weather history</a></li>
+          </ul>
+        </li>
+        <li><a href="{% url 'showIrrigationHistory'%}">Irrigation History</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <!--<li><a href="">Soil types</a></li>-->
+        	<li><a href="{% url 'showAddSettings'%}">Irrigation</a></li>
+          </ul>
+        </li>
+        <li><a href="{% url 'doLogout'%}">Logout</a></li>
+      </ul>
+    </div>
     
 
 	
