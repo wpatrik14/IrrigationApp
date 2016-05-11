@@ -312,7 +312,7 @@ def doRepeatableSchedule(request):
     name = request.POST['name']
     time = request.POST['time']
     duration = request.POST['duration']
-    days = ['1_monday', '2_tuesday', '3_wednesday', '4_thursday', '5_friday', '6_saturday', '7_sunday']
+    days = ['1Monday', '2Tuesday', '3Wednesday', '4Thursday', '5Friday', '6Saturday', '7Sunday']
     zones = Zone.objects.all()
     for zone in zones :    
         if str(zone.id) in request.POST:    
