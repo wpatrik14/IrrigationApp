@@ -191,7 +191,7 @@ def automation_control():
     date = datetime.now().strftime("%Y-%m-%d")
     cur_time = datetime.now().strftime("%H:%M")
     dayNumber = datetime.now().strftime("%w")
-    days = ['sunday','monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    days = ['7_sunday','1_monday', '2_tuesday', '3_wednesday', '4_thursday', '5_friday', '6_saturday']
     simpleSchedules = SimpleSchedule.objects.all()
     repeatableSchedules = RepeatableSchedule.objects.all()
     
