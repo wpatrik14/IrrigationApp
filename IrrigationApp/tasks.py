@@ -177,7 +177,7 @@ def automation_control():
             if not weatherForecast.exists() :
                 get_weather_data_from_server()
                 weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-            precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM + weatherForecast[2].precipMM
+            precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM
             if precipMM >= zone.forecast_mm_limit :
                 zone.irrigation_enabled = False
                 zone.save(update_fields=['irrigation_enabled'])
