@@ -8,6 +8,7 @@ from IrrigationApp.models import Pump, IrrigationTemplate, MoistureHistory, Zone
 from django.http import HttpResponse
 import json
 import time
+import random
 from urllib.request import urlopen
 from celery import task
 import subprocess
