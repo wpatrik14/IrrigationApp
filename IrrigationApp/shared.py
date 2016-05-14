@@ -27,7 +27,10 @@ def setIrrigation(mZone, status):
             mSwitch.status = stat
             mSwitch.save(update_fields=['status'])
             mZone.switch=mSwitch
-            mZone.save(update_fields=['switch','up_time','irrigation_history','current_pipe'])
+            mZone.type="OK"
+        else :
+            mZone.type="ERROR"
+        mZone.save(update_fields=['switch','up_time','irrigation_history','current_pipe','type'])
     
     return
     
