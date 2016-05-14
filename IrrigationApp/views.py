@@ -109,7 +109,7 @@ def doAddNewZone(request):
     duration_maxLimit = request.POST['duration_maxLimit']
     #irrigationTemplate_id = request.POST['irrigationTemplate']
     #soil_type = request.POST['soil_type']
-    type = request.POST['type']
+    #type = request.POST['type']
     #root_length = request.POST['root']
     #deviation = request.POST['deviation']
     #efficiency = request.POST['efficiency']
@@ -129,7 +129,7 @@ def doAddNewZone(request):
          current_pipe = current_pipe,
          duration_maxLimit = duration_maxLimit,
          forecast_enabled = enabled,
-         type = type
+         #type = type
          #soil_type=soil,
          #size_m2=size,
          #root_length=root_length,
@@ -184,7 +184,7 @@ def doEditZone(request):
     duration_maxLimit = request.POST['duration_maxLimit']
     #irrigationTemplate_id = request.POST['irrigationTemplate']
     #soil_type = request.POST['soil_type']
-    type = request.POST['type']
+    #type = request.POST['type']
     #root_length = request.POST['root']
     #deviation = request.POST['deviation']
     #efficiency = request.POST['efficiency']
@@ -206,7 +206,7 @@ def doEditZone(request):
     zone.current_pipe = current_pipe
     zone.duration_maxLimit = duration_maxLimit
     zone.forecast_enabled = enabled
-    zone.type = type
+    #zone.type = type
     #zone.soil_type=soil
     #zone.size_m2=size
     #zone.root_length=root_length
