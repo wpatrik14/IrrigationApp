@@ -130,8 +130,8 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute='*/1'),
     },
     'getSwitchData': {
-        'task': 'IrrigationApp.tasks.getSensorData',
-        'schedule': crontab(minute=0, hour='*/1'),
+        'task': 'IrrigationApp.tasks.getSwitchData',
+        'schedule': crontab(minute='*/2'),
     },
     #===========================================================================
     # 'follow_irrigation_template': {
