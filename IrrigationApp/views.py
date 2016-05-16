@@ -232,8 +232,8 @@ def checkZone(request):
     else :
         return redirect('/showLogin')
     
-    id = request.POST['checkZone']
-    mZone = Zone.objects.get(id=id)
+    zoneid = request.POST['checkZone']
+    mZone = Zone.objects.get(id=zoneid)
     checkZone(mZone)
         
     return redirect('/getSystemStatus')
