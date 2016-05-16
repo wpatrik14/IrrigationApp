@@ -13,7 +13,7 @@ from urllib.request import urlopen
 from celery import task
 import subprocess
 #import paho.mqtt.publish as publish
-from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue, deleteTaskFromQueue
+from IrrigationApp.shared import setIrrigation, switchIrrigation, checkZone
 from django.core.mail import send_mail
 
 celery = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http']) #!
