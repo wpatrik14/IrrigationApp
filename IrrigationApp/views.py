@@ -19,6 +19,7 @@ import subprocess
 import random
 from IrrigationApp.models import MoistureHistory, Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
 from IrrigationApp.shared import setIrrigation, switchIrrigation
+from django.core.mail import send_mail
 
 def showMenu(request):
     return render(request, 'IrrigationApp/pages/menu.html')
@@ -238,7 +239,7 @@ def checkZone(request):
     
     seq=random.randint(0, 9)
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', str(seq), str(mZone.switch.pinNumber), "2"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    #time.sleep(1)
+    time.sleep(1)
     with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
         result=str(file.read())
         js = json.loads(result)
