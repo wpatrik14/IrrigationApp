@@ -18,7 +18,7 @@
 		<th>Valve</th>
 		<th>Uptime</th>
 		<!--<th>mm</th>-->
-		<th>Check</th>
+		<th>Test</th>
 		<!--<th>Days</th>-->
 		<!--<th>Forecast min. mm</th>-->
 		<th>Pipe</th>
@@ -28,6 +28,7 @@
 		<th>Enabled</th>
 		<!--<th>Moisture history</th>-->
 		<!--<th>Irrigation template</th>-->
+		<th>Check</th>
 		<th>Edit</th>
 		<th>Delete</th>
 	</thead>
@@ -79,6 +80,13 @@
 				<button id="show" name="show" class="btn btn-default">Template</button>
 			</form>		
 		</td>-->
+		<td>
+			<form id="checkZone" action="checkZone" method="post">
+				{% csrf_token %}
+				<input type="hidden" name="checkZone" value = "{{ zone.id }}"/>
+				<button id="check" name="check" class="btn btn-default">CHECK</button>
+			</form>		
+		</td>
 		<td>
 			<form id="showEditZone" action="showEditZone" method="post">
 				{% csrf_token %}

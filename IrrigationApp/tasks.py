@@ -293,24 +293,7 @@ def getSensorData():
 def getSwitchData():
     zones=Zone.objects.all()
     for mZone in zones :
-        seq=random.randint(0, 9)
-        subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', str(seq), str(mZone.switch.pinNumber), "2"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        time.sleep(1)
-        with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-            result=str(file.read())
-            js = json.loads(result)
-            r_seq=js['Seq']
-            if r_seq==str(seq) :
-                pin=js['Pin']
-                stat=js['Stat']
-                mSwitch = Switch.objects.get(pinNumber=pin)
-                mSwitch.status = stat
-                mSwitch.save(update_fields=['status'])
-                mZone.type="OK"
-            else :
-                mZone.type="ERROR"
-                send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
-            mZone.save(update_fields=['type'])           
+        checkZone(mZone)           
         time.sleep(10)
     
     return '\n\nGET SWITCH DATA...........DONE'
