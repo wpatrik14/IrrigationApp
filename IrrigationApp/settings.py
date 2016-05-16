@@ -139,6 +139,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'IrrigationApp.tasks.getSwitchData',
         'schedule': crontab(minute=2, hour='*/1'),
     },
+    'doForecast': {
+        'task': 'IrrigationApp.tasks.doForecast',
+        'schedule': crontab(minute=0, hour=5),
+    },
     #===========================================================================
     # 'follow_irrigation_template': {
     #     'task': 'IrrigationApp.tasks.follow_irrigation_template',

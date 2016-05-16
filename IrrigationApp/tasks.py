@@ -172,24 +172,7 @@ def automation_control():
         
         if zone.duration_today>=zone.duration_maxLimit and zone.switch.status == 1 :
             switchIrrigation(zone,"0")
-        
-        if zone.forecast_enabled :
-            irrigationStatus=str(zone.switch.status)
-            weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-            if not weatherForecast.exists() :
-                get_weather_data_from_server()
-                weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-            precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM
-            if precipMM >= zone.forecast_mm_limit :
-                zone.irrigation_enabled = False
-                zone.save(update_fields=['irrigation_enabled'])
-        else :
-            if not zone.irrigation_enabled :
-                zone.irrigation_enabled = True
-                zone.save(update_fields=['irrigation_enabled'])
-    
-    time.sleep(3)
-    
+            
     date = datetime.now().strftime("%Y-%m-%d")
     cur_time = datetime.now().strftime("%H:%M")
     dayNumber = datetime.now().strftime("%w")
@@ -201,8 +184,9 @@ def automation_control():
     for simpleSchedule in simpleSchedules :
         if str(simpleSchedule.date) == str(date) :
             if str(cur_time) in str(simpleSchedule.time) :
-                switchIrrigation(simpleSchedule.zone, "1")
-                changeSchedule(simpleSchedule,'running')
+                if simpleSchedule.zone.irrigation_enabled or not simpleSchedule.zone.forecast_enabled :
+                    switchIrrigation(simpleSchedule.zone, "1")
+                    changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.zone.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.zone.up_time) == int(simpleSchedule.zone.duration_maxLimit) or simpleSchedule.zone.switch.status == 'off':
@@ -212,8 +196,9 @@ def automation_control():
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(cur_time) in str(repeatableSchedule.time) :
-                switchIrrigation(repeatableSchedule.zone, "1")
-                changeSchedule(repeatableSchedule,'running')
+                if repeatableSchedule.zone.irrigation_enabled or not repeatableSchedule.zone.forecast_enabled :
+                    switchIrrigation(repeatableSchedule.zone, "1")
+                    changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.zone.duration_maxLimit) or repeatableSchedule.zone.switch.status == 'off':
@@ -223,77 +208,95 @@ def automation_control():
     return '\n\nAUTOMATION CONTROL........... DONE'
 
 @task()
-def follow_irrigation_template():
-    
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return "Please set up settings first"
-    
-    irrigationTemplates = IrrigationTemplate.objects.all()
-    zones = Zone.objects.all()
-    
-    for zone in zones :
-        zone.duration_today=0
-        zone.water_quantity=0
-        zone.save(update_fields=['duration_today','water_quantity'])
-        if zone.irrigation_template is not None :
-            try:
-                templateValues = ZoneTemplateValue.objects.filter(zone=zone)
-                required_irrigation=False
-                runtime = 0
-                for templateValue in templateValues :
-                    if templateValue.kc_value.day_number == zone.template_day_counter :
-                        if zone.type == 'Automatic' :
-                            if templateValue.irrigation_required == True :
-                                required_irrigation=True
-                                runtime = templateValue.runtime
-                if required_irrigation == True :
-                    irrigation_date = datetime.now() + timedelta(hours=1)
-                    date = irrigation_date.strftime("%Y-%m-%d")
-                    time = irrigation_date.strftime("%H:%M")
-                    zones = Zone.objects.all()
-                    schedule=SimpleSchedule(date=date,
-                                   time=time,
-                                   duration=runtime,
-                                   zone=zone)
-                    schedule.save()                
-                zone.template_day_counter=zone.template_day_counter+1
-                zone.save(update_fields=['template_day_counter'])
-                                
-            except Exception as e :
-                switchIrrigation(zone, 0)
-                zone.type='Manual'
-                zone.template=None
-                zone.template_day_counter=0
-                zone.save(update_fields=['type','template','template_day_counter'])
-    
-    
-    return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
-
-
-@task()
-def getSensorData():
+def doForecast():
     zones=Zone.objects.all()
     for zone in zones :
-        subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', str(zone.sensor.node), '0', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        time.sleep(3)
-        with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-            result=str(file.read())
-            js = json.loads(result)
-            sensor=Sensor(node=js['Node'],value=int(js['Stat']))
-            sensor.save()
-            MoistureHistory(zone_id=zone,value=sensor.value,date=datetime.now()).save()
-        #publish.single("irrigationapp/sensor", "{\"Node\":\""+js['Node']+"\",\"Value\":\""+js['Stat']+"\"", hostname="iot.eclipse.org")
-            
-    return '\n\nGET SENSOR DATA...........DONE'
+        weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
+        if not weatherForecast.exists() :
+            get_weather_data_from_server()
+            weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
+        precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM
+        if precipMM >= zone.forecast_mm_limit :
+            zone.irrigation_enabled = False
+            zone.save(update_fields=['irrigation_enabled'])
+        else :
+            zone.irrigation_enabled = True
+        zone.save(update_fields=['irrigation_enabled'])
+
+    return '\n\nDOING FORECAST...........DONE'
 
 @task()
 def getSwitchData():
     zones=Zone.objects.all()
     for mZone in zones :
         checkZone(mZone)           
-        time.sleep(10)
+        time.sleep(1)
     
     return '\n\nGET SWITCH DATA...........DONE'
+
+# @task()
+# def follow_irrigation_template():
+#     
+#     settings = IrrigationSettings.objects.all()
+#     if settings.exists() :
+#         settings = IrrigationSettings.objects.get(id=0)
+#     else:
+#         return "Please set up settings first"
+#     
+#     irrigationTemplates = IrrigationTemplate.objects.all()
+#     zones = Zone.objects.all()
+#     
+#     for zone in zones :
+#         zone.duration_today=0
+#         zone.water_quantity=0
+#         zone.save(update_fields=['duration_today','water_quantity'])
+#         if zone.irrigation_template is not None :
+#             try:
+#                 templateValues = ZoneTemplateValue.objects.filter(zone=zone)
+#                 required_irrigation=False
+#                 runtime = 0
+#                 for templateValue in templateValues :
+#                     if templateValue.kc_value.day_number == zone.template_day_counter :
+#                         if zone.type == 'Automatic' :
+#                             if templateValue.irrigation_required == True :
+#                                 required_irrigation=True
+#                                 runtime = templateValue.runtime
+#                 if required_irrigation == True :
+#                     irrigation_date = datetime.now() + timedelta(hours=1)
+#                     date = irrigation_date.strftime("%Y-%m-%d")
+#                     time = irrigation_date.strftime("%H:%M")
+#                     zones = Zone.objects.all()
+#                     schedule=SimpleSchedule(date=date,
+#                                    time=time,
+#                                    duration=runtime,
+#                                    zone=zone)
+#                     schedule.save()                
+#                 zone.template_day_counter=zone.template_day_counter+1
+#                 zone.save(update_fields=['template_day_counter'])
+#                                 
+#             except Exception as e :
+#                 switchIrrigation(zone, 0)
+#                 zone.type='Manual'
+#                 zone.template=None
+#                 zone.template_day_counter=0
+#                 zone.save(update_fields=['type','template','template_day_counter'])
+#     
+#     
+#     return '\n\nFOLLOWING IRRIGATION TEMPLATE...........DONE'
+# 
+# 
+# @task()
+# def getSensorData():
+#     zones=Zone.objects.all()
+#     for zone in zones :
+#         subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withresponse', '0', str(zone.sensor.node), '0', '0'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#         time.sleep(3)
+#         with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
+#             result=str(file.read())
+#             js = json.loads(result)
+#             sensor=Sensor(node=js['Node'],value=int(js['Stat']))
+#             sensor.save()
+#             MoistureHistory(zone_id=zone,value=sensor.value,date=datetime.now()).save()
+#         #publish.single("irrigationapp/sensor", "{\"Node\":\""+js['Node']+"\",\"Value\":\""+js['Stat']+"\"", hostname="iot.eclipse.org")
+#             
+#     return '\n\nGET SENSOR DATA...........DONE'
