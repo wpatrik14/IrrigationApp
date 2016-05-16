@@ -29,7 +29,6 @@ def setIrrigation(mZone, status):
             mSwitch.save(update_fields=['status'])
             mZone.switch=mSwitch
             mZone.type="OK"
-            send_mail('Irrigation Status Changed', 'Current status on pin: '+pin+' is: '+stat, 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
         else :
             mZone.type="ERROR"
             send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
