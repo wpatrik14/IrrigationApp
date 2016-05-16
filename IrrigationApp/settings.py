@@ -27,7 +27,7 @@ SECRET_KEY = '^k1@-=i^uf+d@3o9@i#c!uszx79j0%&g!#@yudve7$*%b86f*y'
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wpatrik.ddns.net']
 
 
 # Application definition
