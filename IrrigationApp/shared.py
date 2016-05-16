@@ -11,6 +11,7 @@ import time
 import math
 import random
 #import paho.mqtt.publish as publish
+from django.core.mail import send_mail
 
 def setIrrigation(mZone, status):
     seq=random.randint(0, 9)
@@ -28,8 +29,10 @@ def setIrrigation(mZone, status):
             mSwitch.save(update_fields=['status'])
             mZone.switch=mSwitch
             mZone.type="OK"
+            send_mail('Irrigation Status Changed', 'Current status on pin: '+pin+' is: '+stat, 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
         else :
             mZone.type="ERROR"
+            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
         mZone.save(update_fields=['switch','up_time','irrigation_history','current_pipe','type'])
     
     return

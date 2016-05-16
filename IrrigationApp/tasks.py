@@ -219,9 +219,9 @@ def automation_control():
             if int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.zone.duration_maxLimit) or repeatableSchedule.zone.switch.status == 'off':
                 switchIrrigation(repeatableSchedule.zone, "0")
                 changeSchedule(repeatableSchedule,'stopped')
-    
-    send_mail('Irrigation Test Message', 'Here is the message.', 'noriespatrik@gmail.com',
-    ['wpatrik14@gmail.com'], fail_silently=False)        
+    pin="1"
+    stat="1"
+    send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino where pin '+pin+' and stat '+stat, 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)        
     return '\n\nAUTOMATION CONTROL........... DONE'
 
 @task()
@@ -311,6 +311,7 @@ def getSwitchData():
                 mZone.type="OK"
             else :
                 mZone.type="ERROR"
+                send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
             mZone.save(update_fields=['type'])           
         time.sleep(10)
     
