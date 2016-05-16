@@ -104,6 +104,12 @@ USE_L10N = False
 DATE_FORMAT = "Y-m-d"
 USE_TZ = True
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '465'
+EMAIL_HOST_USER = 'noriespatrik@gmail.com'
+EMAIL_HOST_PASSWORD = 'WPatriot91'
+EMAIL_USE_TLS = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

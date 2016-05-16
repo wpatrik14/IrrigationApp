@@ -14,6 +14,7 @@ from celery import task
 import subprocess
 #import paho.mqtt.publish as publish
 from IrrigationApp.shared import setIrrigation, switchIrrigation, addTaskToQueue, deleteTaskFromQueue
+from django.core.mail import send_mail
 
 celery = Celery('tasks', backend="amqp", broker='amqp://guest@localhost:5672//', include=['celery.task.http']) #!
 celery.conf.update(CELERY_ACCEPT_CONTENT = ['json'])
@@ -218,7 +219,9 @@ def automation_control():
             if int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.zone.duration_maxLimit) or repeatableSchedule.zone.switch.status == 'off':
                 switchIrrigation(repeatableSchedule.zone, "0")
                 changeSchedule(repeatableSchedule,'stopped')
-            
+    
+    send_mail('Irrigation Test Message', 'Here is the message.', 'noriespatrik@gmail.com',
+    ['wpatrik14@gmail.com'], fail_silently=False)        
     return '\n\nAUTOMATION CONTROL........... DONE'
 
 @task()
