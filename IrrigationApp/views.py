@@ -225,11 +225,6 @@ def doEditZone(request):
     return redirect('/getSystemStatus')
 
 def checkZone(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
     
     zoneid = request.POST['checkZone']
     mZone = Zone.objects.get(id=zoneid)
