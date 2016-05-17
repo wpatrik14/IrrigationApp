@@ -133,13 +133,6 @@ def get_weather_datas():
     
     return '\n\nGETTING WEATHER DATAS........... DONE'
 
-
-def changeZone(zone):    
-    mZone = Zone.objects.get(id=zone.id)
-    mZone.up_time=up_time
-    mZone.save(update_fields=['up_time'])
-    return
-
 def changeSchedule(schedule, status):
     schedule.status=status
     schedule.save(update_fields=['status'])
