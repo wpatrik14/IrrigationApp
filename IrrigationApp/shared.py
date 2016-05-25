@@ -37,7 +37,7 @@ def setIrrigation(mZone, status):
     return
     
 def switchIrrigation(mZone, status):   
-    if status == "1" and mZone.switch.status == 0 and mZone.duration_today<mZone.duration_maxLimit and mZone.up_time == 0 :
+    if status == "1" and mZone.switch.status == 0 and mZone.up_time == 0 :
         if mZone.irrigation_enabled or not mZone.forecast_enabled :
             if mZone.irrigation_history is None :
                 mIrrigationHistory = IrrigationHistory(zone_id=mZone,
