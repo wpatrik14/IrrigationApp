@@ -56,7 +56,7 @@ Welcome {{username}}!
 		</td>
 		<td>{{zone.up_time}} min</td>
 		<!--<td>{{zone.water_quantity|floatformat:-2}} mm</td>-->
-		<td>{% if zone.type == True %}
+		<td>{% if zone.type %}
 			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
 			{% else %}
 			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
@@ -66,12 +66,12 @@ Welcome {{username}}!
 		<td>{{zone.current_pipe}}</td>
 		<td>{{zone.duration_today}} min</td>
 		<!--<td>{{zone.duration_maxLimit}} min</td>-->
-		<td>{% if zone.forecast_enabled == True %}
+		<td>{% if zone.forecast_enabled %}
 			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
 			{% else %}
 			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
 		</td>
-		<td>{% if zone.irrigation_enabled == True %}
+		<td>{% if zone.irrigation_enabled %}
 			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
 			{% else %}
 			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
