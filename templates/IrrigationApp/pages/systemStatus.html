@@ -62,16 +62,8 @@ Welcome {{username}}!
 		<td>{{zone.current_pipe}}</td>
 		<td>{{zone.duration_today}} min</td>
 		<!--<td>{{zone.duration_maxLimit}} min</td>-->
-		<td>{% if zone.forecast_enabled %}
-			OFF
-			{% else %}
-			ON
-		</td>
-		<td>{% if zone.irrigation_enabled %}
-			YES
-			{% else %}
-			NO
-		</td>
+		<td>{{ zone.forecast_enabled }}</td>
+		<td>{{zone.irrigation_enabled }}</td>
 		<!--
 		<td>
 			<form id="showMoistureHistory" action="showMoistureHistory" method="post">
