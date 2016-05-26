@@ -63,14 +63,14 @@ Welcome {{username}}!
 		<td>{{zone.duration_today}} min</td>
 		<!--<td>{{zone.duration_maxLimit}} min</td>-->
 		<td>{% if zone.forecast_enabled %}
-			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
+			OFF
 			{% else %}
-			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
+			ON
 		</td>
 		<td>{% if zone.irrigation_enabled %}
-			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
+			YES
 			{% else %}
-			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
+			NO
 		</td>
 		<!--
 		<td>
