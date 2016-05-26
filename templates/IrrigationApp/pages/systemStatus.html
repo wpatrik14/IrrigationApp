@@ -56,14 +56,26 @@ Welcome {{username}}!
 		</td>
 		<td>{{zone.up_time}} min</td>
 		<!--<td>{{zone.water_quantity|floatformat:-2}} mm</td>-->
-		<td>{{zone.type}}</td>
+		<td>{% if zone.type == True %}
+			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
+			{% else %}
+			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
+		</td>
 		<!--<td>{{zone.template_day_counter}}</td>-->
 		<!--<td>{{zone.forecast_mm_limit}} mm</td>-->
 		<td>{{zone.current_pipe}}</td>
 		<td>{{zone.duration_today}} min</td>
 		<!--<td>{{zone.duration_maxLimit}} min</td>-->
-		<td>{{zone.forecast_enabled}}</td>
-		<td>{{zone.irrigation_enabled}}</td>
+		<td>{% if zone.forecast_enabled == True %}
+			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
+			{% else %}
+			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
+		</td>
+		<td>{% if zone.irrigation_enabled == True %}
+			<img src="/static/images/green-checkmark.png" style="width:100px;height:100px;">
+			{% else %}
+			<img src="/static/images/red-checkmark.png" style="width:100px;height:100px;">
+		</td>
 		<!--
 		<td>
 			<form id="showMoistureHistory" action="showMoistureHistory" method="post">
