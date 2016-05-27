@@ -16,7 +16,7 @@ from django.core.mail import send_mail
 def setIrrigation(mZone, status):
     seq=random.randint(0, 9)
     subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', str(seq), str(mZone.switch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    time.sleep(1)
+    time.sleep(2)
     with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
         result=str(file.read())
         js = json.loads(result)
