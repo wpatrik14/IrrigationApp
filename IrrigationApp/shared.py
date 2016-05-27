@@ -15,8 +15,7 @@ from django.core.mail import send_mail
 
 def setIrrigation(mZone, status):
     seq=random.randint(0, 9)
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', str(seq), str(mZone.switch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    time.sleep(2)
+    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', str(seq), str(mZone.switch.pinNumber), str(status)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()
     with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
         result=str(file.read())
         js = json.loads(result)
@@ -29,39 +28,42 @@ def setIrrigation(mZone, status):
             mSwitch.save(update_fields=['status'])
             mZone.switch=mSwitch
             mZone.type="OK"
+            if status == 1 :
+                if mZone.irrigation_history is None :
+                    mIrrigationHistory = IrrigationHistory(zone_id=mZone,
+                                                                   moisture_startValue=mZone.sensor.value
+                                                                   )
+                    mIrrigationHistory.save()
+                    mZone.irrigation_history=mIrrigationHistory
+            else :
+                if mZone.irrigation_history is not None :
+                    mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
+                    mHistory.end_date=datetime.now()
+                    mHistory.duration=mZone.up_time
+                    mHistory.moisture_endValue=mZone.sensor.value
+                    mHistory.status='done'
+                    mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
+                mZone.up_time = -1
+                mZone.irrigation_history=None
+                if mZone.current_pipe == 6 :
+                    mZone.current_pipe = 1
+                else :
+                    mZone.current_pipe = mZone.current_pipe + 1
+            
+            mZone.save(update_fields=['switch','up_time','irrigation_history','current_pipe','type'])
         else :
             mZone.type="ERROR"
-            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
-        mZone.save(update_fields=['switch','up_time','irrigation_history','current_pipe','type'])
+            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'godlocsolas@gmail.com',['wpatrik14@gmail.com','godlocsolas@gmail.com'], fail_silently=False)
     
     return
     
 def switchIrrigation(mZone, status):   
     if status == "1" and mZone.switch.status == 0 and mZone.up_time == 0 :
         if mZone.irrigation_enabled or not mZone.forecast_enabled :
-            if mZone.irrigation_history is None :
-                mIrrigationHistory = IrrigationHistory(zone_id=mZone,
-                                                                   moisture_startValue=mZone.sensor.value
-                                                                   )
-                mIrrigationHistory.save()
-                mZone.irrigation_history=mIrrigationHistory
             setIrrigation(mZone, 1)
                     
     else :         
         if mZone.switch.status == 1 and mZone.up_time > 0 :
-            if mZone.irrigation_history is not None :
-                mHistory=IrrigationHistory.objects.get(id=mZone.irrigation_history.id)
-                mHistory.end_date=datetime.now()
-                mHistory.duration=mZone.up_time
-                mHistory.moisture_endValue=mZone.sensor.value
-                mHistory.status='done'
-                mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
-            mZone.up_time = -1
-            mZone.irrigation_history=None
-            if mZone.current_pipe == 6 :
-                mZone.current_pipe = 1
-            else :
-                mZone.current_pipe = mZone.current_pipe + 1
             setIrrigation(mZone, 0)
 
     return
