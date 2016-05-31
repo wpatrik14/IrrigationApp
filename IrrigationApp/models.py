@@ -41,8 +41,6 @@ class Zone(models.Model):
     forecast_enabled=models.BooleanField(default=False)
     type=models.CharField(max_length=10)
     irrigation_history=models.ForeignKey('IrrigationHistory', null = True)
-    irrigation_template=models.ForeignKey('IrrigationTemplate', null = True)
-    water_quantity=models.FloatField(default=0)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
