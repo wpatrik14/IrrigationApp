@@ -69,7 +69,10 @@ def doRegistration(request):
             except User.DoesNotExist:
                 user = User.objects.create_user(username, email, password)
                 user.save()
-                
+    
+    Switch(pinNumber="1",status=0).save()
+    Switch(pinNumber="2",status=0).save()
+    Sensor(node="2",value=0).save()                
     return redirect('/showLogin')
 
 @login_required
