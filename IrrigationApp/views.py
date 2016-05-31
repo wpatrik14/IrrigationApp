@@ -38,6 +38,11 @@ def doLogin(request):
 
 @login_required
 def doLogout(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     logout(request)
     return render(request, 'IrrigationApp/pages/login.html', { 'userStatus':"USER LOGGED OUT" })
 
@@ -77,12 +82,22 @@ def doRegistration(request):
 
 @login_required
 def showAddNewZone(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()    
     return render(request, 'IrrigationApp/pages/addNewZone.html', { 'username':user.username, 'sensors':sensors, 'switches':switches })
     
 @login_required
 def doAddNewZone(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     name = request.POST['name']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
@@ -109,6 +124,11 @@ def doAddNewZone(request):
 
 @login_required
 def showEditZone(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     id = request.POST['editZone']
     zone = Zone.objects.get(id=id)
     
@@ -119,6 +139,11 @@ def showEditZone(request):
 
 @login_required
 def doEditZone(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     id = request.POST['zone_id']
     name = request.POST['name']
     sensor = request.POST['sensor']
@@ -149,12 +174,22 @@ def doEditZone(request):
 
 @login_required
 def checkZone(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     id = request.POST['checkZone']
     mZone = Zone.objects.get(id=id)
     checkZone(mZone)    
     return redirect('/getSystemStatus')
 
 def getSystemStatus(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     if 'zone' in request.POST :
         zone = request.POST['zone']
         status = request.POST['status']
@@ -170,12 +205,21 @@ def getSystemStatus(request):
 
 @login_required
 def showSimpleSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     zones = Zone.objects.all()
     return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'username':user.username,'zones':zones})
     
 @login_required
 def doSimpleSchedule(request):
-    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     date = request.POST['date']
     time = request.POST['time']
     duration = request.POST['duration']
@@ -192,11 +236,21 @@ def doSimpleSchedule(request):
 
 @login_required
 def showRepeatableSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     zones = Zone.objects.all()
     return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'username':user.username, 'zones':zones})
     
 @login_required
 def doRepeatableSchedule(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     name = request.POST['name']
     time = request.POST['time']
     duration = request.POST['duration']
@@ -217,6 +271,11 @@ def doRepeatableSchedule(request):
 
 @login_required
 def deleteZone(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     id = request.POST['zone']
     Zone.objects.get(id=id).delete()
         
@@ -224,6 +283,11 @@ def deleteZone(request):
 
 @login_required
 def deleteSimpleSchedule(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     id = request.POST['simpleSchedule']
     SimpleSchedule.objects.get(id=id).delete()
         
@@ -231,6 +295,11 @@ def deleteSimpleSchedule(request):
 
 @login_required
 def deleteRepeatableSchedule(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     id = request.POST['repeatableSchedule']
     RepeatableSchedule.objects.get(id=id).delete()
         
@@ -238,6 +307,11 @@ def deleteRepeatableSchedule(request):
 
 @login_required
 def showWeatherStatus(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     weatherForecasts = WeatherForecast.objects.all()
         
@@ -245,12 +319,22 @@ def showWeatherStatus(request):
 
 @login_required
 def showIrrigationHistory(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
         
     return render(request, 'IrrigationApp/pages/irrigationHistory.html', { 'username':user.username, 'irrigationHistories':irrigationHistories })
 
 @login_required
 def showMoistureHistory(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     zone_id = request.POST['zone_id']
     zone=Zone.objects.get(id=zone_id)
     moistureHistories = MoistureHistory.objects.filter(zone_id=zone).order_by('-date')[:200][::-1]
@@ -259,12 +343,22 @@ def showMoistureHistory(request):
 
 @login_required
 def showWeatherHistory(request):
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')[:72][::-1]
         
     return render(request, 'IrrigationApp/pages/weatherHistory.html', { 'username':user.username, 'weatherHistories':weatherHistories })
 
 @login_required
 def deleteIrrigationHistory(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     IrrigationHistory.objects.all().delete()
     
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
@@ -273,10 +367,20 @@ def deleteIrrigationHistory(request):
 
 @login_required
 def showAddSettings(request):        
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     return render(request, 'IrrigationApp/pages/addSettings.html', { 'username':user.username})
 
 @login_required
 def doAddSettings(request):    
+    if request.session.get('username') :
+        username = request.session.get('username')
+        user = User.objects.get(username=username)
+    else :
+        return redirect('/showLogin')
     return redirect('/getSystemStatus')
 
 
