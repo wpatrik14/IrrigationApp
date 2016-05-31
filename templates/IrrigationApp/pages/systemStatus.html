@@ -55,7 +55,7 @@
 		</td>
 		-->
 		<td>
-			<form id="checkZone" action="checkZone" method="post">
+			<form id="doCheckZone" action="doCheckZone" method="post">
 				{% csrf_token %}
 				<input type="hidden" name="checkZone" value = "{{ zone.id }}"/>
 				<button id="check" name="check" class="btn btn-default">CHECK</button>

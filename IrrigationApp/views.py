@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from urllib.request import urlopen
 from IrrigationApp.models import MoistureHistory, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory
-from IrrigationApp.shared import setIrrigation, switchIrrigation
+from IrrigationApp.shared import setIrrigation, switchIrrigation, checkZone
 
 def showMenu(request):
     return render(request, 'IrrigationApp/pages/menu.html')
@@ -173,7 +173,7 @@ def doEditZone(request):
     return redirect('/getSystemStatus')
 
 @login_required
-def checkZone(request):
+def doCheckZone(request):
     if request.session.get('username') :
         username = request.session.get('username')
         user = User.objects.get(username=username)
@@ -181,7 +181,7 @@ def checkZone(request):
         return redirect('/showLogin')
     id = request.POST['checkZone']
     mZone = Zone.objects.get(id=id)
-    IrrigationApp.shared.checkZone(mZone)    
+    checkZone(mZone)    
     return redirect('/getSystemStatus')
 
 @login_required

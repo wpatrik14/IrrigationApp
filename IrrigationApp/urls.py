@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     url(r'showAddNewZone[/]?$', views.showAddNewZone, name='showAddNewZone'),
     url(r'doAddNewZone[/]?$', views.doAddNewZone, name='doAddNewZone'),
     url(r'showEditZone[/]?$', views.showEditZone, name='showEditZone'),
-    url(r'checkZone[/]?$', views.checkZone, name='checkZone'),
+    url(r'checkZone[/]?$', views.doCheckZone, name='doCheckZone'),
     
     url(r'doEditZone[/]?$', views.doEditZone, name='doEditZone'),
     url(r'showAddSettings[/]?$', views.showAddSettings, name='showAddSettings'),
