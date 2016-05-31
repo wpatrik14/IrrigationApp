@@ -154,7 +154,6 @@ def checkZone(request):
     checkZone(mZone)    
     return redirect('/getSystemStatus')
 
-@login_required
 def getSystemStatus(request):
     if 'zone' in request.POST :
         zone = request.POST['zone']
