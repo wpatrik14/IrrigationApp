@@ -102,7 +102,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Budapest'
 USE_L10N = False
 DATE_FORMAT = "Y-m-d"
-USE_TZ = True
+USE_TZ = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

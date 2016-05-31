@@ -53,7 +53,7 @@ def setIrrigation(mZone, status):
             mZone.save(update_fields=['switch','up_time','irrigation_history','current_pipe','type'])
         else :
             mZone.type="ERROR"
-            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'godlocsolas@gmail.com',['wpatrik14@gmail.com','godlocsolas@gmail.com'], fail_silently=False)
+            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'godlocsolas@gmail.com',['godlocsolas@gmail.com'], fail_silently=False)
     
     return
     
@@ -84,7 +84,7 @@ def checkZone(mZone):
             mZone.type="OK"
         else :
             mZone.type="ERROR"
-            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
+            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'godlocsolas@gmail.com',['godlocsolas@gmail.com'], fail_silently=False)
         mZone.save(update_fields=['type'])
     return
 
