@@ -206,13 +206,12 @@ def getSystemStatus(request):
         status = request.POST['status']
         mZone = Zone.objects.get(id=zone) 
         switchIrrigation(mZone, status)
-    
+                
     zones = Zone.objects.all()
     simpleSchedules = SimpleSchedule.objects.order_by('date', 'time')
     repeatableSchedules = RepeatableSchedule.objects.order_by('day', 'time')
     
     return render(request, 'IrrigationApp/pages/systemStatus.html', { 'username':user.username, 'zones':zones, 'simpleSchedules':simpleSchedules, 'repeatableSchedules':repeatableSchedules})
-
 
 @login_required
 def showSimpleSchedule(request):

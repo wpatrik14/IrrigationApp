@@ -147,7 +147,6 @@ def automation_control():
     for zone in zones :
         if before != now :
             zone.duration_today=0
-            zone.irrigation_enabled=True
         
         if zone.switch.status == 1 :
             zone.up_time=zone.up_time+1
@@ -172,25 +171,25 @@ def automation_control():
         if str(simpleSchedule.date) == str(date) :
             if str(cur_time) == str(simpleSchedule.time) :
                 if simpleSchedule.zone.irrigation_enabled or not simpleSchedule.zone.forecast_enabled :
-                    switchIrrigation(simpleSchedule.zone, "1")
-                    changeSchedule(simpleSchedule,'running')
+                    if switchIrrigation(simpleSchedule.zone, "1") :
+                        changeSchedule(simpleSchedule,'running')
             
         if simpleSchedule.status == 'running' :
             if int(simpleSchedule.zone.up_time) == int(simpleSchedule.duration) or int(simpleSchedule.zone.up_time) == int(simpleSchedule.zone.duration_maxLimit) or simpleSchedule.zone.switch.status == 0:
                 simpleSchedule.delete()
-                switchIrrigation(simpleSchedule.zone, "0")
+                switchIrrigation(simpleSchedule.zone, "0") 
                 
     for repeatableSchedule in repeatableSchedules :
         if repeatableSchedule.day == days[int(dayNumber)] :
             if str(cur_time) == str(repeatableSchedule.time) :
                 if repeatableSchedule.zone.irrigation_enabled or not repeatableSchedule.zone.forecast_enabled :
-                    switchIrrigation(repeatableSchedule.zone, "1")
-                    changeSchedule(repeatableSchedule,'running')
+                    if switchIrrigation(repeatableSchedule.zone, "1") :
+                        changeSchedule(repeatableSchedule,'running')
             
         if repeatableSchedule.status == 'running' :
             if int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.duration) or int(repeatableSchedule.zone.up_time) == int(repeatableSchedule.zone.duration_maxLimit) or repeatableSchedule.zone.switch.status == 0:
-                switchIrrigation(repeatableSchedule.zone, "0")
-                changeSchedule(repeatableSchedule,'stopped')
+                if switchIrrigation(repeatableSchedule.zone, "0") :
+                    changeSchedule(repeatableSchedule,'stopped')
         
     return '\n\nAUTOMATION CONTROL........... DONE'
 

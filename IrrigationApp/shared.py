@@ -50,21 +50,19 @@ def setIrrigation(mZone, status):
                     mZone.current_pipe = mZone.current_pipe + 1
             
             mZone.save(update_fields=['switch','up_time','irrigation_history','current_pipe','type'])
+            return True
         else :
             mZone.type="ERROR"
             send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'godlocsolas@gmail.com',['godlocsolas@gmail.com'], fail_silently=False)
-    
-    return
+            return False
     
 def switchIrrigation(mZone, status):   
     if status == "1" :
         if mZone.switch.status == 0 and mZone.up_time == 0 and mZone.irrigation_enabled :
-            setIrrigation(mZone, 1)      
+            return setIrrigation(mZone, 1)      
     else :
         if mZone.switch.status == 1 and mZone.up_time > 0 :
-            setIrrigation(mZone, 0)
-
-    return
+            return setIrrigation(mZone, 0)
 
 def checkZone(mZone):
     seq=random.randint(0, 9)
@@ -80,11 +78,13 @@ def checkZone(mZone):
             mSwitch.status = stat
             mSwitch.save(update_fields=['status'])
             mZone.type="OK"
+            mZone.save(update_fields=['type'])
+            return True
         else :
             mZone.type="ERROR"
+            mZone.save(update_fields=['type'])
             send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'godlocsolas@gmail.com',['godlocsolas@gmail.com'], fail_silently=False)
-        mZone.save(update_fields=['type'])
-    return
+            return False        
 
 # def addTaskToQueue(mZone):
 #     settings = IrrigationSettings.objects.all()
