@@ -316,7 +316,7 @@ def showWeatherStatus(request):
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     weatherForecasts = WeatherForecast.objects.all()
         
-    return render(request, 'IrrigationApp/pages/weatherStatus.html', { 'username':user.username, 'settings':settings, 'weathers':currentWeather, 'weatherForecasts':weatherForecasts })
+    return render(request, 'IrrigationApp/pages/weatherStatus.html', { 'username':user.username, 'weathers':currentWeather, 'weatherForecasts':weatherForecasts })
 
 @login_required
 def showIrrigationHistory(request):    
