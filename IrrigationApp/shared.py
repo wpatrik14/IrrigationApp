@@ -57,11 +57,10 @@ def setIrrigation(mZone, status):
     return
     
 def switchIrrigation(mZone, status):   
-    if status == "1" and mZone.switch.status == 0 and mZone.up_time == 0 :
-        if mZone.irrigation_enabled or not mZone.forecast_enabled :
-            setIrrigation(mZone, 1)
-                    
-    else :         
+    if status == "1" :
+        if mZone.switch.status == 0 and mZone.up_time == 0 and mZone.irrigation_enabled :
+            setIrrigation(mZone, 1)      
+    else :
         if mZone.switch.status == 1 and mZone.up_time > 0 :
             setIrrigation(mZone, 0)
 

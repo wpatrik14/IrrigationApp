@@ -198,17 +198,18 @@ def automation_control():
 def doForecast():
     zones=Zone.objects.all()
     for zone in zones :
-        weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-        if not weatherForecast.exists() :
-            get_weather_data_from_server()
+        if zone.forecast_enabled :
             weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-        precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM
-        if precipMM >= zone.forecast_mm_limit :
-            zone.irrigation_enabled = False
+            if not weatherForecast.exists() :
+                get_weather_data_from_server()
+                weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
+            precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM
+            if precipMM >= zone.forecast_mm_limit :
+                zone.irrigation_enabled = False
+                zone.save(update_fields=['irrigation_enabled'])
+            else :
+                zone.irrigation_enabled = True
             zone.save(update_fields=['irrigation_enabled'])
-        else :
-            zone.irrigation_enabled = True
-        zone.save(update_fields=['irrigation_enabled'])
 
     return '\n\nDOING FORECAST...........DONE'
 

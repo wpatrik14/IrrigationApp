@@ -104,10 +104,14 @@ def doAddNewZone(request):
     forecast_mm_limit = request.POST['forecast_mm_limit']
     current_pipe = request.POST['current_pipe']
     duration_maxLimit = request.POST['duration_maxLimit']
-    if 'checkboxes' not in request.POST:
-        enabled = False
+    if 'forecast' not in request.POST:
+        forecast = False
     else:
-        enabled = True
+        forecast = True
+    if 'irrigation' not in request.POST:
+        irrigation = False
+    else:
+        irrigation = True
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
@@ -118,7 +122,8 @@ def doAddNewZone(request):
          forecast_mm_limit = forecast_mm_limit,
          current_pipe = current_pipe,
          duration_maxLimit = duration_maxLimit,
-         forecast_enabled = enabled)
+         forecast_enabled = forecast,
+         irrigation_enabled = irrigation)
     zone.save()    
     return redirect('/getSystemStatus')
 
@@ -151,10 +156,14 @@ def doEditZone(request):
     forecast_mm_limit = request.POST['forecast_mm_limit']
     current_pipe = request.POST['current_pipe']
     duration_maxLimit = request.POST['duration_maxLimit']
-    if 'checkboxes' not in request.POST:
-        enabled = False
+    if 'forecast' not in request.POST:
+        forecast = False
     else:
-        enabled = True
+        forecast = True
+    if 'irrigation' not in request.POST:
+        irrigation = False
+    else:
+        irrigation = True
     
     zone = Zone.objects.get(id=id)        
     
@@ -167,7 +176,8 @@ def doEditZone(request):
     zone.forecast_mm_limit = forecast_mm_limit
     zone.current_pipe = current_pipe
     zone.duration_maxLimit = duration_maxLimit
-    zone.forecast_enabled = enabled
+    zone.forecast_enabled = forecast
+    zone.irrigation_enabled = irrigation
     zone.save()
     
     return redirect('/getSystemStatus')
