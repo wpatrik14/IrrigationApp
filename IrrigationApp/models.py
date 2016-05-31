@@ -33,8 +33,6 @@ class Zone(models.Model):
     switch = models.ForeignKey('Switch')
     name=models.CharField(max_length=20)
     up_time=models.IntegerField(max_length=3, default=0)
-    #moisture_minLimit=models.IntegerField(max_length=5)
-    #moisture_maxLimit=models.IntegerField(max_length=5)
     forecast_mm_limit=models.FloatField(default=0)
     current_pipe=models.IntegerField(max_length=2)
     duration_maxLimit=models.IntegerField(max_length=3)
@@ -44,13 +42,7 @@ class Zone(models.Model):
     type=models.CharField(max_length=10)
     irrigation_history=models.ForeignKey('IrrigationHistory', null = True)
     irrigation_template=models.ForeignKey('IrrigationTemplate', null = True)
-    #size_m2=models.IntegerField(default=0)
-    #root_length=models.IntegerField(default=20)
-    #moisture_deviation=models.IntegerField(max_length=3)
-    #efficiency=models.IntegerField(max_length=3)
-    #soil_type=models.ForeignKey('SoilType')
     water_quantity=models.FloatField(default=0)
-    #template_day_counter = models.IntegerField(max_length=3, default=0)
     def __unicode__(self):
         return self.sensor + ' ' + self.switch  
 
@@ -103,52 +95,52 @@ class MoistureHistory(models.Model):
     def __unicode__(self):
         return self.value
     
-class ZoneTemplateValue(models.Model):
-    zone = models.ForeignKey('Zone')
-    kc_value = models.ForeignKey('KcValue')
-    irrigation_required = models.BooleanField(default=False)
-    runtime = models.IntegerField(max_length=3,default=0)
-    water_mm = models.FloatField(max_length=3,default=0)
-    def __unicode__(self):
-        return self.day_number
-    
-class IrrigationTemplate(models.Model):
-    name = models.CharField(max_length=15)
-    def __unicode__(self):
-        return self.name
-    
-class KcValue(models.Model):
-    template = models.ForeignKey('IrrigationTemplate')
-    day_number = models.IntegerField(max_length=3)
-    kc_value = models.FloatField()
-    def __unicode__(self):
-        return self.kc_value
-   
-class IrrigationSettings(models.Model):
-    id = models.IntegerField(max_length=1, primary_key=True)
-    flow_meter = models.IntegerField(default=0)
-    running_zones = models.IntegerField(default=0)
-    evapotranspiracy = models.FloatField(default=0)
-    cost_perLiter = models.FloatField(default=0)
-    total_cost = models.FloatField(default=0)
-    water = models.FloatField(default=0)
-    runnable_zones_number=models.IntegerField(default=1)
-    def __unicode__(self):
-        return self.pump
-    
-class Pump(models.Model):
-    id = models.IntegerField(max_length=1, primary_key=True)
-    switch = models.ForeignKey('Switch')
-    up_time = models.IntegerField(default=0)
-    run_limit = models.IntegerField(default=1)
-    down_time = models.IntegerField(default=0)
-    stop_limit = models.IntegerField(default=1)
-
-class SoilType(models.Model):
-    name = models.CharField(max_length=20)
-    value = models.FloatField(default=0)
-    
-class TaskQueue(models.Model):
-    zone_id=models.ForeignKey('Zone')
-    seq_number=models.IntegerField(default=0)
-    
+# class ZoneTemplateValue(models.Model):
+#     zone = models.ForeignKey('Zone')
+#     kc_value = models.ForeignKey('KcValue')
+#     irrigation_required = models.BooleanField(default=False)
+#     runtime = models.IntegerField(max_length=3,default=0)
+#     water_mm = models.FloatField(max_length=3,default=0)
+#     def __unicode__(self):
+#         return self.day_number
+#     
+# class IrrigationTemplate(models.Model):
+#     name = models.CharField(max_length=15)
+#     def __unicode__(self):
+#         return self.name
+#     
+# class KcValue(models.Model):
+#     template = models.ForeignKey('IrrigationTemplate')
+#     day_number = models.IntegerField(max_length=3)
+#     kc_value = models.FloatField()
+#     def __unicode__(self):
+#         return self.kc_value
+#    
+# class IrrigationSettings(models.Model):
+#     id = models.IntegerField(max_length=1, primary_key=True)
+#     flow_meter = models.IntegerField(default=0)
+#     running_zones = models.IntegerField(default=0)
+#     evapotranspiracy = models.FloatField(default=0)
+#     cost_perLiter = models.FloatField(default=0)
+#     total_cost = models.FloatField(default=0)
+#     water = models.FloatField(default=0)
+#     runnable_zones_number=models.IntegerField(default=1)
+#     def __unicode__(self):
+#         return self.pump
+#     
+# class Pump(models.Model):
+#     id = models.IntegerField(max_length=1, primary_key=True)
+#     switch = models.ForeignKey('Switch')
+#     up_time = models.IntegerField(default=0)
+#     run_limit = models.IntegerField(default=1)
+#     down_time = models.IntegerField(default=0)
+#     stop_limit = models.IntegerField(default=1)
+# 
+# class SoilType(models.Model):
+#     name = models.CharField(max_length=20)
+#     value = models.FloatField(default=0)
+#     
+# class TaskQueue(models.Model):
+#     zone_id=models.ForeignKey('Zone')
+#     seq_number=models.IntegerField(default=0)
+#     

@@ -14,8 +14,8 @@
 		<th>Start date</th>
 		<th>End date</th>
 		<th>Duration</th>
-		<th>Moisture start</th>
-		<th>Moisture end</th>
+		<!--<th>Moisture start</th>
+		<th>Moisture end</th>-->
 	</thead>
 	{% for irrigationHistory in irrigationHistories %}
 	<tr>
@@ -24,8 +24,8 @@
 		<td>{{irrigationHistory.start_date|date:"Y-m-d"}} {{irrigationHistory.start_date|time:"H:i"}}</td>
 		<td>{{irrigationHistory.end_date|date:"Y-m-d"}} {{irrigationHistory.end_date|time:"H:i"}}</td>
 		<td>{{irrigationHistory.duration}} min</td>
-		<td>{{irrigationHistory.moisture_startValue}}%</td>
-		<td>{{irrigationHistory.moisture_endValue}}%</td>
+		<!--<td>{{irrigationHistory.moisture_startValue}}%</td>
+		<td>{{irrigationHistory.moisture_endValue}}%</td>-->
 	</tr>
 	{% endfor %}
 </table>

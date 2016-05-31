@@ -1,5 +1,5 @@
 
-from IrrigationApp.models import MoistureHistory, Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
+from IrrigationApp.models import MoistureHistory, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory
 import subprocess
 from django.utils import timezone
 from django.shortcuts import redirect
@@ -10,7 +10,6 @@ import logging
 import time
 import math
 import random
-#import paho.mqtt.publish as publish
 from django.core.mail import send_mail
 
 def setIrrigation(mZone, status):

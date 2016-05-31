@@ -10,16 +10,12 @@ import json
 import logging
 import time
 import math
-#import paho.mqtt.publish as publish
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from urllib.request import urlopen
-import subprocess
-import random
-from IrrigationApp.models import MoistureHistory, Pump, IrrigationTemplate, ZoneTemplateValue, KcValue, IrrigationSettings, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory, SoilType, TaskQueue
-from IrrigationApp.shared import setIrrigation, switchIrrigation
-from django.core.mail import send_mail
+from IrrigationApp.models import MoistureHistory, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory
+from IrrigationApp.shared import setIrrigation, switchIrrigation, checkZone
 
 def showMenu(request):
     return render(request, 'IrrigationApp/pages/menu.html')
@@ -77,44 +73,19 @@ def doRegistration(request):
     return redirect('/showLogin')
 
 @login_required
-def showAddNewZone(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
+def showAddNewZone(request):    
     sensors = Sensor.objects.all()
-    switches = Switch.objects.all()
-    #irrigationTemplates = IrrigationTemplate.objects.all()
-    #soilTypes = SoilType.objects.all()
-    
-    return render(request, 'IrrigationApp/pages/addNewZone.html', { 'username':user.username, 'settings':settings, 'sensors':sensors, 'switches':switches })
+    switches = Switch.objects.all()    
+    return render(request, 'IrrigationApp/pages/addNewZone.html', { 'username':user.username, 'sensors':sensors, 'switches':switches })
     
 @login_required
-def doAddNewZone(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
-    
+def doAddNewZone(request):    
     name = request.POST['name']
-    #size = request.POST['size']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
     forecast_mm_limit = request.POST['forecast_mm_limit']
     current_pipe = request.POST['current_pipe']
     duration_maxLimit = request.POST['duration_maxLimit']
-    #irrigationTemplate_id = request.POST['irrigationTemplate']
-    #soil_type = request.POST['soil_type']
-    #type = request.POST['type']
-    #root_length = request.POST['root']
-    #deviation = request.POST['deviation']
-    #efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
         enabled = False
     else:
@@ -122,7 +93,6 @@ def doAddNewZone(request):
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
-    #soil = SoilType.objects.get(id=soil_type)
     
     zone = Zone(name = name,
          sensor = sensor,
@@ -130,66 +100,29 @@ def doAddNewZone(request):
          forecast_mm_limit = forecast_mm_limit,
          current_pipe = current_pipe,
          duration_maxLimit = duration_maxLimit,
-         forecast_enabled = enabled,
-         #type = type
-         #soil_type=soil,
-         #size_m2=size,
-         #root_length=root_length,
-         #moisture_deviation=deviation,
-         #efficiency=efficiency
-         )
-    zone.save()
-    
-    #===========================================================================
-    # if irrigationTemplate_id!="None":
-    #     irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-    #     setZoneTemplate(zone,irrigationTemplate)
-    #===========================================================================
-    
+         forecast_enabled = enabled)
+    zone.save()    
     return redirect('/getSystemStatus')
 
 @login_required
 def showEditZone(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
     id = request.POST['editZone']
     zone = Zone.objects.get(id=id)
     
     sensors = Sensor.objects.all()
     switches = Switch.objects.all()
-    #irrigationTemplates = IrrigationTemplate.objects.all()
-    #soilTypes = SoilType.objects.all()
         
-    return render(request, 'IrrigationApp/pages/editZone.html', { 'username':user.username, 'settings':settings, 'zone':zone, 'sensors':sensors, 'switches':switches })
+    return render(request, 'IrrigationApp/pages/editZone.html', { 'username':user.username, 'zone':zone, 'sensors':sensors, 'switches':switches })
 
 @login_required
 def doEditZone(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
     id = request.POST['zone_id']
     name = request.POST['name']
-    #size = request.POST['size']
     sensor = request.POST['sensor']
     switch = request.POST['switch']
     forecast_mm_limit = request.POST['forecast_mm_limit']
     current_pipe = request.POST['current_pipe']
     duration_maxLimit = request.POST['duration_maxLimit']
-    #irrigationTemplate_id = request.POST['irrigationTemplate']
-    #soil_type = request.POST['soil_type']
-    #type = request.POST['type']
-    #root_length = request.POST['root']
-    #deviation = request.POST['deviation']
-    #efficiency = request.POST['efficiency']
     if 'checkboxes' not in request.POST:
         enabled = False
     else:
@@ -199,7 +132,6 @@ def doEditZone(request):
     
     sensor = Sensor.objects.get(node=sensor)
     switch = Switch.objects.get(pinNumber=switch)
-    #soil = SoilType.objects.get(id=soil_type)
        
     zone.name = name
     zone.sensor = sensor
@@ -208,71 +140,19 @@ def doEditZone(request):
     zone.current_pipe = current_pipe
     zone.duration_maxLimit = duration_maxLimit
     zone.forecast_enabled = enabled
-    #zone.type = type
-    #zone.soil_type=soil
-    #zone.size_m2=size
-    #zone.root_length=root_length
-    #zone.moisture_deviation=deviation
-    #zone.efficiency=efficiency
-    #zone.template_day_counter=0
     zone.save()
-    
-    #===========================================================================
-    # if irrigationTemplate_id!="None":
-    #     irrigationTemplate = IrrigationTemplate.objects.get(id=irrigationTemplate_id)
-    #     ZoneTemplateValue.objects.filter(zone=zone).delete()
-    #     setZoneTemplate(zone,irrigationTemplate)
-    #===========================================================================
     
     return redirect('/getSystemStatus')
 
 @login_required
 def checkZone(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
     id = request.POST['checkZone']
     mZone = Zone.objects.get(id=id)
-    
-    seq=random.randint(0, 9)
-    subprocess.Popen(['sudo','/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/radiomodule_withoutresponse', str(seq), str(mZone.switch.pinNumber), "2"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    time.sleep(1)
-    with open('/home/pi/rf24libs/stanleyseow/RF24/RPi/RF24/examples/output.txt','r') as file:
-        result=str(file.read())
-        js = json.loads(result)
-        r_seq=js['Seq']
-        if r_seq==str(seq) :
-            pin=js['Pin']
-            stat=js['Stat']
-            mSwitch = Switch.objects.get(pinNumber=pin)
-            mSwitch.status = stat
-            mSwitch.save(update_fields=['status'])
-            mZone.type="OK"
-        else :
-            mZone.type="ERROR"
-            send_mail('ERROR in Irrigation System', 'No connection between Raspberry and Arduino', 'noriespatrik@gmail.com',['wpatrik14@gmail.com'], fail_silently=False)
-        mZone.save(update_fields=['type'])
-        
+    checkZone(mZone)    
     return redirect('/getSystemStatus')
-
 
 @login_required
 def getSystemStatus(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return redirect('/showAddSettings')
-    
     if 'zone' in request.POST :
         zone = request.POST['zone']
         status = request.POST['status']
@@ -288,25 +168,12 @@ def getSystemStatus(request):
 
 @login_required
 def showSimpleSchedule(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
     zones = Zone.objects.all()
-    return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'username':user.username, 'settings':settings, 'zones':zones})
+    return render(request, 'IrrigationApp/pages/simpleSchedule.html', { 'username':user.username,'zones':zones})
     
 @login_required
 def doSimpleSchedule(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
     
-    settings = IrrigationSettings.objects.get(id=0)
     date = request.POST['date']
     time = request.POST['time']
     duration = request.POST['duration']
@@ -319,30 +186,15 @@ def doSimpleSchedule(request):
                                              duration=duration,
                                              zone=zone)
             mSimpleSchedule.save()
-    #publish.single("irrigationapp/schedule", "Simple schedule added", hostname="iot.eclipse.org")
     return redirect('/getSystemStatus')
 
 @login_required
 def showRepeatableSchedule(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-
-    settings = IrrigationSettings.objects.get(id=0)
     zones = Zone.objects.all()
-    return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'username':user.username, 'settings':settings, 'zones':zones})
+    return render(request, 'IrrigationApp/pages/repeatableSchedule.html', { 'username':user.username, 'zones':zones})
     
 @login_required
 def doRepeatableSchedule(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-
-    settings = IrrigationSettings.objects.get(id=0)
     name = request.POST['name']
     time = request.POST['time']
     duration = request.POST['duration']
@@ -359,98 +211,44 @@ def doRepeatableSchedule(request):
                                                      duration=duration,
                                                      zone=zone)
                     mRepeatableSchedule.save()
-    #publish.single("irrigationapp/schedule", "Repeatable schedule added", hostname="iot.eclipse.org")
     return redirect('/getSystemStatus')
 
 @login_required
-def deleteZone(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
+def deleteZone(request):    
     id = request.POST['zone']
     Zone.objects.get(id=id).delete()
         
     return redirect('/getSystemStatus')
 
 @login_required
-def deleteSimpleSchedule(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
+def deleteSimpleSchedule(request):    
     id = request.POST['simpleSchedule']
     SimpleSchedule.objects.get(id=id).delete()
         
     return redirect('/getSystemStatus')
 
 @login_required
-def deleteRepeatableSchedule(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
+def deleteRepeatableSchedule(request):    
     id = request.POST['repeatableSchedule']
     RepeatableSchedule.objects.get(id=id).delete()
         
     return redirect('/getSystemStatus')
 
-
-@login_required
-def deleteTask(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    id = request.POST['task']
-    TaskQueue.objects.get(id=id).delete()
-        
-    return redirect('/getSystemStatus')
-
-
-
 @login_required
 def showWeatherStatus(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    settings = IrrigationSettings.objects.get(id=0)
     currentWeather = WeatherHistory.objects.all().order_by('-observation_time')[:1]
     weatherForecasts = WeatherForecast.objects.all()
         
     return render(request, 'IrrigationApp/pages/weatherStatus.html', { 'username':user.username, 'settings':settings, 'weathers':currentWeather, 'weatherForecasts':weatherForecasts })
 
 @login_required
-def showIrrigationHistory(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
+def showIrrigationHistory(request):    
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
         
     return render(request, 'IrrigationApp/pages/irrigationHistory.html', { 'username':user.username, 'irrigationHistories':irrigationHistories })
 
 @login_required
-def showMoistureHistory(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
+def showMoistureHistory(request):    
     zone_id = request.POST['zone_id']
     zone=Zone.objects.get(id=zone_id)
     moistureHistories = MoistureHistory.objects.filter(zone_id=zone).order_by('-date')[:200][::-1]
@@ -459,24 +257,12 @@ def showMoistureHistory(request):
 
 @login_required
 def showWeatherHistory(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')[:200][::-1]
+    weatherHistories = WeatherHistory.objects.all().order_by('-observation_time')[:72][::-1]
         
     return render(request, 'IrrigationApp/pages/weatherHistory.html', { 'username':user.username, 'weatherHistories':weatherHistories })
 
 @login_required
-def deleteIrrigationHistory(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
+def deleteIrrigationHistory(request):    
     IrrigationHistory.objects.all().delete()
     
     irrigationHistories = IrrigationHistory.objects.all().order_by('-end_date')
@@ -484,52 +270,11 @@ def deleteIrrigationHistory(request):
     return render(request, 'IrrigationApp/pages/irrigationHistory.html', { 'username':user.username, 'irrigationHistories':irrigationHistories })
 
 @login_required
-def showAddSettings(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-        
+def showAddSettings(request):        
     return render(request, 'IrrigationApp/pages/addSettings.html', { 'username':user.username})
 
 @login_required
-def doAddSettings(request):
-    if request.session.get('username') :
-        username = request.session.get('username')
-        user = User.objects.get(username=username)
-    else :
-        return redirect('/showLogin')
-    
-    Switch(pinNumber="1",status=0).save()
-    Switch(pinNumber="2",status=0).save()
-    Switch(pinNumber="3",status=0).save()
-    Switch(pinNumber="4",status=0).save()
-    Sensor(node="1",value=0).save()
-    Sensor(node="2",value=0).save()
-    Sensor(node="3",value=0).save()
-    Sensor(node="4",value=0).save()
-    
-    switch = request.POST['switch']
-    evapotranspiracy = 1
-    cost = request.POST['cost']
-    number_of_runnable_zones = request.POST['number_of_runnable_zones']
-    run_limit = request.POST['run_limit']
-    stop_limit = request.POST['stop_limit']
-    
-    switch = Switch.objects.get(pinNumber=switch)
-    settings = IrrigationSettings(id=0,
-                                  evapotranspiracy=evapotranspiracy,
-                                  cost_perLiter=cost,
-                                  runnable_zones_number=number_of_runnable_zones)
-    settings.save()
-    settings.save()
-    pump = Pump(id=0,
-                switch=switch,
-                run_limit=run_limit,
-                stop_limit=stop_limit)
-    pump.save()
-    
+def doAddSettings(request):    
     return redirect('/getSystemStatus')
 
 

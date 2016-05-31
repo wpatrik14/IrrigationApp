@@ -4,7 +4,7 @@ import codecs
 from datetime import datetime, timedelta
 from django.utils.dateformat import DateFormat
 from django.utils.formats import get_format
-from IrrigationApp.models import Pump, IrrigationTemplate, MoistureHistory, ZoneTemplateValue, KcValue, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory, IrrigationSettings, TaskQueue, SoilType
+from IrrigationApp.models import MoistureHistory, WeatherHistory, WeatherForecast, Sensor, Switch, Zone, SimpleSchedule, RepeatableSchedule, IrrigationHistory
 from django.http import HttpResponse
 import json
 import time
@@ -140,12 +140,6 @@ def changeSchedule(schedule, status):
         
 @task()
 def automation_control():
-        
-    settings = IrrigationSettings.objects.all()
-    if settings.exists() :
-        settings = IrrigationSettings.objects.get(id=0)
-    else:
-        return 'Settings not found'
     
     zones = Zone.objects.all()
     before = (datetime.now() - timedelta(minutes=2)).strftime("%Y-%m-%d")
