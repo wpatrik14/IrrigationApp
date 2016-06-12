@@ -131,7 +131,7 @@ def get_weather_datas():
     
     get_weather_data_from_server()
     
-    return '\n\nGETTING WEATHER DATAS........... DONE'
+    return
 
 def changeSchedule(schedule, status):
     schedule.status=status
@@ -191,26 +191,28 @@ def automation_control():
                 if switchIrrigation(repeatableSchedule.zone, "0") :
                     changeSchedule(repeatableSchedule,'stopped')
         
-    return '\n\nAUTOMATION CONTROL........... DONE'
+    return
 
 @task()
 def doForecast():
-    zones=Zone.objects.all()
-    for zone in zones :
-        if zone.forecast_enabled :
-            weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-            if not weatherForecast.exists() :
-                get_weather_data_from_server()
+    cur_time = datetime.now().strftime("%H:%M:00")
+    if str(cur_time) == "05:00:00" :
+        zones=Zone.objects.all()
+        for zone in zones :
+            if zone.forecast_enabled :
                 weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
-            precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM
-            if precipMM >= zone.forecast_mm_limit :
-                zone.irrigation_enabled = False
+                if not weatherForecast.exists() :
+                    get_weather_data_from_server()
+                    weatherForecast = WeatherForecast.objects.all().order_by('forecast_date')[:4]
+                precipMM = weatherForecast[0].precipMM + weatherForecast[1].precipMM
+                if precipMM >= zone.forecast_mm_limit :
+                    zone.irrigation_enabled = False
+                    zone.save(update_fields=['irrigation_enabled'])
+                else :
+                    zone.irrigation_enabled = True
                 zone.save(update_fields=['irrigation_enabled'])
-            else :
-                zone.irrigation_enabled = True
-            zone.save(update_fields=['irrigation_enabled'])
 
-    return '\n\nDOING FORECAST...........DONE'
+    return
 
 @task()
 def getSwitchData():
@@ -219,7 +221,7 @@ def getSwitchData():
         checkZone(mZone)           
         time.sleep(1)
     
-    return '\n\nGET SWITCH DATA...........DONE'
+    return
 
 # @task()
 # def follow_irrigation_template():
