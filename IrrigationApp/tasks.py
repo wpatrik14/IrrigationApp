@@ -196,7 +196,7 @@ def automation_control():
 @task()
 def doForecast():
     cur_time = datetime.now().strftime("%H:%M:00")
-    if str(cur_time) == "05:00:00" :
+    if str(cur_time) == "05:01:00" :
         zones=Zone.objects.all()
         for zone in zones :
             if zone.forecast_enabled :
