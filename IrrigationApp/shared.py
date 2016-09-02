@@ -44,7 +44,7 @@ def setIrrigation(mZone, status):
                     mHistory.save(update_fields=['end_date','duration','moisture_endValue','status'])
                 mZone.up_time = -1
                 mZone.irrigation_history=None
-                if mZone.current_pipe == 6 :
+                if mZone.current_pipe == 4 :
                     mZone.current_pipe = 1
                 else :
                     mZone.current_pipe = mZone.current_pipe + 1
