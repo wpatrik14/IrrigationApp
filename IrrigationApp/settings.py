@@ -25,9 +25,10 @@ SECRET_KEY = '^k1@-=i^uf+d@3o9@i#c!uszx79j0%&g!#@yudve7$*%b86f*y'
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
 
-TEMPLATE_DEBUG = False
+TEMPLATE_DEBUG = True
+#TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = ['wpatrik.ddns.net']
+#ALLOWED_HOSTS = ['wpatrik.ddns.net']
 
 
 # Application definition
