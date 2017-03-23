@@ -13,7 +13,7 @@ import math
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from urllib.request import urlopen
+from urllib2 import urlopen
 from IrrigationApp.models import MoistureHistory, SimpleSchedule, RepeatableSchedule, WeatherHistory, WeatherForecast, Zone, Switch, Sensor, IrrigationHistory
 from IrrigationApp.shared import setIrrigation, switchIrrigation, checkZone
 

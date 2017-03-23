@@ -9,7 +9,7 @@ from django.http import HttpResponse
 import json
 import time
 import random
-from urllib.request import urlopen
+from urllib2 import urlopen
 from celery import task
 import subprocess
 #import paho.mqtt.publish as publish
