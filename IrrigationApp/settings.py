@@ -27,7 +27,7 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 #TEMPLATE_DEBUG = False
 
-#ALLOWED_HOSTS = ['wpatrik.ddns.net']
+ALLOWED_HOSTS = ['wpatrik.ddns.net','192.168.0.103']
 
 
 # Application definition
