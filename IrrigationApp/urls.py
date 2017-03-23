@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from IrrigationApp import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'IrrigationApp.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
@@ -50,7 +50,5 @@ urlpatterns = patterns('',
     url(r'deleteZone[/]?$', views.deleteZone, name='deleteZone'),
     url(r'deleteIrrigationHistory[/]?$', views.deleteIrrigationHistory, name='deleteIrrigationHistory'),
     
-    url(r'.*', views.showLogin, name='showLogin'),
-    
-    
-)
+    url(r'.*', views.showLogin, name='showLogin')
+]
