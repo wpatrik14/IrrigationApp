@@ -92,7 +92,7 @@ LOGIN_URL = 'showLogin/'
 LOGOUT_URL = 'doLogout/'
 
 STATIC_URL = '/static/'
-TEMPLATE_DIRS = os.path.join(BASE_DIR,'templates'),
+TEMPLATE_DIRS = os.path.join(BASE_DIR,'IrrigationApp/templates'),
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
